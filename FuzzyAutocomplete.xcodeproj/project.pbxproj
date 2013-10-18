@@ -7,19 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		58C3C24718110DB70031D9CD /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58C3C24618110DB70031D9CD /* Cocoa.framework */; };
 		58C3C25118110DB70031D9CD /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 58C3C24F18110DB70031D9CD /* InfoPlist.strings */; };
+		58C3C25A181128140031D9CD /* FuzzyAutocomplete.m in Sources */ = {isa = PBXBuildFile; fileRef = 58C3C259181128140031D9CD /* FuzzyAutocomplete.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		58C3C24318110DB70031D9CD /* FuzzyAutocomplete.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FuzzyAutocomplete.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
-		58C3C24618110DB70031D9CD /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		58C3C24318110DB70031D9CD /* FuzzyAutocomplete.xcplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FuzzyAutocomplete.xcplugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		58C3C24918110DB70031D9CD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		58C3C24A18110DB70031D9CD /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		58C3C24B18110DB70031D9CD /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		58C3C24E18110DB70031D9CD /* FuzzyAutocomplete-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FuzzyAutocomplete-Info.plist"; sourceTree = "<group>"; };
 		58C3C25018110DB70031D9CD /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		58C3C25218110DB70031D9CD /* FuzzyAutocomplete-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FuzzyAutocomplete-Prefix.pch"; sourceTree = "<group>"; };
+		58C3C258181128140031D9CD /* FuzzyAutocomplete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FuzzyAutocomplete.h; sourceTree = "<group>"; };
+		58C3C259181128140031D9CD /* FuzzyAutocomplete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FuzzyAutocomplete.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -27,7 +28,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				58C3C24718110DB70031D9CD /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -46,7 +46,7 @@
 		58C3C24418110DB70031D9CD /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				58C3C24318110DB70031D9CD /* FuzzyAutocomplete.bundle */,
+				58C3C24318110DB70031D9CD /* FuzzyAutocomplete.xcplugin */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -54,7 +54,6 @@
 		58C3C24518110DB70031D9CD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				58C3C24618110DB70031D9CD /* Cocoa.framework */,
 				58C3C24818110DB70031D9CD /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -74,6 +73,8 @@
 			isa = PBXGroup;
 			children = (
 				58C3C24D18110DB70031D9CD /* Supporting Files */,
+				58C3C258181128140031D9CD /* FuzzyAutocomplete.h */,
+				58C3C259181128140031D9CD /* FuzzyAutocomplete.m */,
 			);
 			path = FuzzyAutocomplete;
 			sourceTree = "<group>";
@@ -105,7 +106,7 @@
 			);
 			name = FuzzyAutocomplete;
 			productName = FuzzyAutocomplete;
-			productReference = 58C3C24318110DB70031D9CD /* FuzzyAutocomplete.bundle */;
+			productReference = 58C3C24318110DB70031D9CD /* FuzzyAutocomplete.xcplugin */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -150,6 +151,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				58C3C25A181128140031D9CD /* FuzzyAutocomplete.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -239,12 +241,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
+				DEPLOYMENT_LOCATION = YES;
+				DSTROOT = "$(HOME)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FuzzyAutocomplete/FuzzyAutocomplete-Prefix.pch";
 				INFOPLIST_FILE = "FuzzyAutocomplete/FuzzyAutocomplete-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				INSTALL_PATH = "/Library/Application Support/Developer/Shared/Xcode/Plug-ins";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = bundle;
+				WRAPPER_EXTENSION = xcplugin;
 			};
 			name = Debug;
 		};
@@ -252,12 +256,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
+				DEPLOYMENT_LOCATION = YES;
+				DSTROOT = "$(HOME)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FuzzyAutocomplete/FuzzyAutocomplete-Prefix.pch";
 				INFOPLIST_FILE = "FuzzyAutocomplete/FuzzyAutocomplete-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				INSTALL_PATH = "/Library/Application Support/Developer/Shared/Xcode/Plug-ins";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = bundle;
+				WRAPPER_EXTENSION = xcplugin;
 			};
 			name = Release;
 		};
@@ -280,6 +286,7 @@
 				58C3C25718110DB70031D9CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

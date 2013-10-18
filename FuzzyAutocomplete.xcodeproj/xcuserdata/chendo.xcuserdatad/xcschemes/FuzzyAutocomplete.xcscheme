@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "58C3C24218110DB70031D9CD"
-               BuildableName = "FuzzyAutocomplete.bundle"
+               BuildableName = "FuzzyAutocomplete.xcplugin"
                BlueprintName = "FuzzyAutocomplete"
                ReferencedContainer = "container:FuzzyAutocomplete.xcodeproj">
             </BuildableReference>
