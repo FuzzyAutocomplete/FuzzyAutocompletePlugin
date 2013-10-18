@@ -26,5 +26,9 @@
 	<string>Copyright © 2013 chendo interactive. All rights reserved.</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
+	<key>XC5Compatible</key>
+	<true/>
+	<key>XCPluginHasUI</key>
+	<true/>
 </dict>
 </plist>
