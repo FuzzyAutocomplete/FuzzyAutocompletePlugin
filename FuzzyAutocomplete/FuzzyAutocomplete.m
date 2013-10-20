@@ -3,7 +3,7 @@
 //  FuzzyAutocomplete
 //
 //  Created by Jack Chen on 18/10/2013.
-//  Copyright (c) 2013 chendo interactive. All rights reserved.
+//  Copyright (c) 2013 Sproutcube. All rights reserved.
 //
 
 #import "FuzzyAutocomplete.h"
@@ -36,7 +36,7 @@
 
 - (void)dealloc
 {
- 
+
 }
 
 - (void)notificationListener:(NSNotification *)notification {
@@ -48,7 +48,7 @@
         return;
 
     NSLog(@"  Notification: %@", [notification name]);
-    
+
 }
 
 @end

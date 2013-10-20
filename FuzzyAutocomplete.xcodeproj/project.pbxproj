@@ -173,7 +173,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0500;
-				ORGANIZATIONNAME = "chendo interactive";
+				ORGANIZATIONNAME = "Sproutcube";
 			};
 			buildConfigurationList = 58C3C23E18110DB70031D9CD /* Build configuration list for PBXProject "FuzzyAutocomplete" */;
 			compatibilityVersion = "Xcode 3.2";
