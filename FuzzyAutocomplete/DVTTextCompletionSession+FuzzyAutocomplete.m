@@ -66,15 +66,15 @@ static char lastPrefixKey;
 
         DLog(@"Filter: %lu to %lu", searchSet.count, (unsigned long)filtered.count);
 
-        NSArray *sorted = timeBlockAndLog(@"Best match time", ^id{
-            return [self orderCompletionsByScore:searchSet withQuery:prefix];
+        IDEIndexCompletionItem *bestMatch = timeBlockAndLog(@"Best match time", ^id{
+            return [self bestMatchInArray:filtered forQuery:prefix];
         });
 
         self.filteredCompletionsAlpha = filtered;
         objc_setAssociatedObject(self, &lastResultSetKey, filtered, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         if (filtered.count > 0) {
             timeBlockAndLog(@"IndexOf", ^id{
-                self.selectedCompletionIndex = [filtered indexOfObject:sorted[0]];
+                self.selectedCompletionIndex = [filtered indexOfObject:bestMatch];
                 return nil;
             });
         }
@@ -103,6 +103,23 @@ static char lastPrefixKey;
     });
 
     return [completionsWithScore valueForKeyPath:@"@unionOfObjects.item"];
+}
+
+- (IDEIndexCompletionItem *)bestMatchInArray:(NSArray *)array forQuery:(NSString *)query
+{
+    IDEOpenQuicklyPattern *pattern = [IDEOpenQuicklyPattern patternWithInput:query];
+    __block IDEIndexCompletionItem *bestMatch;
+    __block double highScore = 0.0f;
+    
+    [array enumerateObjectsUsingBlock:^(IDEIndexCompletionItem *item, NSUInteger idx, BOOL *stop) {
+        double score = [pattern scoreCandidate:item.name] * item.priority;
+        if (score > highScore) {
+            bestMatch = item;
+            highScore = score;
+        }
+    }];
+    
+    return bestMatch;
 }
 
 @end
