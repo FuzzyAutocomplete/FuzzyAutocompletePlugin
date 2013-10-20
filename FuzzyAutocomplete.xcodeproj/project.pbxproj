@@ -21,6 +21,7 @@
 		34FA51D7C132475F8B38E975 /* Pods-FuzzyAutocomplete.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FuzzyAutocomplete.xcconfig"; path = "Pods/Pods-FuzzyAutocomplete.xcconfig"; sourceTree = "<group>"; };
 		580BC1EA181243D600D53F1F /* DVTFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DVTFoundation.framework; path = ../../../../Applications/Xcode.app/Contents/SharedFrameworks/DVTFoundation.framework; sourceTree = "<group>"; };
 		580BC1EB181243D600D53F1F /* DVTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DVTKit.framework; path = ../../../../Applications/Xcode.app/Contents/SharedFrameworks/DVTKit.framework; sourceTree = "<group>"; };
+		5870150918140BB700082A37 /* DVTTextCompletionListWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DVTTextCompletionListWindowController.h; sourceTree = "<group>"; };
 		58BA07BC18124BC40070060D /* DVTTextCompletionSession+FuzzyAutocomplete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DVTTextCompletionSession+FuzzyAutocomplete.h"; sourceTree = "<group>"; };
 		58BA07BD18124BC40070060D /* DVTTextCompletionSession+FuzzyAutocomplete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DVTTextCompletionSession+FuzzyAutocomplete.m"; sourceTree = "<group>"; };
 		58BA07BF18124BD50070060D /* DVTTextCompletionSession.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DVTTextCompletionSession.h; sourceTree = "<group>"; };
@@ -37,6 +38,8 @@
 		58C3C259181128140031D9CD /* FuzzyAutocomplete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FuzzyAutocomplete.m; sourceTree = "<group>"; };
 		58D5555A1813A5A7008F234B /* SCTiming.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCTiming.h; sourceTree = "<group>"; };
 		58D5555B1813A5A7008F234B /* SCTiming.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCTiming.m; sourceTree = "<group>"; };
+		58DA96F21813D38A00D0082B /* DVTTextCompletionInlinePreviewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DVTTextCompletionInlinePreviewController.h; sourceTree = "<group>"; };
+		58DA96F31813D48D00D0082B /* DVTTextCompletionItem-Protocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DVTTextCompletionItem-Protocol.h"; sourceTree = "<group>"; };
 		58E391E7181289A100C18DBF /* IDEIndexCompletionItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IDEIndexCompletionItem.h; sourceTree = "<group>"; };
 		58E9F98D18139EC5000928AF /* IDEOpenQuicklyPattern.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IDEOpenQuicklyPattern.h; sourceTree = "<group>"; };
 		58E9F98E1813A0FE000928AF /* IDEKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IDEKit.framework; path = ../../../../Applications/Xcode.app/Contents/Frameworks/IDEKit.framework; sourceTree = "<group>"; };
@@ -61,11 +64,14 @@
 		580BC1E5181172D100D53F1F /* Xcode Headers */ = {
 			isa = PBXGroup;
 			children = (
-				58E9F98D18139EC5000928AF /* IDEOpenQuicklyPattern.h */,
-				58E391E7181289A100C18DBF /* IDEIndexCompletionItem.h */,
-				58BA07C118124C0A0070060D /* DVTTextCompletionDataSourceDelegate-Protocol.h */,
 				58BA07C018124BFC0070060D /* DVTInvalidation-Protocol.h */,
+				58BA07C118124C0A0070060D /* DVTTextCompletionDataSourceDelegate-Protocol.h */,
+				58DA96F21813D38A00D0082B /* DVTTextCompletionInlinePreviewController.h */,
+				58DA96F31813D48D00D0082B /* DVTTextCompletionItem-Protocol.h */,
+				5870150918140BB700082A37 /* DVTTextCompletionListWindowController.h */,
 				58BA07BF18124BD50070060D /* DVTTextCompletionSession.h */,
+				58E391E7181289A100C18DBF /* IDEIndexCompletionItem.h */,
+				58E9F98D18139EC5000928AF /* IDEOpenQuicklyPattern.h */,
 			);
 			name = "Xcode Headers";
 			path = ../XcodeHeaders;

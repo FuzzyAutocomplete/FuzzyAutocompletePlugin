@@ -7,6 +7,8 @@
 //
 
 #import "DVTTextCompletionSession+FuzzyAutocomplete.h"
+#import "DVTTextCompletionInlinePreviewController.h"
+#import "DVTTextCompletionListWindowController.h"
 #import "IDEIndexCompletionItem.h"
 #import "IDEOpenQuicklyPattern.h"
 #import "SCTiming.h"
@@ -18,27 +20,27 @@
 + (void)load
 {
     [self jr_swizzleMethod:@selector(_setFilteringPrefix:forceFilter:) withMethod:@selector(_fa_setFilteringPrefix:forceFilter:) error:nil];
+    [self jr_swizzleMethod:@selector(setAllCompletions:) withMethod:@selector(_fa_setAllCompletions:) error:nil];
 }
 
 static char lastResultSetKey;
 static char lastPrefixKey;
 
+#define MAX_FUZZY_SEARCH_LENGTH 15
+
 // Sets the current filtering prefix
 - (void)_fa_setFilteringPrefix:(NSString *)prefix forceFilter:(BOOL)forceFilter
 {
-    // We need to call the original method otherwise the autocomplete won't show up
-    // TODO: Figure out what we need to call to make the window show
-
-    timeBlockAndLog(@"Original filter time", ^id{
-        [self _fa_setFilteringPrefix:prefix forceFilter:forceFilter];
-        return nil;
-    });
-
-    // We only want to use fuzzy matching when we have 2 or more characters to work with
+    // Let the original handler deal with the zero and one letter cases
     if (prefix.length < 2) {
+        [self _fa_setFilteringPrefix:prefix forceFilter:forceFilter];
         return;
     }
-    
+//    
+//    if (prefix.length > MAX_FUZZY_SEARCH_LENGTH) {
+//        return;
+//    }
+//    
     NSString *lastPrefix = objc_getAssociatedObject(self, &lastPrefixKey);
     NSArray *searchSet;
 
@@ -46,12 +48,17 @@ static char lastPrefixKey;
     if (lastPrefix && [prefix rangeOfString:lastPrefix].location == 0) {
         searchSet = objc_getAssociatedObject(self, &lastResultSetKey);
     }
-    else {
-        searchSet = self.allCompletions;
+    
+    if (!searchSet) {
+        searchSet = [self filteredCompletionsBeginningWithLetter:[prefix substringToIndex:1]];
     }
-
-    objc_setAssociatedObject(self, &lastPrefixKey, prefix, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-
+    
+    IDEIndexCompletionItem *originalMatch;
+    __block IDEIndexCompletionItem *bestMatch;
+    if (self.selectedCompletionIndex < self.filteredCompletionsAlpha.count) {
+        originalMatch = self.filteredCompletionsAlpha[self.selectedCompletionIndex];
+    }
+    
     double totalTime = timeVoidBlock(^{
         NSMutableString *predicateString = [NSMutableString string];
         [prefix enumerateSubstringsInRange:NSMakeRange(0, prefix.length) options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
@@ -67,17 +74,58 @@ static char lastPrefixKey;
         self.filteredCompletionsAlpha = filtered;
         DLog(@"Filter: %lu to %lu", searchSet.count, (unsigned long)filtered.count);
 
-        IDEIndexCompletionItem *bestMatch = timeBlockAndLog(@"Best match time", ^id{
+        bestMatch = timeBlockAndLog(@"Best match time", ^id{
             return [self bestMatchInArray:filtered forQuery:prefix];
         });
 
+        objc_setAssociatedObject(self, &lastPrefixKey, prefix, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         objc_setAssociatedObject(self, &lastResultSetKey, filtered, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         if (filtered.count > 0) {
             self.selectedCompletionIndex = [filtered indexOfObject:bestMatch];
         }
+        // This forces the completion list to resize the columns
+        DVTTextCompletionListWindowController *listController = [self _listWindowController];
+        [listController _updateCurrentDisplayState];
+        
+        // IDEIndexCompletionItem doesn't implement isEqual
+        DVTTextCompletionInlinePreviewController *inlinePreview = [self _inlinePreviewController];
+        if (![originalMatch.name isEqual:bestMatch.name]) {
+            // Hide the inline preview if the fuzzy query is different to normal matching
+            [inlinePreview hideInlinePreviewWithReason:0];
+        }
     });
     
     DLog(@"Fuzzy match total time: %f", totalTime);
+}
+
+
+static char filteredCompletionCacheKey;
+
+- (void)_fa_setAllCompletions:(NSArray *)allCompletions
+{
+    [self _fa_setAllCompletions:allCompletions];
+    NSCache *filterCache = objc_getAssociatedObject(self, &filteredCompletionCacheKey);
+    if (filterCache) {
+        [filterCache removeAllObjects];
+    }
+}
+
+// We need to cache the first letter sets because if a user types fast enough,
+// they don't trigger the standard autocomplete first letter set that we need
+// for good performance.
+- (NSArray *)filteredCompletionsBeginningWithLetter:(NSString *)letter
+{
+    NSCache *filteredCompletionCache = objc_getAssociatedObject(self, &filteredCompletionCacheKey);
+    if (!filteredCompletionCache) {
+        filteredCompletionCache = [[NSCache alloc] init];
+        objc_setAssociatedObject(self, &filteredCompletionCacheKey, filteredCompletionCache, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    NSArray *completionsForLetter = [filteredCompletionCache objectForKey:letter];
+    if (!completionsForLetter) {
+        completionsForLetter = [self.allCompletions filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name beginswith[c] %@", letter]];
+        [filteredCompletionCache setObject:completionsForLetter forKey:letter];
+    }
+    return completionsForLetter;
 }
 
 #define MAX_PRIORITY 100.0f
