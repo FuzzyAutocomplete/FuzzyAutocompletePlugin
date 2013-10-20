@@ -73,51 +73,36 @@ static char insertingCompletionKey;
     
     double totalTime = timeVoidBlock(^{
         IDEIndexCompletionItem *originalMatch;
-        IDEIndexCompletionItem *bestMatch;
+        __block IDEIndexCompletionItem *bestMatch;
+        
         if (self.selectedCompletionIndex < self.filteredCompletionsAlpha.count) {
             originalMatch = self.filteredCompletionsAlpha[self.selectedCompletionIndex];
         }
         
-        NSMutableString *predicateString = [NSMutableString string];
-        [prefix enumerateSubstringsInRange:NSMakeRange(0, MIN(prefix.length, MAX_PREDICATE_LENGTH)) options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
-            [predicateString appendFormat:@"%@*", substring];
+        NSMutableArray *filteredSet = [NSMutableArray array];
+
+        IDEOpenQuicklyPattern *pattern = [IDEOpenQuicklyPattern patternWithInput:prefix];
+
+        __block double highScore = 0.0f;
+        
+        [searchSet enumerateObjectsUsingBlock:^(IDEIndexCompletionItem *item, NSUInteger idx, BOOL *stop) {
+            double score = [pattern scoreCandidate:item.name] * (MAX_PRIORITY - item.priority);
+            if (score > 0) {
+                [filteredSet addObject:item];
+            }
+            if (score > highScore) {
+                bestMatch = item;
+                highScore = score;
+            }
         }];
-
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name like[c] %@", predicateString];
-
-        NSArray *firstPass = timeBlockAndLog(@"Filtering", ^id{
-            return [searchSet filteredArrayUsingPredicate:predicate];
-        });
-        
-        DLog(@"First pass: %lu to %lu", searchSet.count, (unsigned long)firstPass.count);
-
-        NSMutableArray *secondPass = [NSMutableArray array];
-
-        bestMatch = timeBlockAndLog(@"Best match time", ^id{
-            IDEOpenQuicklyPattern *pattern = [IDEOpenQuicklyPattern patternWithInput:prefix];
-            __block IDEIndexCompletionItem *bestMatch;
-            __block double highScore = 0.0f;
             
-            [firstPass enumerateObjectsUsingBlock:^(IDEIndexCompletionItem *item, NSUInteger idx, BOOL *stop) {
-                double score = [pattern scoreCandidate:item.name] * (MAX_PRIORITY - item.priority);
-                if (score > 0) {
-                    [secondPass addObject:item];
-                }
-                if (score > highScore) {
-                    bestMatch = item;
-                    highScore = score;
-                }
-            }];
-            
-            return bestMatch;
-        });
-        
-        self.filteredCompletionsAlpha = secondPass;
+        self.filteredCompletionsAlpha = filteredSet;
 
         objc_setAssociatedObject(self, &lastPrefixKey, prefix, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        objc_setAssociatedObject(self, &lastResultSetKey, secondPass, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        if (secondPass.count > 0 && bestMatch) {
-            self.selectedCompletionIndex = [secondPass indexOfObject:bestMatch];
+        objc_setAssociatedObject(self, &lastResultSetKey, filteredSet, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        
+        if (filteredSet.count > 0 && bestMatch) {
+            self.selectedCompletionIndex = [filteredSet indexOfObject:bestMatch];
         }
         else {
             self.selectedCompletionIndex = NSNotFound;
@@ -167,24 +152,6 @@ static char filteredCompletionCacheKey;
     }
     return completionsForLetter;
 }
-
-- (IDEIndexCompletionItem *)bestMatchInArray:(NSArray *)array forQuery:(NSString *)query
-{
-    IDEOpenQuicklyPattern *pattern = [IDEOpenQuicklyPattern patternWithInput:query];
-    __block IDEIndexCompletionItem *bestMatch;
-    __block double highScore = 0.0f;
-    
-    [array enumerateObjectsUsingBlock:^(IDEIndexCompletionItem *item, NSUInteger idx, BOOL *stop) {
-        double score = [pattern scoreCandidate:item.name] * (MAX_PRIORITY - item.priority);
-        if (score > highScore) {
-            bestMatch = item;
-            highScore = score;
-        }
-    }];
-    
-    return bestMatch;
-}
-
 
 
 // Used for debugging
