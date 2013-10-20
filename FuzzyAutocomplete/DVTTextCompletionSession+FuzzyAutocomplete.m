@@ -38,7 +38,7 @@ static char lastPrefixKey;
     if (prefix.length < 2) {
         return;
     }
-
+    
     NSString *lastPrefix = objc_getAssociatedObject(self, &lastPrefixKey);
     NSArray *searchSet;
 
@@ -64,25 +64,25 @@ static char lastPrefixKey;
             return [searchSet filteredArrayUsingPredicate:predicate];
         });
 
+        self.filteredCompletionsAlpha = filtered;
         DLog(@"Filter: %lu to %lu", searchSet.count, (unsigned long)filtered.count);
 
         IDEIndexCompletionItem *bestMatch = timeBlockAndLog(@"Best match time", ^id{
             return [self bestMatchInArray:filtered forQuery:prefix];
         });
 
-        self.filteredCompletionsAlpha = filtered;
         objc_setAssociatedObject(self, &lastResultSetKey, filtered, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         if (filtered.count > 0) {
-            timeBlockAndLog(@"IndexOf", ^id{
+            timeVoidBlockAndLog(@"IndexOf", ^{
                 self.selectedCompletionIndex = [filtered indexOfObject:bestMatch];
-                return nil;
             });
         }
     });
+    
     DLog(@"Total time: %f", totalTime);
-
 }
 
+// Used for debugging priority
 - (NSArray *)orderCompletionsByScore:(NSArray *)completions withQuery:(NSString *)query
 {
     IDEOpenQuicklyPattern *pattern = [IDEOpenQuicklyPattern patternWithInput:query];
@@ -105,6 +105,8 @@ static char lastPrefixKey;
     return [completionsWithScore valueForKeyPath:@"@unionOfObjects.item"];
 }
 
+#define MAX_PRIORITY 100.0f
+
 - (IDEIndexCompletionItem *)bestMatchInArray:(NSArray *)array forQuery:(NSString *)query
 {
     IDEOpenQuicklyPattern *pattern = [IDEOpenQuicklyPattern patternWithInput:query];
@@ -112,7 +114,7 @@ static char lastPrefixKey;
     __block double highScore = 0.0f;
     
     [array enumerateObjectsUsingBlock:^(IDEIndexCompletionItem *item, NSUInteger idx, BOOL *stop) {
-        double score = [pattern scoreCandidate:item.name] * item.priority;
+        double score = [pattern scoreCandidate:item.name] * (MAX_PRIORITY - item.priority);
         if (score > highScore) {
             bestMatch = item;
             highScore = score;
