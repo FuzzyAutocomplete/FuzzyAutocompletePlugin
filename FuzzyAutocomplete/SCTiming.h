@@ -9,4 +9,5 @@
 double machTimeToMilliseconds(uint64_t machTime);
 id timeBlock(id (^block)(void), double *time_ms);
 double timeVoidBlock(void(^block)(void));
+void timeVoidBlockAndLog(NSString *label, void (^block)(void));
 id timeBlockAndLog(NSString *label, id (^block)(void));

@@ -39,6 +39,10 @@ double timeVoidBlock(void (^block)(void))
     return machTimeToMilliseconds(mach_absolute_time() - start);
 }
 
+void timeVoidBlockAndLog(NSString *label, void (^block)(void))
+{
+    DLog(@"Time taken for %@: %f ms", label, timeVoidBlock(block));
+}
 
 id timeBlockAndLog(NSString *label, id (^block)(void))
 {

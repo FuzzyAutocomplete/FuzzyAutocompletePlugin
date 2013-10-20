@@ -34,14 +34,15 @@ static char lastPrefixKey;
         return nil;
     });
     
-
-    if (prefix.length == 0) {
+    // We only want to use fuzzy matching when we have 2 or more characters to work with
+    if (prefix.length < 2) {
         return;
     }
+
     NSString *lastPrefix = objc_getAssociatedObject(self, &lastPrefixKey);
     NSArray *searchSet;
 
-    // Use the last result set to filter down
+    // Use the last result set to filter down if it exists
     if (lastPrefix && [prefix rangeOfString:lastPrefix].location == 0) {
         searchSet = objc_getAssociatedObject(self, &lastResultSetKey);
     }
@@ -64,18 +65,11 @@ static char lastPrefixKey;
         });
         
         DLog(@"Filter: %lu to %lu", searchSet.count, (unsigned long)filtered.count);
-        
-        IDEOpenQuicklyPattern *pattern = [IDEOpenQuicklyPattern patternWithInput:prefix];
-        
+
         NSArray *sorted = timeBlockAndLog(@"Best match time", ^id{
-            return [filtered sortedArrayUsingComparator:^NSComparisonResult(IDEIndexCompletionItem *obj1, IDEIndexCompletionItem *obj2) {
-                double score1 = [pattern scoreCandidate:obj1.name] * obj1.priority;
-                double score2 = [pattern scoreCandidate:obj2.name] * obj2.priority;
-                
-                return score1 < score2 ? NSOrderedDescending : NSOrderedAscending;
-            }];
+            return [self orderCompletionsByScore:searchSet withQuery:prefix];
         });
-        
+
         self.filteredCompletionsAlpha = filtered;
         objc_setAssociatedObject(self, &lastResultSetKey, filtered, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         if (filtered.count > 0) {
@@ -87,6 +81,28 @@ static char lastPrefixKey;
     });
     DLog(@"Total time: %f", totalTime);
     
+}
+
+- (NSArray *)orderCompletionsByScore:(NSArray *)completions withQuery:(NSString *)query
+{
+    IDEOpenQuicklyPattern *pattern = [IDEOpenQuicklyPattern patternWithInput:query];
+    NSMutableArray *completionsWithScore = [NSMutableArray arrayWithCapacity:completions.count];
+    
+    timeVoidBlockAndLog(@"Scoring", ^{
+        [completions enumerateObjectsUsingBlock:^(IDEIndexCompletionItem *item, NSUInteger idx, BOOL *stop) {
+            [completionsWithScore addObject:@{
+                                              @"item": item,
+                                              @"score": @([pattern scoreCandidate:item.name])}];
+        }];
+    });
+    
+    NSSortDescriptor *sortByScore = [NSSortDescriptor sortDescriptorWithKey:@"score" ascending:NO];
+
+    timeVoidBlockAndLog(@"Sorting", ^{
+        [completionsWithScore sortUsingDescriptors:@[sortByScore]];
+    });
+    
+    return [completionsWithScore valueForKeyPath:@"@unionOfObjects.item"];
 }
 
 @end
