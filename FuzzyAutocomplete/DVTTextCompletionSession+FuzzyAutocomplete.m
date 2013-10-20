@@ -35,6 +35,9 @@ static char lastPrefixKey;
     });
     
 
+    if (prefix.length == 0) {
+        return;
+    }
     NSString *lastPrefix = objc_getAssociatedObject(self, &lastPrefixKey);
     NSArray *searchSet;
 
