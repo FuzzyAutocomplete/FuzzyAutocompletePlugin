@@ -10,177 +10,48 @@
 	<string>46</string>
 	<key>objects</key>
 	<dict>
-		<key>055786A4E80F4074BFD3B7BF</key>
-		<dict>
-			<key>fileRef</key>
-			<string>9149C37B47804523A6EBE17D</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>09F8BB2427EB4848B76B48D2</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>9149C37B47804523A6EBE17D</string>
-				<string>586E865D55E8480C8FFF4617</string>
-				<string>1B1D45F847D546FB9FB3352E</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>JRSwizzle</string>
-			<key>path</key>
-			<string>JRSwizzle</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>0AA2535FFEEF40A79D8DCFEA</key>
-		<dict>
-			<key>explicitFileType</key>
-			<string>archive.ar</string>
-			<key>includeInIndex</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>path</key>
-			<string>libPods-FuzzyAutocomplete-JRSwizzle.a</string>
-			<key>sourceTree</key>
-			<string>BUILT_PRODUCTS_DIR</string>
-		</dict>
-		<key>107E9E94709C44C39FD86080</key>
+		<key>01E9D5E9B22741069CDA7626</key>
 		<dict>
 			<key>buildActionMask</key>
 			<string>2147483647</string>
 			<key>files</key>
 			<array>
-				<string>3629B5B764A645CCBDAFD4EE</string>
-				<string>3BE659ABBD0346078C002A3B</string>
+				<string>4D420885CC324F199F01C848</string>
 			</array>
 			<key>isa</key>
-			<string>PBXFrameworksBuildPhase</string>
+			<string>PBXHeadersBuildPhase</string>
 			<key>runOnlyForDeploymentPostprocessing</key>
 			<string>0</string>
 		</dict>
-		<key>1B1D45F847D546FB9FB3352E</key>
+		<key>14FD75C3AFD6468E8C6867BB</key>
 		<dict>
-			<key>children</key>
+			<key>buildConfigurationList</key>
+			<string>D9686110E48240B793B5BDBA</string>
+			<key>buildPhases</key>
 			<array>
-				<string>F9CB307BDFD24781937ECD38</string>
-				<string>5B89D4A3B316486F8926B287</string>
-				<string>8C44CBDA30B741D59EE6B462</string>
-				<string>DFE50F2DE945441C97BD2EBF</string>
+				<string>27167D8485FC414DB84B35C6</string>
+				<string>52197396F94F46D8B1D8BA03</string>
+				<string>01E9D5E9B22741069CDA7626</string>
 			</array>
+			<key>buildRules</key>
+			<array/>
+			<key>dependencies</key>
+			<array/>
 			<key>isa</key>
-			<string>PBXGroup</string>
+			<string>PBXNativeTarget</string>
 			<key>name</key>
-			<string>Support Files</string>
-			<key>sourceTree</key>
-			<string>SOURCE_ROOT</string>
+			<string>Pods-FuzzyAutocomplete-JRSwizzle</string>
+			<key>productName</key>
+			<string>Pods-FuzzyAutocomplete-JRSwizzle</string>
+			<key>productReference</key>
+			<string>587CA2CD78BB496D845D1582</string>
+			<key>productType</key>
+			<string>com.apple.product-type.library.static</string>
 		</dict>
-		<key>1BD0755C423B442DB51FB0EF</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.xcconfig</string>
-			<key>path</key>
-			<string>Pods-FuzzyAutocomplete.xcconfig</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>1F2C6209D17E43A381DDF161</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.framework</string>
-			<key>name</key>
-			<string>Cocoa.framework</string>
-			<key>path</key>
-			<string>Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/Cocoa.framework</string>
-			<key>sourceTree</key>
-			<string>DEVELOPER_DIR</string>
-		</dict>
-		<key>2AFFE307A3C34A16A73CED2A</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.script.sh</string>
-			<key>path</key>
-			<string>Pods-FuzzyAutocomplete-resources.sh</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>2E330A49704945A78E700E51</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>B19A722051474A09A2DACBCB</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Targets Support Files</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>3629B5B764A645CCBDAFD4EE</key>
-		<dict>
-			<key>fileRef</key>
-			<string>1F2C6209D17E43A381DDF161</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>376EC798D1564FA59847CEFE</key>
-		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>480BDB5D5A014662A8FFF7E7</string>
-				<string>509B68056CDE4EEC825886F3</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<string>0</string>
-			<key>defaultConfigurationName</key>
-			<string>Release</string>
-			<key>isa</key>
-			<string>XCConfigurationList</string>
-		</dict>
-		<key>3BE659ABBD0346078C002A3B</key>
-		<dict>
-			<key>fileRef</key>
-			<string>0AA2535FFEEF40A79D8DCFEA</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>40C6F629D23D4003B96B1EF2</key>
-		<dict>
-			<key>fileRef</key>
-			<string>8C44CBDA30B741D59EE6B462</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>428F5FD14EE640ADA1C68F6B</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>98F7FB1DFA8D4BAD9CEA1EC0</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Frameworks</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>480BDB5D5A014662A8FFF7E7</key>
+		<key>21C5F6763FBE4BCC921400A1</key>
 		<dict>
 			<key>baseConfigurationReference</key>
-			<string>1BD0755C423B442DB51FB0EF</string>
+			<string>66690A07B9E74B15963CBEB9</string>
 			<key>buildSettings</key>
 			<dict>
 				<key>ALWAYS_SEARCH_USER_PATHS</key>
@@ -201,6 +72,8 @@
 				<string>0</string>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
 				<string>YES</string>
+				<key>GCC_PREFIX_HEADER</key>
+				<string>Pods-FuzzyAutocomplete-JRSwizzle-prefix.pch</string>
 				<key>GCC_PREPROCESSOR_DEFINITIONS</key>
 				<array>
 					<string>DEBUG=1</string>
@@ -228,37 +101,110 @@
 			<key>name</key>
 			<string>Debug</string>
 		</dict>
-		<key>48B572F9BE2B43BBB06BCD1F</key>
+		<key>27167D8485FC414DB84B35C6</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>FEDFB1D94017417A9AB4BC75</string>
+				<string>423BFCA074594293915F0422</string>
+			</array>
+			<key>isa</key>
+			<string>PBXSourcesBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>28BC9612E45F468B9955A6E4</key>
 		<dict>
 			<key>children</key>
 			<array>
-				<string>DA3AE510D7894BF4B422A385</string>
-				<string>0AA2535FFEEF40A79D8DCFEA</string>
+				<string>7416BD72AF3F4FEB8E07F478</string>
+				<string>9CF83AA35B0A473BA1D6CA54</string>
 			</array>
 			<key>isa</key>
 			<string>PBXGroup</string>
 			<key>name</key>
-			<string>Products</string>
+			<string>OS X</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>50215BB418974AE697146339</key>
+		<key>355E9CD9D13942AEAD71F05F</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
 			<key>isa</key>
 			<string>PBXFileReference</string>
 			<key>lastKnownFileType</key>
-			<string>text</string>
+			<string>sourcecode.c.h</string>
 			<key>path</key>
-			<string>Pods-FuzzyAutocomplete-acknowledgements.markdown</string>
+			<string>JRSwizzle.h</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>509B68056CDE4EEC825886F3</key>
+		<key>3C09A80909E44C22B636FD23</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>path</key>
+			<string>Pods-FuzzyAutocomplete-JRSwizzle-dummy.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>3DE4DAA3F3064660860D4807</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>4E7B3393F28B46A48602681B</string>
+			</array>
+			<key>isa</key>
+			<string>PBXSourcesBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>3EC89CA424F2449FA553764E</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>path</key>
+			<string>Pods-FuzzyAutocomplete-JRSwizzle-prefix.pch</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>423BFCA074594293915F0422</key>
+		<dict>
+			<key>fileRef</key>
+			<string>3C09A80909E44C22B636FD23</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>428285E58C02451695F0DCB0</key>
+		<dict>
+			<key>containerPortal</key>
+			<string>57AFD4AF8F1D47EC8764E6A1</string>
+			<key>isa</key>
+			<string>PBXContainerItemProxy</string>
+			<key>proxyType</key>
+			<string>1</string>
+			<key>remoteGlobalIDString</key>
+			<string>14FD75C3AFD6468E8C6867BB</string>
+			<key>remoteInfo</key>
+			<string>Pods-FuzzyAutocomplete-JRSwizzle</string>
+		</dict>
+		<key>46CC1E84B97540B4B9F2EFCC</key>
 		<dict>
 			<key>baseConfigurationReference</key>
-			<string>1BD0755C423B442DB51FB0EF</string>
+			<string>FD0B5C8727044EB4A01C9837</string>
 			<key>buildSettings</key>
 			<dict>
 				<key>ALWAYS_SEARCH_USER_PATHS</key>
@@ -307,41 +253,146 @@
 			<key>name</key>
 			<string>Release</string>
 		</dict>
-		<key>522BD3F76686481A9F81DFDF</key>
+		<key>4D420885CC324F199F01C848</key>
 		<dict>
 			<key>fileRef</key>
-			<string>CA1A2679689A4660A0E87CDF</string>
+			<string>355E9CD9D13942AEAD71F05F</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>56A9541F88244DEE82662C59</key>
+		<key>4E7B3393F28B46A48602681B</key>
 		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>F777BE7B74F04B91A6CBCA13</string>
-				<string>8231C2CF730A46E7ABD224CD</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<string>0</string>
-			<key>defaultConfigurationName</key>
-			<string>Release</string>
+			<key>fileRef</key>
+			<string>B90EE15D75B84A4DB6EDB854</string>
 			<key>isa</key>
-			<string>XCConfigurationList</string>
+			<string>PBXBuildFile</string>
 		</dict>
-		<key>586E865D55E8480C8FFF4617</key>
+		<key>503F6D186CBF4F96BA6BA845</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>90F477A46CFF412A9A922E20</string>
+				<string>5FB4970B86B8440C9DFE2605</string>
+			</array>
+			<key>isa</key>
+			<string>PBXFrameworksBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>52197396F94F46D8B1D8BA03</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>53E2B87051F6442EB4766A01</string>
+				<string>5E01D771CDF7488DBEAC153F</string>
+			</array>
+			<key>isa</key>
+			<string>PBXFrameworksBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>5279D9821EB249F3989FC8BE</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>ACD41DC34897411FA48CD9EF</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Targets Support Files</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>53E2B87051F6442EB4766A01</key>
+		<dict>
+			<key>fileRef</key>
+			<string>7416BD72AF3F4FEB8E07F478</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>57AFD4AF8F1D47EC8764E6A1</key>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>LastUpgradeCheck</key>
+				<string>0500</string>
+			</dict>
+			<key>buildConfigurationList</key>
+			<string>913678E86ECB4403AC003319</string>
+			<key>compatibilityVersion</key>
+			<string>Xcode 3.2</string>
+			<key>developmentRegion</key>
+			<string>English</string>
+			<key>hasScannedForEncodings</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXProject</string>
+			<key>knownRegions</key>
+			<array>
+				<string>en</string>
+			</array>
+			<key>mainGroup</key>
+			<string>720BEC283D8740C8ADAFF546</string>
+			<key>productRefGroup</key>
+			<string>EA878DCACC734882B284C272</string>
+			<key>projectDirPath</key>
+			<string></string>
+			<key>projectReferences</key>
+			<array/>
+			<key>projectRoot</key>
+			<string></string>
+			<key>targets</key>
+			<array>
+				<string>B76785AA285546358CF85418</string>
+				<string>14FD75C3AFD6468E8C6867BB</string>
+			</array>
+		</dict>
+		<key>587CA2CD78BB496D845D1582</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>archive.ar</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>libPods-FuzzyAutocomplete-JRSwizzle.a</string>
+			<key>sourceTree</key>
+			<string>BUILT_PRODUCTS_DIR</string>
+		</dict>
+		<key>5E01D771CDF7488DBEAC153F</key>
+		<dict>
+			<key>fileRef</key>
+			<string>9CF83AA35B0A473BA1D6CA54</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>5FB4970B86B8440C9DFE2605</key>
+		<dict>
+			<key>fileRef</key>
+			<string>587CA2CD78BB496D845D1582</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>653A055C851543B1A39E129B</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
 			<key>isa</key>
 			<string>PBXFileReference</string>
 			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
+			<string>text</string>
 			<key>path</key>
-			<string>JRSwizzle.m</string>
+			<string>Pods-FuzzyAutocomplete-acknowledgements.markdown</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>5B89D4A3B316486F8926B287</key>
+		<key>66690A07B9E74B15963CBEB9</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
@@ -354,29 +405,107 @@
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>5D7FDCF3F2AD49C18DD0453C</key>
+		<key>6B11B5576887438FB16FF6EE</key>
 		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
 			<key>isa</key>
-			<string>PBXTargetDependency</string>
-			<key>target</key>
-			<string>A3A386FA97D544BBBD18CF96</string>
-			<key>targetProxy</key>
-			<string>D5AA94D0370440CAAFD4A3D9</string>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.xcconfig</string>
+			<key>path</key>
+			<string>Pods-FuzzyAutocomplete-JRSwizzle.xcconfig</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
 		</dict>
-		<key>6AEB73915EE74DEB8E54F714</key>
+		<key>720BEC283D8740C8ADAFF546</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>C9AB261C9B58404188139CD6</string>
+				<string>B2499FA27C724EE6AE2FF5D0</string>
+				<string>88B27656265F41E39410CCA0</string>
+				<string>EA878DCACC734882B284C272</string>
+				<string>5279D9821EB249F3989FC8BE</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>7416BD72AF3F4FEB8E07F478</key>
 		<dict>
 			<key>isa</key>
 			<string>PBXFileReference</string>
 			<key>lastKnownFileType</key>
 			<string>wrapper.framework</string>
 			<key>name</key>
-			<string>Foundation.framework</string>
+			<string>Cocoa.framework</string>
 			<key>path</key>
-			<string>Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/Foundation.framework</string>
+			<string>Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/Cocoa.framework</string>
 			<key>sourceTree</key>
 			<string>DEVELOPER_DIR</string>
 		</dict>
-		<key>8231C2CF730A46E7ABD224CD</key>
+		<key>779F17E188B74A5D89BC2D29</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>path</key>
+			<string>JRSwizzle.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>7D9FEC7151374491A114895A</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>355E9CD9D13942AEAD71F05F</string>
+				<string>779F17E188B74A5D89BC2D29</string>
+				<string>8B50B4FBFEF7424FB6A58D01</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>JRSwizzle</string>
+			<key>path</key>
+			<string>JRSwizzle</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>88B27656265F41E39410CCA0</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>7D9FEC7151374491A114895A</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Pods</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>8B50B4FBFEF7424FB6A58D01</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>6B11B5576887438FB16FF6EE</string>
+				<string>66690A07B9E74B15963CBEB9</string>
+				<string>3C09A80909E44C22B636FD23</string>
+				<string>3EC89CA424F2449FA553764E</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Support Files</string>
+			<key>sourceTree</key>
+			<string>SOURCE_ROOT</string>
+		</dict>
+		<key>90B54EE57F01490EA913F37C</key>
 		<dict>
 			<key>buildSettings</key>
 			<dict>
@@ -434,196 +563,31 @@
 			<key>name</key>
 			<string>Release</string>
 		</dict>
-		<key>8859D4C6EF5348E3B9C93E43</key>
+		<key>90F477A46CFF412A9A922E20</key>
 		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
+			<key>fileRef</key>
+			<string>7416BD72AF3F4FEB8E07F478</string>
 			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text</string>
-			<key>name</key>
-			<string>Podfile</string>
-			<key>path</key>
-			<string>../Podfile</string>
-			<key>sourceTree</key>
-			<string>SOURCE_ROOT</string>
-			<key>xcLanguageSpecificationIdentifier</key>
-			<string>xcode.lang.ruby</string>
+			<string>PBXBuildFile</string>
 		</dict>
-		<key>8A253C4B88FE436A833CE2E7</key>
+		<key>913678E86ECB4403AC003319</key>
 		<dict>
-			<key>buildConfigurationList</key>
-			<string>376EC798D1564FA59847CEFE</string>
-			<key>buildPhases</key>
+			<key>buildConfigurations</key>
 			<array>
-				<string>93AE0A3E215A428992405F0B</string>
-				<string>107E9E94709C44C39FD86080</string>
+				<string>D95C6AA73EB64FC9A9C5A81D</string>
+				<string>90B54EE57F01490EA913F37C</string>
 			</array>
-			<key>buildRules</key>
-			<array/>
-			<key>dependencies</key>
-			<array>
-				<string>5D7FDCF3F2AD49C18DD0453C</string>
-			</array>
-			<key>isa</key>
-			<string>PBXNativeTarget</string>
-			<key>name</key>
-			<string>Pods-FuzzyAutocomplete</string>
-			<key>productName</key>
-			<string>Pods-FuzzyAutocomplete</string>
-			<key>productReference</key>
-			<string>DA3AE510D7894BF4B422A385</string>
-			<key>productType</key>
-			<string>com.apple.product-type.library.static</string>
-		</dict>
-		<key>8C44CBDA30B741D59EE6B462</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>Pods-FuzzyAutocomplete-JRSwizzle-dummy.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>9149C37B47804523A6EBE17D</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>JRSwizzle.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>93AE0A3E215A428992405F0B</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>522BD3F76686481A9F81DFDF</string>
-			</array>
-			<key>isa</key>
-			<string>PBXSourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
+			<key>defaultConfigurationIsVisible</key>
 			<string>0</string>
-		</dict>
-		<key>98ED8A186C684344A986628E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6AEB73915EE74DEB8E54F714</string>
+			<key>defaultConfigurationName</key>
+			<string>Release</string>
 			<key>isa</key>
-			<string>PBXBuildFile</string>
+			<string>XCConfigurationList</string>
 		</dict>
-		<key>98F7FB1DFA8D4BAD9CEA1EC0</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>1F2C6209D17E43A381DDF161</string>
-				<string>6AEB73915EE74DEB8E54F714</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>OS X</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>9ABAA9E80FF243B58CFAFD47</key>
-		<dict>
-			<key>fileRef</key>
-			<string>586E865D55E8480C8FFF4617</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc -DOS_OBJECT_USE_OBJC=0</string>
-			</dict>
-		</dict>
-		<key>A3A386FA97D544BBBD18CF96</key>
-		<dict>
-			<key>buildConfigurationList</key>
-			<string>E93045C061F64F80985C50F4</string>
-			<key>buildPhases</key>
-			<array>
-				<string>D91081D487E24F03B1B64899</string>
-				<string>BE338598FA8E4A3CB95373B2</string>
-				<string>CAF97C261FB14ABE9E22BD30</string>
-			</array>
-			<key>buildRules</key>
-			<array/>
-			<key>dependencies</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXNativeTarget</string>
-			<key>name</key>
-			<string>Pods-FuzzyAutocomplete-JRSwizzle</string>
-			<key>productName</key>
-			<string>Pods-FuzzyAutocomplete-JRSwizzle</string>
-			<key>productReference</key>
-			<string>0AA2535FFEEF40A79D8DCFEA</string>
-			<key>productType</key>
-			<string>com.apple.product-type.library.static</string>
-		</dict>
-		<key>AC66E2FC4751454EAFF9DCF4</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>8859D4C6EF5348E3B9C93E43</string>
-				<string>428F5FD14EE640ADA1C68F6B</string>
-				<string>D531A83E6ABF4A54AD08A906</string>
-				<string>48B572F9BE2B43BBB06BCD1F</string>
-				<string>2E330A49704945A78E700E51</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>AF4A1D3BC337499A902184A6</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>Pods-FuzzyAutocomplete-environment.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>B19A722051474A09A2DACBCB</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>1BD0755C423B442DB51FB0EF</string>
-				<string>50215BB418974AE697146339</string>
-				<string>C4BEB917573547B094327569</string>
-				<string>CA1A2679689A4660A0E87CDF</string>
-				<string>AF4A1D3BC337499A902184A6</string>
-				<string>2AFFE307A3C34A16A73CED2A</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Pods-FuzzyAutocomplete</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>BDAC7DE1FC244B10830C84D2</key>
+		<key>916E2F6ACE3747FFA7530AE6</key>
 		<dict>
 			<key>baseConfigurationReference</key>
-			<string>5B89D4A3B316486F8926B287</string>
+			<string>FD0B5C8727044EB4A01C9837</string>
 			<key>buildSettings</key>
 			<dict>
 				<key>ALWAYS_SEARCH_USER_PATHS</key>
@@ -644,8 +608,6 @@
 				<string>0</string>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
 				<string>YES</string>
-				<key>GCC_PREFIX_HEADER</key>
-				<string>Pods-FuzzyAutocomplete-JRSwizzle-prefix.pch</string>
 				<key>GCC_PREPROCESSOR_DEFINITIONS</key>
 				<array>
 					<string>DEBUG=1</string>
@@ -673,63 +635,23 @@
 			<key>name</key>
 			<string>Debug</string>
 		</dict>
-		<key>BE338598FA8E4A3CB95373B2</key>
+		<key>9CF83AA35B0A473BA1D6CA54</key>
 		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>F010392FEC2D4641A7DF194B</string>
-				<string>98ED8A186C684344A986628E</string>
-			</array>
-			<key>isa</key>
-			<string>PBXFrameworksBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>C4BEB917573547B094327569</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
 			<key>isa</key>
 			<string>PBXFileReference</string>
 			<key>lastKnownFileType</key>
-			<string>text.plist.xml</string>
+			<string>wrapper.framework</string>
+			<key>name</key>
+			<string>Foundation.framework</string>
 			<key>path</key>
-			<string>Pods-FuzzyAutocomplete-acknowledgements.plist</string>
+			<string>Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/Foundation.framework</string>
 			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
+			<string>DEVELOPER_DIR</string>
 		</dict>
-		<key>CA1A2679689A4660A0E87CDF</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>Pods-FuzzyAutocomplete-dummy.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>CAF97C261FB14ABE9E22BD30</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>055786A4E80F4074BFD3B7BF</string>
-			</array>
-			<key>isa</key>
-			<string>PBXHeadersBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>D0A39E60FB4B477DBD9F2221</key>
+		<key>9FF4B068AA724DB586CF6678</key>
 		<dict>
 			<key>baseConfigurationReference</key>
-			<string>5B89D4A3B316486F8926B287</string>
+			<string>66690A07B9E74B15963CBEB9</string>
 			<key>buildSettings</key>
 			<dict>
 				<key>ALWAYS_SEARCH_USER_PATHS</key>
@@ -780,47 +702,7 @@
 			<key>name</key>
 			<string>Release</string>
 		</dict>
-		<key>D531A83E6ABF4A54AD08A906</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>09F8BB2427EB4848B76B48D2</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Pods</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D5AA94D0370440CAAFD4A3D9</key>
-		<dict>
-			<key>containerPortal</key>
-			<string>EC29FB177B0D4B2C81C329E8</string>
-			<key>isa</key>
-			<string>PBXContainerItemProxy</string>
-			<key>proxyType</key>
-			<string>1</string>
-			<key>remoteGlobalIDString</key>
-			<string>A3A386FA97D544BBBD18CF96</string>
-			<key>remoteInfo</key>
-			<string>Pods-FuzzyAutocomplete-JRSwizzle</string>
-		</dict>
-		<key>D91081D487E24F03B1B64899</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>9ABAA9E80FF243B58CFAFD47</string>
-				<string>40C6F629D23D4003B96B1EF2</string>
-			</array>
-			<key>isa</key>
-			<string>PBXSourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>DA3AE510D7894BF4B422A385</key>
+		<key>A6051FC3033040A890786CBF</key>
 		<dict>
 			<key>explicitFileType</key>
 			<string>archive.ar</string>
@@ -833,25 +715,12 @@
 			<key>sourceTree</key>
 			<string>BUILT_PRODUCTS_DIR</string>
 		</dict>
-		<key>DFE50F2DE945441C97BD2EBF</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>Pods-FuzzyAutocomplete-JRSwizzle-prefix.pch</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>E93045C061F64F80985C50F4</key>
+		<key>A8753A33008D440F9B86EE86</key>
 		<dict>
 			<key>buildConfigurations</key>
 			<array>
-				<string>BDAC7DE1FC244B10830C84D2</string>
-				<string>D0A39E60FB4B477DBD9F2221</string>
+				<string>916E2F6ACE3747FFA7530AE6</string>
+				<string>46CC1E84B97540B4B9F2EFCC</string>
 			</array>
 			<key>defaultConfigurationIsVisible</key>
 			<string>0</string>
@@ -860,51 +729,107 @@
 			<key>isa</key>
 			<string>XCConfigurationList</string>
 		</dict>
-		<key>EC29FB177B0D4B2C81C329E8</key>
+		<key>ACD41DC34897411FA48CD9EF</key>
 		<dict>
-			<key>attributes</key>
-			<dict>
-				<key>LastUpgradeCheck</key>
-				<string>0500</string>
-			</dict>
+			<key>children</key>
+			<array>
+				<string>FD0B5C8727044EB4A01C9837</string>
+				<string>653A055C851543B1A39E129B</string>
+				<string>D06E8773E22544B9880BABF0</string>
+				<string>B90EE15D75B84A4DB6EDB854</string>
+				<string>FC37A55D120D40EA9843BA3E</string>
+				<string>FE235D38D81D41DE8E78FAB0</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Pods-FuzzyAutocomplete</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>B2499FA27C724EE6AE2FF5D0</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>28BC9612E45F468B9955A6E4</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Frameworks</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>B76785AA285546358CF85418</key>
+		<dict>
 			<key>buildConfigurationList</key>
-			<string>56A9541F88244DEE82662C59</string>
-			<key>compatibilityVersion</key>
-			<string>Xcode 3.2</string>
-			<key>developmentRegion</key>
-			<string>English</string>
-			<key>hasScannedForEncodings</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXProject</string>
-			<key>knownRegions</key>
+			<string>A8753A33008D440F9B86EE86</string>
+			<key>buildPhases</key>
 			<array>
-				<string>en</string>
+				<string>3DE4DAA3F3064660860D4807</string>
+				<string>503F6D186CBF4F96BA6BA845</string>
 			</array>
-			<key>mainGroup</key>
-			<string>AC66E2FC4751454EAFF9DCF4</string>
-			<key>productRefGroup</key>
-			<string>48B572F9BE2B43BBB06BCD1F</string>
-			<key>projectDirPath</key>
-			<string></string>
-			<key>projectReferences</key>
+			<key>buildRules</key>
 			<array/>
-			<key>projectRoot</key>
-			<string></string>
-			<key>targets</key>
+			<key>dependencies</key>
 			<array>
-				<string>8A253C4B88FE436A833CE2E7</string>
-				<string>A3A386FA97D544BBBD18CF96</string>
+				<string>F6C30091FCD04070A783A6ED</string>
 			</array>
-		</dict>
-		<key>F010392FEC2D4641A7DF194B</key>
-		<dict>
-			<key>fileRef</key>
-			<string>1F2C6209D17E43A381DDF161</string>
 			<key>isa</key>
-			<string>PBXBuildFile</string>
+			<string>PBXNativeTarget</string>
+			<key>name</key>
+			<string>Pods-FuzzyAutocomplete</string>
+			<key>productName</key>
+			<string>Pods-FuzzyAutocomplete</string>
+			<key>productReference</key>
+			<string>A6051FC3033040A890786CBF</string>
+			<key>productType</key>
+			<string>com.apple.product-type.library.static</string>
 		</dict>
-		<key>F777BE7B74F04B91A6CBCA13</key>
+		<key>B90EE15D75B84A4DB6EDB854</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>path</key>
+			<string>Pods-FuzzyAutocomplete-dummy.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>C9AB261C9B58404188139CD6</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text</string>
+			<key>name</key>
+			<string>Podfile</string>
+			<key>path</key>
+			<string>../Podfile</string>
+			<key>sourceTree</key>
+			<string>SOURCE_ROOT</string>
+			<key>xcLanguageSpecificationIdentifier</key>
+			<string>xcode.lang.ruby</string>
+		</dict>
+		<key>D06E8773E22544B9880BABF0</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.plist.xml</string>
+			<key>path</key>
+			<string>Pods-FuzzyAutocomplete-acknowledgements.plist</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>D95C6AA73EB64FC9A9C5A81D</key>
 		<dict>
 			<key>buildSettings</key>
 			<dict>
@@ -971,7 +896,57 @@
 			<key>name</key>
 			<string>Debug</string>
 		</dict>
-		<key>F9CB307BDFD24781937ECD38</key>
+		<key>D9686110E48240B793B5BDBA</key>
+		<dict>
+			<key>buildConfigurations</key>
+			<array>
+				<string>21C5F6763FBE4BCC921400A1</string>
+				<string>9FF4B068AA724DB586CF6678</string>
+			</array>
+			<key>defaultConfigurationIsVisible</key>
+			<string>0</string>
+			<key>defaultConfigurationName</key>
+			<string>Release</string>
+			<key>isa</key>
+			<string>XCConfigurationList</string>
+		</dict>
+		<key>EA878DCACC734882B284C272</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>A6051FC3033040A890786CBF</string>
+				<string>587CA2CD78BB496D845D1582</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Products</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>F6C30091FCD04070A783A6ED</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXTargetDependency</string>
+			<key>target</key>
+			<string>14FD75C3AFD6468E8C6867BB</string>
+			<key>targetProxy</key>
+			<string>428285E58C02451695F0DCB0</string>
+		</dict>
+		<key>FC37A55D120D40EA9843BA3E</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>path</key>
+			<string>Pods-FuzzyAutocomplete-environment.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>FD0B5C8727044EB4A01C9837</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
@@ -980,12 +955,37 @@
 			<key>lastKnownFileType</key>
 			<string>text.xcconfig</string>
 			<key>path</key>
-			<string>Pods-FuzzyAutocomplete-JRSwizzle.xcconfig</string>
+			<string>Pods-FuzzyAutocomplete.xcconfig</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
+		<key>FE235D38D81D41DE8E78FAB0</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.script.sh</string>
+			<key>path</key>
+			<string>Pods-FuzzyAutocomplete-resources.sh</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>FEDFB1D94017417A9AB4BC75</key>
+		<dict>
+			<key>fileRef</key>
+			<string>779F17E188B74A5D89BC2D29</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc -DOS_OBJECT_USE_OBJC=0</string>
+			</dict>
+		</dict>
 	</dict>
 	<key>rootObject</key>
-	<string>EC29FB177B0D4B2C81C329E8</string>
+	<string>57AFD4AF8F1D47EC8764E6A1</string>
 </dict>
 </plist>

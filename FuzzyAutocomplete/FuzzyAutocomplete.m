@@ -12,7 +12,7 @@
 
 + (void)pluginDidLoad:(NSBundle *)plugin
 {
-    NSLog(@"Plugin loaded");
+    ALog(@"Plugin loaded");
     [self sharedPlugin];
 }
 
