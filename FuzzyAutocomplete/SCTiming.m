@@ -44,6 +44,6 @@ id timeBlockAndLog(NSString *label, id (^block)(void))
 {
     double time_ms = 0;
     id retValue = timeBlock(block, &time_ms);
-    ALog(@"Time taken for %@: %f ms", label, time_ms);
+    DLog(@"Time taken for %@: %f ms", label, time_ms);
     return retValue;
 }

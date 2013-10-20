@@ -8,4 +8,8 @@
     #import <Cocoa/Cocoa.h>
 #endif
 
-#define ALog(fmt, ...) NSLog((@"FuzzyAutocomplete: %s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
+#ifdef DEBUG
+#define DLog(fmt, ...) NSLog((@"FuzzyAutocomplete: %s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
+#else
+#define DLog(...)
+#endif
