@@ -29,7 +29,7 @@ static char lastPrefixKey;
     // We need to call the original method otherwise the autocomplete won't show up
     // TODO: Figure out what we need to call to make the window show
 
-    timeBlockAndLog(@"Original filter", ^id{
+    timeBlockAndLog(@"Original filter time", ^id{
         [self _fa_setFilteringPrefix:prefix forceFilter:forceFilter];
         return nil;
     });
@@ -73,36 +73,11 @@ static char lastPrefixKey;
 
         objc_setAssociatedObject(self, &lastResultSetKey, filtered, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         if (filtered.count > 0) {
-            timeVoidBlockAndLog(@"IndexOf", ^{
-                self.selectedCompletionIndex = [filtered indexOfObject:bestMatch];
-            });
+            self.selectedCompletionIndex = [filtered indexOfObject:bestMatch];
         }
     });
     
-    DLog(@"Total time: %f", totalTime);
-}
-
-// Used for debugging priority
-- (NSArray *)orderCompletionsByScore:(NSArray *)completions withQuery:(NSString *)query
-{
-    IDEOpenQuicklyPattern *pattern = [IDEOpenQuicklyPattern patternWithInput:query];
-    NSMutableArray *completionsWithScore = [NSMutableArray arrayWithCapacity:completions.count];
-
-    timeVoidBlockAndLog(@"Scoring", ^{
-        [completions enumerateObjectsUsingBlock:^(IDEIndexCompletionItem *item, NSUInteger idx, BOOL *stop) {
-            [completionsWithScore addObject:@{
-                                              @"item": item,
-                                              @"score": @([pattern scoreCandidate:item.name])}];
-        }];
-    });
-
-    NSSortDescriptor *sortByScore = [NSSortDescriptor sortDescriptorWithKey:@"score" ascending:NO];
-
-    timeVoidBlockAndLog(@"Sorting", ^{
-        [completionsWithScore sortUsingDescriptors:@[sortByScore]];
-    });
-
-    return [completionsWithScore valueForKeyPath:@"@unionOfObjects.item"];
+    DLog(@"Fuzzy match total time: %f", totalTime);
 }
 
 #define MAX_PRIORITY 100.0f
@@ -122,6 +97,29 @@ static char lastPrefixKey;
     }];
     
     return bestMatch;
+}
+
+// Used for debugging
+- (NSArray *)orderCompletionsByScore:(NSArray *)completions withQuery:(NSString *)query
+{
+    IDEOpenQuicklyPattern *pattern = [IDEOpenQuicklyPattern patternWithInput:query];
+    NSMutableArray *completionsWithScore = [NSMutableArray arrayWithCapacity:completions.count];
+    
+    timeVoidBlockAndLog(@"Scoring", ^{
+        [completions enumerateObjectsUsingBlock:^(IDEIndexCompletionItem *item, NSUInteger idx, BOOL *stop) {
+            [completionsWithScore addObject:@{
+                                              @"item": item,
+                                              @"score": @([pattern scoreCandidate:item.name])}];
+        }];
+    });
+    
+    NSSortDescriptor *sortByScore = [NSSortDescriptor sortDescriptorWithKey:@"score" ascending:NO];
+    
+    timeVoidBlockAndLog(@"Sorting", ^{
+        [completionsWithScore sortUsingDescriptors:@[sortByScore]];
+    });
+    
+    return [completionsWithScore valueForKeyPath:@"@unionOfObjects.item"];
 }
 
 @end
