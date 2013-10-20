@@ -12,6 +12,7 @@
 		58BA07BE18124BC40070060D /* DVTTextCompletionSession+FuzzyAutocomplete.m in Sources */ = {isa = PBXBuildFile; fileRef = 58BA07BD18124BC40070060D /* DVTTextCompletionSession+FuzzyAutocomplete.m */; };
 		58C3C25118110DB70031D9CD /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 58C3C24F18110DB70031D9CD /* InfoPlist.strings */; };
 		58C3C25A181128140031D9CD /* FuzzyAutocomplete.m in Sources */ = {isa = PBXBuildFile; fileRef = 58C3C259181128140031D9CD /* FuzzyAutocomplete.m */; };
+		58E9F98F1813A0FE000928AF /* IDEKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58E9F98E1813A0FE000928AF /* IDEKit.framework */; };
 		B8570020A0F04A3184CF8FEB /* libPods-FuzzyAutocomplete.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5F606935698481482E983FB /* libPods-FuzzyAutocomplete.a */; };
 /* End PBXBuildFile section */
 
@@ -34,6 +35,8 @@
 		58C3C258181128140031D9CD /* FuzzyAutocomplete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FuzzyAutocomplete.h; sourceTree = "<group>"; };
 		58C3C259181128140031D9CD /* FuzzyAutocomplete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FuzzyAutocomplete.m; sourceTree = "<group>"; };
 		58E391E7181289A100C18DBF /* IDEIndexCompletionItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IDEIndexCompletionItem.h; sourceTree = "<group>"; };
+		58E9F98D18139EC5000928AF /* IDEOpenQuicklyPattern.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IDEOpenQuicklyPattern.h; sourceTree = "<group>"; };
+		58E9F98E1813A0FE000928AF /* IDEKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IDEKit.framework; path = ../../../../Applications/Xcode.app/Contents/Frameworks/IDEKit.framework; sourceTree = "<group>"; };
 		B5F606935698481482E983FB /* libPods-FuzzyAutocomplete.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FuzzyAutocomplete.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -44,6 +47,7 @@
 			files = (
 				580BC1EC181243D600D53F1F /* DVTFoundation.framework in Frameworks */,
 				B8570020A0F04A3184CF8FEB /* libPods-FuzzyAutocomplete.a in Frameworks */,
+				58E9F98F1813A0FE000928AF /* IDEKit.framework in Frameworks */,
 				580BC1ED181243D600D53F1F /* DVTKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -54,6 +58,7 @@
 		580BC1E5181172D100D53F1F /* Xcode Headers */ = {
 			isa = PBXGroup;
 			children = (
+				58E9F98D18139EC5000928AF /* IDEOpenQuicklyPattern.h */,
 				58E391E7181289A100C18DBF /* IDEIndexCompletionItem.h */,
 				58BA07C118124C0A0070060D /* DVTTextCompletionDataSourceDelegate-Protocol.h */,
 				58BA07C018124BFC0070060D /* DVTInvalidation-Protocol.h */,
@@ -84,6 +89,7 @@
 		58C3C24518110DB70031D9CD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				58E9F98E1813A0FE000928AF /* IDEKit.framework */,
 				580BC1EA181243D600D53F1F /* DVTFoundation.framework */,
 				580BC1EB181243D600D53F1F /* DVTKit.framework */,
 				58C3C24818110DB70031D9CD /* Other Frameworks */,
@@ -319,6 +325,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/SharedFrameworks",
+					"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FuzzyAutocomplete/FuzzyAutocomplete-Prefix.pch";
@@ -339,6 +346,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/SharedFrameworks",
+					"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FuzzyAutocomplete/FuzzyAutocomplete-Prefix.pch";

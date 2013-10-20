@@ -8,6 +8,7 @@
 
 #import "DVTTextCompletionSession+FuzzyAutocomplete.h"
 #import "IDEIndexCompletionItem.h"
+#import "IDEOpenQuicklyPattern.h"
 #import <JRSwizzle.h>
 
 @interface FACompletionItem : NSObject
@@ -36,14 +37,8 @@
 + (void)load
 {
     [self jr_swizzleMethod:@selector(_setFilteringPrefix:forceFilter:) withMethod:@selector(_fa_setFilteringPrefix:forceFilter:) error:nil];
-    [self jr_swizzleMethod:@selector(_bestMatchInSortedArray:usingPrefix:) withMethod:@selector(_fa_bestMatchInSortedArray:usingPrefix:) error:nil];
-    [self jr_swizzleMethod:@selector(_usefulPartialCompletionPrefixForItems:selectedIndex:filteringPrefix:) withMethod:@selector(_fa_usefulPartialCompletionPrefixForItems:selectedIndex:filteringPrefix:) error:nil];
-}
-
-// Returns all applpicable completions for current scope
-- (void)_fuzzy_autocomplete_setAllCompletions:(NSArray *)array
-{
-    [self _fuzzy_autocomplete_setAllCompletions:array];
+//    [self jr_swizzleMethod:@selector(_bestMatchInSortedArray:usingPrefix:) withMethod:@selector(_fa_bestMatchInSortedArray:usingPrefix:) error:nil];
+//    [self jr_swizzleMethod:@selector(_usefulPartialCompletionPrefixForItems:selectedIndex:filteringPrefix:) withMethod:@selector(_fa_usefulPartialCompletionPrefixForItems:selectedIndex:filteringPrefix:) error:nil];
 }
 
 // Sets the current filtering prefix
@@ -63,8 +58,6 @@
     float time = [[NSDate date] timeIntervalSinceDate:start];
     ALog(@"======== Standard ========");
     ALog(@"Duration: %f", time);
-    ALog(@"Searched %lu elements, %f per el", self.allCompletions.count, time / self.allCompletions.count);
-    
     
     start = [NSDate date];
     NSMutableString *predicateString = [NSMutableString string];
@@ -75,18 +68,28 @@
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name like[c] %@", predicateString];
     
     NSArray *filtered = [self.allCompletions filteredArrayUsingPredicate:predicate];
+    float filterTime = [[NSDate date] timeIntervalSinceDate:start];
+    start = [NSDate date];
     
-    time = [[NSDate date] timeIntervalSinceDate:start];
+    IDEOpenQuicklyPattern *pattern = [IDEOpenQuicklyPattern patternWithInput:prefix];
+    NSArray *sorted = [filtered sortedArrayUsingComparator:^NSComparisonResult(IDEIndexCompletionItem *obj1, IDEIndexCompletionItem *obj2) {
+        double score1 = [pattern scoreCandidate:obj1.name] * obj1.priority;
+        double score2 = [pattern scoreCandidate:obj2.name] * obj2.priority;
+        
+        return score1 < score2 ? NSOrderedDescending : NSOrderedAscending;
+    }];
+    float sortTime = [[NSDate date] timeIntervalSinceDate:start];
+    
     ALog(@"======== Custom ========");
     ALog(@"Predicate: %@", predicate);
-
-    ALog(@"Duration: %f", time);
-    ALog(@"Searched %lu elements, %f per el", self.allCompletions.count, time / self.allCompletions.count);
-    
-    [self logArrayDetails:filtered name:@"filtered"];
+    ALog(@"Predicate filter: %f", filterTime);
+    ALog(@"Best match time: %f", sortTime);
+    ALog(@"Searched returned %lu out of %lu elements, %f per el", filtered.count, self.allCompletions.count, (filterTime + sortTime) / self.allCompletions.count);
     
     self.filteredCompletionsAlpha = filtered;
-    self.selectedCompletionIndex = 0;
+    if (filtered.count > 0) {
+        self.selectedCompletionIndex = [filtered indexOfObject:sorted[0]];
+    }
 }
 
 
