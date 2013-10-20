@@ -4,6 +4,8 @@ This is a Xcode 5 plugin that patches the autocomplete filter to work the same w
 
 It performs very well, and the fuzzy matching actually uses Xcode's own `IDEOpenQuicklyPattern`.
 
+![Demo](http://f.cl.ly/items/3B0X2j1e213a0u1b2x2f/fuzzyautocomplete.gif)
+
 ## Features
 
 * Gives Xcode's autocompletion to be able to filter like `Open Quickly` does
