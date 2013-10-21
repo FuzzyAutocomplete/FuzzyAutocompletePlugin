@@ -1,4 +1,4 @@
-# FuzzyAutocomplete Plugin
+# Fuzzy Autocomplete for Xcode
 
 ![Demo](http://f.cl.ly/items/3B0X2j1e213a0u1b2x2f/fuzzyautocomplete.gif)
 
