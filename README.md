@@ -16,7 +16,10 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 
 ## Installation
 
-* [Download](https://github.com/chendo/FuzzyAutocompletePlugin/releases/download/v1.0/FuzzyAutocomplete.xcplugin.zip) and extract into `~/Library/Application Support/Developer/Shared/Xcode/Plug-ins`, or clone and build the project.
+* Either:
+  * [Download](https://github.com/chendo/FuzzyAutocompletePlugin/releases/download/v1.0/FuzzyAutocomplete.xcplugin.zip) and extract into `~/Library/Application Support/Developer/Shared/Xcode/Plug-ins`, or
+  * Clone and build the project, or
+  * Install with [Alcatraz](http://mneorr.github.io/Alcatraz/)
 * Restart Xcode and enjoy!
 
 ## Notes
