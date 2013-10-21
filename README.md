@@ -20,5 +20,6 @@ It performs very well, and the fuzzy matching actually uses Xcode's own `IDEOpen
 ## Notes
 
 * Only tested with Xcode 5 on 10.9
+* Hasn't been tested with other plugins yet
 
 [![githalytics.com alpha](https://cruel-carlota.pagodabox.com/2803367345737409176241eb9cc3f903 "githalytics.com")](http://githalytics.com/chendo/fuzzyautocompleteplugin)
