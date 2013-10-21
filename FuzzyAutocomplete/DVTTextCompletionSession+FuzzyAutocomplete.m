@@ -70,6 +70,7 @@ static char insertingCompletionKey;
     if (!searchSet) {
         searchSet = [self filteredCompletionsBeginningWithLetter:[prefix substringToIndex:1]];
     }
+
     
     double totalTime = timeVoidBlock(^{
         IDEIndexCompletionItem *originalMatch;
@@ -103,6 +104,7 @@ static char insertingCompletionKey;
         
         if (filteredSet.count > 0 && bestMatch) {
             self.selectedCompletionIndex = [filteredSet indexOfObject:bestMatch];
+            [self setPartialCompletionPrefixForCompletionItem:bestMatch query:prefix];
         }
         else {
             self.selectedCompletionIndex = NSNotFound;
@@ -153,6 +155,15 @@ static char filteredCompletionCacheKey;
     return completionsForLetter;
 }
 
+- (void)setPartialCompletionPrefixForCompletionItem:(IDEIndexCompletionItem *)item query:(NSString *)query
+{
+    NSString *completionString = item.name;
+    NSRange rangeOfPrefix = [completionString rangeOfString:query];
+    DLog(@"Query: %@", query);
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^[A-Z]*[a-z0-9_]+(?=[^\\p{Ll}0-9])" options:0 error:nil];
+    NSTextCheckingResult *result = [regex firstMatchInString:completionString options:NSMatchingAnchored range:NSMakeRange(rangeOfPrefix.length, completionString.length - rangeOfPrefix.length)];
+    self.usefulPrefix = [completionString substringToIndex:result.range.location + result.range.length];
+}
 
 // Used for debugging
 - (NSArray *)orderCompletionsByScore:(NSArray *)completions withQuery:(NSString *)query
