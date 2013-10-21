@@ -1,6 +1,6 @@
 # Fuzzy Autocomplete for Xcode
 
-![Demo](http://f.cl.ly/items/3B0X2j1e213a0u1b2x2f/fuzzyautocomplete.gif)
+![Demo](https://raw.github.com/chendo/FuzzyAutocompletePlugin/master/demo.gif)
 
 This is a Xcode 5 plugin that patches the autocomplete filter to work the same way the `Open Quickly` works.
 
