@@ -51,78 +51,83 @@ static char insertingCompletionKey;
         return;
     }
     
-    NSNumber *insertingCompletion = objc_getAssociatedObject(self, &insertingCompletionKey);
-    // Due to how the KVO is set up, inserting a completion actually triggers another filter event
-    // so we nullify it here
-    if (insertingCompletion && insertingCompletion.boolValue) {
-        [self setInsertingCurrentCompletion:NO];
-        return;
-    }
-        
-    NSString *lastPrefix = objc_getAssociatedObject(self, &lastPrefixKey);
-    NSArray *searchSet;
-
-    // Use the last result set to filter down if it exists
-    if (lastPrefix && [prefix rangeOfString:lastPrefix].location == 0) {
-        searchSet = objc_getAssociatedObject(self, &lastResultSetKey);
-    }
-    
-    if (!searchSet) {
-        searchSet = [self filteredCompletionsBeginningWithLetter:[prefix substringToIndex:1]];
-    }
-
-    
-    double totalTime = timeVoidBlock(^{
-        IDEIndexCompletionItem *originalMatch;
-        __block IDEIndexCompletionItem *bestMatch;
-        
-        if (self.selectedCompletionIndex < self.filteredCompletionsAlpha.count) {
-            originalMatch = self.filteredCompletionsAlpha[self.selectedCompletionIndex];
+    @try {
+        NSNumber *insertingCompletion = objc_getAssociatedObject(self, &insertingCompletionKey);
+        // Due to how the KVO is set up, inserting a completion actually triggers another filter event
+        // so we nullify it here
+        if (insertingCompletion && insertingCompletion.boolValue) {
+            [self setInsertingCurrentCompletion:NO];
+            return;
         }
         
-        NSMutableArray *filteredSet = [NSMutableArray array];
-
-        IDEOpenQuicklyPattern *pattern = [IDEOpenQuicklyPattern patternWithInput:prefix];
-
-        __block double highScore = 0.0f;
+        NSString *lastPrefix = objc_getAssociatedObject(self, &lastPrefixKey);
+        NSArray *searchSet;
         
-        [searchSet enumerateObjectsUsingBlock:^(IDEIndexCompletionItem *item, NSUInteger idx, BOOL *stop) {
-            double score = [pattern scoreCandidate:item.name] * (MAX_PRIORITY - item.priority);
-            if (score > 0) {
-                [filteredSet addObject:item];
-            }
-            if (score > highScore) {
-                bestMatch = item;
-                highScore = score;
-            }
-        }];
+        // Use the last result set to filter down if it exists
+        if (lastPrefix && [prefix rangeOfString:lastPrefix].location == 0) {
+            searchSet = objc_getAssociatedObject(self, &lastResultSetKey);
+        }
+        
+        if (!searchSet) {
+            searchSet = [self filteredCompletionsBeginningWithLetter:[prefix substringToIndex:1]];
+        }
+        
+        
+        double totalTime = timeVoidBlock(^{
+            IDEIndexCompletionItem *originalMatch;
+            __block IDEIndexCompletionItem *bestMatch;
             
-        self.filteredCompletionsAlpha = filteredSet;
-
-        objc_setAssociatedObject(self, &lastPrefixKey, prefix, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        objc_setAssociatedObject(self, &lastResultSetKey, filteredSet, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            if (self.selectedCompletionIndex < self.filteredCompletionsAlpha.count) {
+                originalMatch = self.filteredCompletionsAlpha[self.selectedCompletionIndex];
+            }
+            
+            NSMutableArray *filteredSet = [NSMutableArray array];
+            
+            IDEOpenQuicklyPattern *pattern = [IDEOpenQuicklyPattern patternWithInput:prefix];
+            
+            __block double highScore = 0.0f;
+            
+            [searchSet enumerateObjectsUsingBlock:^(IDEIndexCompletionItem *item, NSUInteger idx, BOOL *stop) {
+                double score = [pattern scoreCandidate:item.name] * (MAX_PRIORITY - item.priority);
+                if (score > 0) {
+                    [filteredSet addObject:item];
+                }
+                if (score > highScore) {
+                    bestMatch = item;
+                    highScore = score;
+                }
+            }];
+            
+            self.filteredCompletionsAlpha = filteredSet;
+            
+            objc_setAssociatedObject(self, &lastPrefixKey, prefix, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            objc_setAssociatedObject(self, &lastResultSetKey, filteredSet, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            
+            if (filteredSet.count > 0 && bestMatch) {
+                self.selectedCompletionIndex = [filteredSet indexOfObject:bestMatch];
+                [self setPartialCompletionPrefixForCompletionItem:bestMatch query:prefix];
+            }
+            else {
+                self.selectedCompletionIndex = NSNotFound;
+            }
+            
+            // IDEIndexCompletionItem doesn't implement isEqual
+            DVTTextCompletionInlinePreviewController *inlinePreview = [self _inlinePreviewController];
+            if (![originalMatch.name isEqual:bestMatch.name]) {
+                // Hide the inline preview if the fuzzy query is different to normal matching
+                [inlinePreview hideInlinePreviewWithReason:0];
+            }
+            
+            // This forces the completion list to resize the columns
+            DVTTextCompletionListWindowController *listController = [self _listWindowController];
+            [listController _updateCurrentDisplayState];
+        });
         
-        if (filteredSet.count > 0 && bestMatch) {
-            self.selectedCompletionIndex = [filteredSet indexOfObject:bestMatch];
-            [self setPartialCompletionPrefixForCompletionItem:bestMatch query:prefix];
-        }
-        else {
-            self.selectedCompletionIndex = NSNotFound;
-        }
-        
-        // IDEIndexCompletionItem doesn't implement isEqual
-        DVTTextCompletionInlinePreviewController *inlinePreview = [self _inlinePreviewController];
-        if (![originalMatch.name isEqual:bestMatch.name]) {
-            // Hide the inline preview if the fuzzy query is different to normal matching
-            [inlinePreview hideInlinePreviewWithReason:0];
-        }
-        
-        // This forces the completion list to resize the columns
-        DVTTextCompletionListWindowController *listController = [self _listWindowController];
-        [listController _updateCurrentDisplayState];
-    });
-    
-    DLog(@"Fuzzy match total time: %f", totalTime);
+        DLog(@"Fuzzy match total time: %f", totalTime);
+    }
+    @catch (NSException *exception) {
+        NSLog(@"An exception occurred within FuzzyAutocomplete: %@", exception);
+    }
 }
 
 
