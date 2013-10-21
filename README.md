@@ -4,7 +4,7 @@
 
 This is a Xcode 5 plugin that patches the autocomplete filter to work the same way the `Open Quickly` works.
 
-It performs very well, and the fuzzy matching actually uses Xcode's own `IDEOpenQuicklyPattern`, however for performance reasons, the first letter of the fuzzy match must start with the same letter of the completion you want.
+It performs very well, and the fuzzy matching actually uses Xcode's own `IDEOpenQuicklyPattern`, however for performance reasons, **the first letter of the fuzzy match must start with the same letter of the completion you want**.
 
 Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/?utm_source=fuzzyautocomplete), an app that lets you control your Mac more effectively with your keyboard!
 
