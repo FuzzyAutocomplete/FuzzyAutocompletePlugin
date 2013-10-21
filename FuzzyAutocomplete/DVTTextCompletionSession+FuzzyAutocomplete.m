@@ -164,7 +164,6 @@ static char filteredCompletionCacheKey;
 {
     NSString *completionString = item.name;
     NSRange rangeOfPrefix = [completionString rangeOfString:query];
-    DLog(@"Query: %@", query);
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^[A-Z]*[a-z0-9_]+(?=[^\\p{Ll}0-9])" options:0 error:nil];
     NSTextCheckingResult *result = [regex firstMatchInString:completionString options:NSMatchingAnchored range:NSMakeRange(rangeOfPrefix.length, completionString.length - rangeOfPrefix.length)];
     self.usefulPrefix = [completionString substringToIndex:result.range.location + result.range.length];
