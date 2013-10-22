@@ -12,7 +12,7 @@
 
 + (void)pluginDidLoad:(NSBundle *)plugin
 {
-    NSLog(@"Fuzzy Autocomplete Plugin loaded");
+    ALog(@"Plugin loaded");
 }
 
 @end
