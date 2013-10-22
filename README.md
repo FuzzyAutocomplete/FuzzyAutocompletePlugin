@@ -6,7 +6,7 @@ This is a Xcode 5 plugin that patches the autocomplete filter to work the same w
 
 It performs very well, and the fuzzy matching actually uses Xcode's own `IDEOpenQuicklyPattern`, however for performance reasons, **the first letter of the fuzzy match must start with the same letter of the completion you want**.
 
-I wrote a blog post on how I used `dtrace` to figure out what to patch: [Reverse engineering Xcode with dtrace](http://chen.do/blog/2013/10/22/building-an-xcode-5-fuzzy-autocomplete-plugin/?utm_source=github&utm_campaign=fuzzyautocomplete)
+I wrote a blog post on how I used `dtrace` to figure out what to patch: [Reverse engineering Xcode with dtrace](http://chen.do/blog/2013/10/22/reverse-engineering-xcode-with-dtrace/?utm_source=github&utm_campaign=fuzzyautocomplete)
 
 Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/?utm_source=github&utm_campaign=fuzzyautocomplete), an app that lets you control your Mac more effectively with your keyboard!
 
