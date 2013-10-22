@@ -12,8 +12,8 @@
 #import "IDEIndexCompletionItem.h"
 #import "IDEOpenQuicklyPattern.h"
 #import "SCTiming.h"
+#import "JRSwizzle.h"
 #import <objc/runtime.h>
-#import <JRSwizzle.h>
 
 @implementation DVTTextCompletionSession (FuzzyAutocomplete)
 

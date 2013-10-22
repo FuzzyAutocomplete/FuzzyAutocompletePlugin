@@ -9,18 +9,19 @@
 /* Begin PBXBuildFile section */
 		580BC1EC181243D600D53F1F /* DVTFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 580BC1EA181243D600D53F1F /* DVTFoundation.framework */; };
 		580BC1ED181243D600D53F1F /* DVTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 580BC1EB181243D600D53F1F /* DVTKit.framework */; };
+		58501C0618165B0600AA3179 /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 58501C0518165B0600AA3179 /* JRSwizzle.m */; };
 		58BA07BE18124BC40070060D /* DVTTextCompletionSession+FuzzyAutocomplete.m in Sources */ = {isa = PBXBuildFile; fileRef = 58BA07BD18124BC40070060D /* DVTTextCompletionSession+FuzzyAutocomplete.m */; };
 		58C3C25118110DB70031D9CD /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 58C3C24F18110DB70031D9CD /* InfoPlist.strings */; };
 		58C3C25A181128140031D9CD /* FuzzyAutocomplete.m in Sources */ = {isa = PBXBuildFile; fileRef = 58C3C259181128140031D9CD /* FuzzyAutocomplete.m */; };
 		58D5555C1813A5A7008F234B /* SCTiming.m in Sources */ = {isa = PBXBuildFile; fileRef = 58D5555B1813A5A7008F234B /* SCTiming.m */; };
 		58E9F98F1813A0FE000928AF /* IDEKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58E9F98E1813A0FE000928AF /* IDEKit.framework */; };
-		B8570020A0F04A3184CF8FEB /* libPods-FuzzyAutocomplete.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5F606935698481482E983FB /* libPods-FuzzyAutocomplete.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		34FA51D7C132475F8B38E975 /* Pods-FuzzyAutocomplete.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FuzzyAutocomplete.xcconfig"; path = "Pods/Pods-FuzzyAutocomplete.xcconfig"; sourceTree = "<group>"; };
 		580BC1EA181243D600D53F1F /* DVTFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DVTFoundation.framework; path = ../../../../Applications/Xcode.app/Contents/SharedFrameworks/DVTFoundation.framework; sourceTree = "<group>"; };
 		580BC1EB181243D600D53F1F /* DVTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DVTKit.framework; path = ../../../../Applications/Xcode.app/Contents/SharedFrameworks/DVTKit.framework; sourceTree = "<group>"; };
+		58501C0418165B0600AA3179 /* JRSwizzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRSwizzle.h; sourceTree = "<group>"; };
+		58501C0518165B0600AA3179 /* JRSwizzle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRSwizzle.m; sourceTree = "<group>"; };
 		5870150918140BB700082A37 /* DVTTextCompletionListWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DVTTextCompletionListWindowController.h; sourceTree = "<group>"; };
 		58BA07BC18124BC40070060D /* DVTTextCompletionSession+FuzzyAutocomplete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DVTTextCompletionSession+FuzzyAutocomplete.h"; sourceTree = "<group>"; };
 		58BA07BD18124BC40070060D /* DVTTextCompletionSession+FuzzyAutocomplete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DVTTextCompletionSession+FuzzyAutocomplete.m"; sourceTree = "<group>"; };
@@ -52,7 +53,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				580BC1EC181243D600D53F1F /* DVTFoundation.framework in Frameworks */,
-				B8570020A0F04A3184CF8FEB /* libPods-FuzzyAutocomplete.a in Frameworks */,
 				58E9F98F1813A0FE000928AF /* IDEKit.framework in Frameworks */,
 				580BC1ED181243D600D53F1F /* DVTKit.framework in Frameworks */,
 			);
@@ -83,7 +83,6 @@
 				58C3C24C18110DB70031D9CD /* FuzzyAutocomplete */,
 				58C3C24518110DB70031D9CD /* Frameworks */,
 				58C3C24418110DB70031D9CD /* Products */,
-				34FA51D7C132475F8B38E975 /* Pods-FuzzyAutocomplete.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -144,6 +143,8 @@
 		58D555591813A59D008F234B /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				58501C0418165B0600AA3179 /* JRSwizzle.h */,
+				58501C0518165B0600AA3179 /* JRSwizzle.m */,
 				58D5555A1813A5A7008F234B /* SCTiming.h */,
 				58D5555B1813A5A7008F234B /* SCTiming.m */,
 			);
@@ -157,11 +158,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 58C3C25518110DB70031D9CD /* Build configuration list for PBXNativeTarget "FuzzyAutocomplete" */;
 			buildPhases = (
-				5F2EED741E1743E39E260973 /* Check Pods Manifest.lock */,
 				58C3C23F18110DB70031D9CD /* Sources */,
 				58C3C24018110DB70031D9CD /* Frameworks */,
 				58C3C24118110DB70031D9CD /* Resources */,
-				8C3E3318795C4212BEA435AA /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -209,39 +208,6 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		5F2EED741E1743E39E260973 /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		8C3E3318795C4212BEA435AA /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-FuzzyAutocomplete-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		58C3C23F18110DB70031D9CD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -249,6 +215,7 @@
 			files = (
 				58D5555C1813A5A7008F234B /* SCTiming.m in Sources */,
 				58BA07BE18124BC40070060D /* DVTTextCompletionSession+FuzzyAutocomplete.m in Sources */,
+				58501C0618165B0600AA3179 /* JRSwizzle.m in Sources */,
 				58C3C25A181128140031D9CD /* FuzzyAutocomplete.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -337,7 +304,6 @@
 		};
 		58C3C25618110DB70031D9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 34FA51D7C132475F8B38E975 /* Pods-FuzzyAutocomplete.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				DEPLOYMENT_LOCATION = YES;
@@ -358,7 +324,6 @@
 		};
 		58C3C25718110DB70031D9CD /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 34FA51D7C132475F8B38E975 /* Pods-FuzzyAutocomplete.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				DEPLOYMENT_LOCATION = YES;
