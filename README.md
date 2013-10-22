@@ -19,8 +19,8 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 ## Installation
 
 * Either:
+  * Install with [Alcatraz](http://mneorr.github.io/Alcatraz/)
   * Clone and build the project
-  * **CURRENTLY BROKEN** ~~Install with [Alcatraz](http://mneorr.github.io/Alcatraz/)~~
 * Restart Xcode and enjoy!
 
 ## Notes
