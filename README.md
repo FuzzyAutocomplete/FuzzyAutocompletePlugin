@@ -29,6 +29,10 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 
 ## Changelog
 
+#### 1.2 - 2013/10/22
+
+* Fixes missing file entries when autocompleting paths (#1)
+
 #### 1.1 - 2013/10/21
 
 * Implement partial completion support via `Tab`
