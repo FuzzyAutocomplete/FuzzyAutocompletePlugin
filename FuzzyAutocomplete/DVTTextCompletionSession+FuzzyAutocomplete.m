@@ -39,9 +39,6 @@ static char insertingCompletionKey;
     objc_setAssociatedObject(self, &insertingCompletionKey, @(value), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-#define MAX_PREDICATE_LENGTH 10
-#define MAX_PRIORITY 100.0f
-
 // Sets the current filtering prefix
 - (void)_fa_setFilteringPrefix:(NSString *)prefix forceFilter:(BOOL)forceFilter
 {
@@ -59,6 +56,7 @@ static char insertingCompletionKey;
             [self setInsertingCurrentCompletion:NO];
             return;
         }
+        
         
         NSString *lastPrefix = objc_getAssociatedObject(self, &lastPrefixKey);
         NSArray *searchSet;
@@ -82,13 +80,12 @@ static char insertingCompletionKey;
             }
             
             NSMutableArray *filteredSet = [NSMutableArray array];
-            
             IDEOpenQuicklyPattern *pattern = [IDEOpenQuicklyPattern patternWithInput:prefix];
-            
             __block double highScore = 0.0f;
             
             [searchSet enumerateObjectsUsingBlock:^(IDEIndexCompletionItem *item, NSUInteger idx, BOOL *stop) {
-                double score = [pattern scoreCandidate:item.name] * (MAX_PRIORITY - item.priority);
+                double invertedPriority = (1.0f / item.priority);                
+                double score = [pattern scoreCandidate:item.name] * invertedPriority;
                 if (score > 0) {
                     [filteredSet addObject:item];
                 }
