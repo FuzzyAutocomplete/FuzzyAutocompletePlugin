@@ -34,12 +34,12 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 
 #### 1.3 - 2013/10/23
 
-* Now factors in Xcode's learning priority system (#2)
+* Now factors in Xcode's learning priority system - #2
 * `Tab` now accepts selected completion as it doesn't make sense to insert prefix with fuzzy matching
 
 #### 1.2 - 2013/10/22
 
-* Fixes missing file entries when autocompleting paths (#1)
+* Fixes missing file entries when autocompleting paths - #1
 
 #### 1.1 - 2013/10/21
 
