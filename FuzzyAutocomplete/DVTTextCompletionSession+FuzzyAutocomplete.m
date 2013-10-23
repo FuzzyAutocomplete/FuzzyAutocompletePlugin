@@ -39,6 +39,7 @@ static char insertingCompletionKey;
     objc_setAssociatedObject(self, &insertingCompletionKey, @(value), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+#define MINIMUM_SCORE_THRESHOLD 3
 // Sets the current filtering prefix
 - (void)_fa_setFilteringPrefix:(NSString *)prefix forceFilter:(BOOL)forceFilter
 {
@@ -57,7 +58,6 @@ static char insertingCompletionKey;
             return;
         }
         
-        
         NSString *lastPrefix = objc_getAssociatedObject(self, &lastPrefixKey);
         NSArray *searchSet;
         
@@ -69,7 +69,6 @@ static char insertingCompletionKey;
         if (!searchSet) {
             searchSet = [self filteredCompletionsBeginningWithLetter:[prefix substringToIndex:1]];
         }
-        
         
         double totalTime = timeVoidBlock(^{
             IDEIndexCompletionItem *originalMatch;
@@ -84,9 +83,10 @@ static char insertingCompletionKey;
             __block double highScore = 0.0f;
             
             [searchSet enumerateObjectsUsingBlock:^(IDEIndexCompletionItem *item, NSUInteger idx, BOOL *stop) {
-                double invertedPriority = (1.0f / item.priority);                
-                double score = [pattern scoreCandidate:item.name] * invertedPriority;
-                if (score > 0) {
+                double invertedPriority = 1 + (1.0f / item.priority);
+                double priorityFactor = MAX([self _priorityFactorForItem:item], 1);
+                double score = [pattern scoreCandidate:item.name] * invertedPriority * priorityFactor;
+                if (score > MINIMUM_SCORE_THRESHOLD) {
                     [filteredSet addObject:item];
                 }
                 if (score > highScore) {
