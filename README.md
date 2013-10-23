@@ -13,6 +13,8 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 ## Features
 
 * Gives Xcode's autocompletion to be able to filter like `Open Quickly` does
+* Supports Xcode's learning priority system
+* `Tab` now inserts
 * Performs well
 * Productivity++
 

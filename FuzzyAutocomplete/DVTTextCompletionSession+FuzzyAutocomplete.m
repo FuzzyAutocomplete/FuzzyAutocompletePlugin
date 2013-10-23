@@ -19,14 +19,29 @@
 
 + (void)load
 {
-    [self jr_swizzleMethod:@selector(_setFilteringPrefix:forceFilter:) withMethod:@selector(_fa_setFilteringPrefix:forceFilter:) error:nil];
-    [self jr_swizzleMethod:@selector(setAllCompletions:) withMethod:@selector(_fa_setAllCompletions:) error:nil];
-    [self jr_swizzleMethod:@selector(insertCurrentCompletion) withMethod:@selector(_fa_insertCurrentCompletion) error:nil];
+    [self swizzleMethodWithErrorLogging:@selector(_setFilteringPrefix:forceFilter:) withMethod:@selector(_fa_setFilteringPrefix:forceFilter:)];
+    [self swizzleMethodWithErrorLogging:@selector(setAllCompletions:) withMethod:@selector(_fa_setAllCompletions:)];
+    [self swizzleMethodWithErrorLogging:@selector(insertCurrentCompletion) withMethod:@selector(_fa_insertCurrentCompletion)];
+    [self swizzleMethodWithErrorLogging:@selector(insertUsefulPrefix) withMethod:@selector(_fa_insertUsefulPrefix)];
+}
+
++ (void)swizzleMethodWithErrorLogging:(SEL)originalMethod withMethod:(SEL)secondMethod
+{
+    NSError *error;
+    [self jr_swizzleMethod:originalMethod withMethod:secondMethod error:&error];
+    if (error) {
+        ALog(@"Error while swizzling %@: %@", NSStringFromSelector(originalMethod), error);
+    }
 }
 
 static char lastResultSetKey;
 static char lastPrefixKey;
 static char insertingCompletionKey;
+
+- (BOOL)_fa_insertUsefulPrefix
+{
+    return [self insertCurrentCompletion];
+}
 
 - (BOOL)_fa_insertCurrentCompletion
 {
@@ -86,6 +101,7 @@ static char insertingCompletionKey;
                 double invertedPriority = 1 + (1.0f / item.priority);
                 double priorityFactor = MAX([self _priorityFactorForItem:item], 1);
                 double score = [pattern scoreCandidate:item.name] * invertedPriority * priorityFactor;
+                
                 if (score > MINIMUM_SCORE_THRESHOLD) {
                     [filteredSet addObject:item];
                 }
@@ -102,7 +118,6 @@ static char insertingCompletionKey;
             
             if (filteredSet.count > 0 && bestMatch) {
                 self.selectedCompletionIndex = [filteredSet indexOfObject:bestMatch];
-                [self setPartialCompletionPrefixForCompletionItem:bestMatch query:prefix];
             }
             else {
                 self.selectedCompletionIndex = NSNotFound;
@@ -156,15 +171,6 @@ static char filteredCompletionCacheKey;
         [filteredCompletionCache setObject:completionsForLetter forKey:letter];
     }
     return completionsForLetter;
-}
-
-- (void)setPartialCompletionPrefixForCompletionItem:(IDEIndexCompletionItem *)item query:(NSString *)query
-{
-    NSString *completionString = item.name;
-    NSRange rangeOfPrefix = [completionString rangeOfString:query];
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^[A-Z]*[a-z0-9_]+(?=[^\\p{Ll}0-9])" options:0 error:nil];
-    NSTextCheckingResult *result = [regex firstMatchInString:completionString options:NSMatchingAnchored range:NSMakeRange(rangeOfPrefix.length, completionString.length - rangeOfPrefix.length)];
-    self.usefulPrefix = [completionString substringToIndex:result.range.location + result.range.length];
 }
 
 // Used for debugging
