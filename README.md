@@ -14,7 +14,7 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 
 * Gives Xcode's autocompletion to be able to filter like `Open Quickly` does
 * Supports Xcode's learning priority system
-* `Tab` now inserts
+* `Tab` now inserts completion rathen than inserting prefix
 * Performs well
 * Productivity++
 
