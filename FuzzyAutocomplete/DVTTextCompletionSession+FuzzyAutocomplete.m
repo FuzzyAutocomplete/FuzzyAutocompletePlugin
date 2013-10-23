@@ -144,6 +144,7 @@ static char filteredCompletionCacheKey;
 // for good performance.
 - (NSArray *)filteredCompletionsBeginningWithLetter:(NSString *)letter
 {
+    letter = [letter lowercaseString];
     NSCache *filteredCompletionCache = objc_getAssociatedObject(self, &filteredCompletionCacheKey);
     if (!filteredCompletionCache) {
         filteredCompletionCache = [[NSCache alloc] init];
