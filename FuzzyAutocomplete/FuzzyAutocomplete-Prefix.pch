@@ -16,4 +16,4 @@
 #define DLog(...)
 #endif
 
-#define ALog(fmt, ...) NSLog((@"FuzzyAutocomplete: %s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
+#define ALog(fmt, ...) NSLog((@"FuzzyAutocomplete: " fmt), ##__VA_ARGS__);

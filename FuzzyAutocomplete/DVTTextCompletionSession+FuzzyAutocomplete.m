@@ -138,7 +138,7 @@ static char insertingCompletionKey;
         DLog(@"Fuzzy match total time: %f", totalTime);
     }
     @catch (NSException *exception) {
-        NSLog(@"An exception occurred within FuzzyAutocomplete: %@", exception);
+        ALog(@"An exception occurred within FuzzyAutocomplete: %@", exception);
     }
 }
 
