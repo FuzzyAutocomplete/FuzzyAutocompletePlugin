@@ -55,6 +55,7 @@ static char insertingCompletionKey;
 }
 
 #define MINIMUM_SCORE_THRESHOLD 3
+#define XCODE_PRIORITY_FACTOR_WEIGHTING 0.2
 // Sets the current filtering prefix
 - (void)_fa_setFilteringPrefix:(NSString *)prefix forceFilter:(BOOL)forceFilter
 {
@@ -97,9 +98,10 @@ static char insertingCompletionKey;
             IDEOpenQuicklyPattern *pattern = [IDEOpenQuicklyPattern patternWithInput:prefix];
             __block double highScore = 0.0f;
             
+            
             [searchSet enumerateObjectsUsingBlock:^(IDEIndexCompletionItem *item, NSUInteger idx, BOOL *stop) {
                 double invertedPriority = 1 + (1.0f / item.priority);
-                double priorityFactor = MAX([self _priorityFactorForItem:item], 1);
+                double priorityFactor = (MAX([self _priorityFactorForItem:item], 1) - 1) * XCODE_PRIORITY_FACTOR_WEIGHTING + 1;
                 double score = [pattern scoreCandidate:item.name] * invertedPriority * priorityFactor;
                 
                 if (score > MINIMUM_SCORE_THRESHOLD) {
