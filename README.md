@@ -16,6 +16,7 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 * Supports Xcode 5.0.1
 * Supports Xcode's learning and context-aware priority system
 * `Tab` now inserts completion rathen than inserting prefix
+* (Will be) Compatible with [KSImageNamed](https://github.com/ksuther/KSImageNamed-Xcode) once [this PR](https://github.com/ksuther/KSImageNamed-Xcode/pull/31) gets merged
 * Performs well
 * Productivity++
 
@@ -29,9 +30,14 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 ## Notes
 
 * Only tested with Xcode 5 on 10.9
-* Hasn't been tested with other plugins yet
+* Hasn't been tested with other plugins (other than `KSImageNamed`)
 
 ## Changelog
+
+#### 1.3.1 - 2013/10/24
+
+* Decrease the weighting of Xcode's priority factor from `1.0` to `0.2`
+* Prepare for [KSImageNamed](https://github.com/ksuther/KSImageNamed-Xcode) compatibility when [KSImageNamed#31](https://github.com/ksuther/KSImageNamed-Xcode/pull/31) gets merged.
 
 #### 1.3 - 2013/10/23
 
