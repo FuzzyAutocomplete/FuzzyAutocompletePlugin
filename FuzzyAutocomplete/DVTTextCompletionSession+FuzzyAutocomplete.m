@@ -100,10 +100,11 @@ static char insertingCompletionKey;
             
             
             [searchSet enumerateObjectsUsingBlock:^(IDEIndexCompletionItem *item, NSUInteger idx, BOOL *stop) {
-                double invertedPriority = 1 + (1.0f / item.priority);
+                double itemPriority = MAX(item.priority, 1);
+                double invertedPriority = 1 + (1.0f / itemPriority);
                 double priorityFactor = (MAX([self _priorityFactorForItem:item], 1) - 1) * XCODE_PRIORITY_FACTOR_WEIGHTING + 1;
                 double score = [pattern scoreCandidate:item.name] * invertedPriority * priorityFactor;
-                
+
                 if (score > MINIMUM_SCORE_THRESHOLD) {
                     [filteredSet addObject:item];
                 }
