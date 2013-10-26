@@ -85,7 +85,6 @@ static char insertingCompletionKey;
         }
         
         if (!searchSet) {
-            searchSet = [self filteredCompletionsBeginningWithLetter:[prefix substringToIndex:1]];
         }
         
         double totalTime = timeVoidBlock(^{
