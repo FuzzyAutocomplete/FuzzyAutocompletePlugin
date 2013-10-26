@@ -152,7 +152,9 @@ static char filteredCompletionCacheKey;
 {
     [self _fa_setAllCompletions:allCompletions];
     NSCache *filterCache = objc_getAssociatedObject(self, &filteredCompletionCacheKey);
+    NSMutableDictionary *filterCache = objc_getAssociatedObject(self, &filteredCompletionCacheKey);
     if (filterCache) {
+        DLog(@"Cache clear");
         [filterCache removeAllObjects];
     }
 }
@@ -163,9 +165,9 @@ static char filteredCompletionCacheKey;
 - (NSArray *)filteredCompletionsBeginningWithLetter:(NSString *)letter
 {
     letter = [letter lowercaseString];
-    NSCache *filteredCompletionCache = objc_getAssociatedObject(self, &filteredCompletionCacheKey);
+    NSMutableDictionary *filteredCompletionCache = objc_getAssociatedObject(self, &filteredCompletionCacheKey);
     if (!filteredCompletionCache) {
-        filteredCompletionCache = [[NSCache alloc] init];
+        filteredCompletionCache = [[NSMutableDictionary alloc] init];
         objc_setAssociatedObject(self, &filteredCompletionCacheKey, filteredCompletionCache, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
     NSArray *completionsForLetter = [filteredCompletionCache objectForKey:letter];
