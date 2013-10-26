@@ -54,9 +54,20 @@ static char insertingCompletionKey;
     objc_setAssociatedObject(self, &insertingCompletionKey, @(value), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+- (NSUInteger)maxWorkerCount
+{
+    static NSUInteger maxWorkerCount;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        // TODO: Find better way of finding physical core count
+        maxWorkerCount = MAX(1, [[NSProcessInfo processInfo] activeProcessorCount] / 2);
+    });
+    return maxWorkerCount;
+}
+
 #define MINIMUM_SCORE_THRESHOLD 3
 #define XCODE_PRIORITY_FACTOR_WEIGHTING 0.2
-#define MIN_CHUNK_LENGTH 1000
+#define MIN_CHUNK_LENGTH 100
 
 // Sets the current filtering prefix
 - (void)_fa_setFilteringPrefix:(NSString *)prefix forceFilter:(BOOL)forceFilter
@@ -76,18 +87,19 @@ static char insertingCompletionKey;
             return;
         }
         
-        NSString *lastPrefix = objc_getAssociatedObject(self, &lastPrefixKey);
-        NSArray *searchSet;
-        
-        // Use the last result set to filter down if it exists
-        if (lastPrefix && [prefix rangeOfString:lastPrefix].location == 0) {
-            searchSet = objc_getAssociatedObject(self, &lastResultSetKey);
-        }
-        
-        if (!searchSet) {
-        }
-        
         double totalTime = timeVoidBlock(^{
+            NSArray *searchSet;
+            NSString *lastPrefix = objc_getAssociatedObject(self, &lastPrefixKey);
+
+            // Use the last result set to filter down if it exists
+            if (lastPrefix && [prefix rangeOfString:lastPrefix].location == 0) {
+                searchSet = objc_getAssociatedObject(self, &lastResultSetKey);
+            }
+            
+            if (!searchSet) {
+                searchSet = [self filteredCompletionsBeginningWithLetter:[prefix substringToIndex:1]];
+            }
+            
             IDEIndexCompletionItem *originalMatch;
             __block IDEIndexCompletionItem *bestMatch;
             
@@ -95,7 +107,7 @@ static char insertingCompletionKey;
                 originalMatch = self.filteredCompletionsAlpha[self.selectedCompletionIndex];
             }
 
-            NSUInteger workerCount = MIN(MAX(searchSet.count / MIN_CHUNK_LENGTH, 1), 4);
+            NSUInteger workerCount = MIN(MAX(searchSet.count / MIN_CHUNK_LENGTH, 1), [self maxWorkerCount]);
             NSMutableArray *filteredList;
             
             if (workerCount > 1) {
@@ -106,7 +118,6 @@ static char insertingCompletionKey;
                 NSMutableArray *bestMatches = [NSMutableArray array];
                 filteredList = [NSMutableArray array];
                 
-                DLog(@"Queuing %lu workers", (unsigned long)workerCount);
                 for (NSInteger i=0; i<workerCount; i++) {
                     dispatch_group_async(group, processingQueue, ^{
                         NSArray *list;
@@ -129,7 +140,6 @@ static char insertingCompletionKey;
                 bestMatch = [self bestMatchForQuery:prefix inArray:searchSet filteredList:&filteredList];
             }
             
-            DLog(@"Filtered count: %lu", (unsigned long)filteredList.count);
             self.filteredCompletionsAlpha = filteredList;
             
             objc_setAssociatedObject(self, &lastPrefixKey, prefix, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -166,7 +176,7 @@ static char insertingCompletionKey;
     IDEOpenQuicklyPattern *pattern = [[IDEOpenQuicklyPattern alloc] initWithPattern:query];
     NSMutableArray *filteredList = [NSMutableArray array];
     
-    __block double highScore = 0.0f;;
+    __block double highScore = 0.0f;
     __block IDEIndexCompletionItem *bestMatch;
     
     [array enumerateObjectsUsingBlock:^(IDEIndexCompletionItem *item, NSUInteger idx, BOOL *stop) {
