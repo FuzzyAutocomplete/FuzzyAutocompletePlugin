@@ -56,6 +56,8 @@ static char insertingCompletionKey;
 
 #define MINIMUM_SCORE_THRESHOLD 3
 #define XCODE_PRIORITY_FACTOR_WEIGHTING 0.2
+#define MIN_CHUNK_LENGTH 1000
+
 // Sets the current filtering prefix
 - (void)_fa_setFilteringPrefix:(NSString *)prefix forceFilter:(BOOL)forceFilter
 {
@@ -93,41 +95,49 @@ static char insertingCompletionKey;
             if (self.selectedCompletionIndex < self.filteredCompletionsAlpha.count) {
                 originalMatch = self.filteredCompletionsAlpha[self.selectedCompletionIndex];
             }
-            
-            NSMutableArray *filteredSet = [NSMutableArray array];
-            IDEOpenQuicklyPattern *pattern = [IDEOpenQuicklyPattern patternWithInput:prefix];
-            __block double highScore = 0.0f;
-            
-            dispatch_queue_t setQueue = dispatch_queue_create("com.sproutcube.fuzzyautocomplete.filtered-set-queue", DISPATCH_QUEUE_SERIAL);
-            
-            [searchSet enumerateObjectsWithOptions:0 usingBlock:^(IDEIndexCompletionItem *item, NSUInteger idx, BOOL *stop) {
-                double itemPriority = MAX(item.priority, 1);
-                double invertedPriority = 1 + (1.0f / itemPriority);
-                double priorityFactor = (MAX([self _priorityFactorForItem:item], 1) - 1) * XCODE_PRIORITY_FACTOR_WEIGHTING + 1;
-                double score = [pattern scoreCandidate:item.name] * invertedPriority * priorityFactor;
 
-                if (score > MINIMUM_SCORE_THRESHOLD) {
-                    dispatch_async(setQueue, ^{
-                        [filteredSet addObject:item];
+            NSUInteger workerCount = MIN(MAX(searchSet.count / MIN_CHUNK_LENGTH, 1), 4);
+            NSMutableArray *filteredList;
+            
+            if (workerCount > 1) {
+                dispatch_queue_t processingQueue = dispatch_queue_create("com.sproutcube.fuzzyautocomplete.processing-queue", DISPATCH_QUEUE_CONCURRENT);
+                dispatch_queue_t reduceQueue = dispatch_queue_create("com.sproutcube.fuzzyautocomplete.reduce-queue", DISPATCH_QUEUE_SERIAL);
+                dispatch_group_t group = dispatch_group_create();
+                
+                NSMutableArray *bestMatches = [NSMutableArray array];
+                filteredList = [NSMutableArray array];
+                
+                DLog(@"Queuing %lu workers", (unsigned long)workerCount);
+                for (NSInteger i=0; i<workerCount; i++) {
+                    dispatch_group_async(group, processingQueue, ^{
+                        NSArray *list;
+                        IDEIndexCompletionItem *bestMatch = [self bestMatchForQuery:prefix inArray:searchSet offset:i total:workerCount filteredList:&list];
+                        dispatch_async(reduceQueue, ^{
+                            if (bestMatch) {
+                                [bestMatches addObject:bestMatch];
+                            }
+                            [filteredList addObjectsFromArray:list];
+                        });
                     });
                 }
-                if (score > highScore) {
-                    bestMatch = item;
-                    highScore = score;
-                }
-            }];
+                
+                dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+                dispatch_sync(reduceQueue, ^{});
+                
+                bestMatch = [self bestMatchForQuery:prefix inArray:bestMatches filteredList:nil];
+            }
+            else {
+                bestMatch = [self bestMatchForQuery:prefix inArray:searchSet filteredList:&filteredList];
+            }
             
+            DLog(@"Filtered count: %lu", (unsigned long)filteredList.count);
+            self.filteredCompletionsAlpha = filteredList;
             
-            
-            dispatch_sync(setQueue, ^{});
-            
-            self.filteredCompletionsAlpha = filteredSet;
-
             objc_setAssociatedObject(self, &lastPrefixKey, prefix, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-            objc_setAssociatedObject(self, &lastResultSetKey, filteredSet, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            objc_setAssociatedObject(self, &lastResultSetKey, filteredList, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
             
-            if (filteredSet.count > 0 && bestMatch) {
-                self.selectedCompletionIndex = [filteredSet indexOfObject:bestMatch];
+            if (filteredList.count > 0 && bestMatch) {
+                self.selectedCompletionIndex = [filteredList indexOfObject:bestMatch];
             }
             else {
                 self.selectedCompletionIndex = NSNotFound;
@@ -150,6 +160,74 @@ static char insertingCompletionKey;
     @catch (NSException *exception) {
         ALog(@"An exception occurred within FuzzyAutocomplete: %@", exception);
     }
+}
+
+- (IDEIndexCompletionItem *)bestMatchForQuery:(NSString *)query inArray:(NSArray *)array filteredList:(NSArray **)filtered
+{
+    IDEOpenQuicklyPattern *pattern = [[IDEOpenQuicklyPattern alloc] initWithPattern:query];
+    NSMutableArray *filteredList = [NSMutableArray array];
+    
+    __block double highScore = 0.0f;;
+    __block IDEIndexCompletionItem *bestMatch;
+    
+    [array enumerateObjectsUsingBlock:^(IDEIndexCompletionItem *item, NSUInteger idx, BOOL *stop) {
+        double itemPriority = MAX(item.priority, 1);
+        double invertedPriority = 1 + (1.0f / itemPriority);
+        double priorityFactor = (MAX([self _priorityFactorForItem:item], 1) - 1) * XCODE_PRIORITY_FACTOR_WEIGHTING + 1;
+        double score = [pattern scoreCandidate:item.name] * invertedPriority * priorityFactor;
+        
+        if (score > MINIMUM_SCORE_THRESHOLD) {
+            [filteredList addObject:item];
+        }
+        if (score > highScore) {
+            bestMatch = item;
+            highScore = score;
+        }
+    }];
+    
+    if (filtered) {
+        *filtered = filteredList;
+    }
+    return bestMatch;
+}
+
+- (IDEIndexCompletionItem *)bestMatchForQuery:(NSString *)query inArray:(NSArray *)array offset:(NSUInteger)offset total:(NSUInteger)total filteredList:(NSArray **)filtered
+{
+    IDEOpenQuicklyPattern *pattern = [[IDEOpenQuicklyPattern alloc] initWithPattern:query];
+    NSMutableArray *filteredList = [NSMutableArray array];
+    
+    double highScore = 0.0f;
+    IDEIndexCompletionItem *bestMatch;
+    IDEIndexCompletionItem *item;
+
+    double itemPriority;
+    double invertedPriority;
+    double priorityFactor;
+    double score;
+    
+    // Sequential array access faster than striding. Who would've thought?
+    NSUInteger bound = (offset + 1) * (array.count / total);
+    for (NSUInteger i=offset * (array.count / total); i<bound; i++) {
+        item = array[i];
+        
+        itemPriority = MAX(item.priority, 1);
+        invertedPriority = 1 + (1.0f / itemPriority);
+        priorityFactor = (MAX([self _priorityFactorForItem:item], 1) - 1) * XCODE_PRIORITY_FACTOR_WEIGHTING + 1;
+        score = [pattern scoreCandidate:item.name] * invertedPriority * priorityFactor;
+        
+        if (score > MINIMUM_SCORE_THRESHOLD) {
+            [filteredList addObject:item];
+        }
+        if (score > highScore) {
+            bestMatch = item;
+            highScore = score;
+        }
+    }
+    
+    if (filtered) {
+        *filtered = filteredList;
+    }
+    return bestMatch;
 }
 
 
