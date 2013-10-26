@@ -4,7 +4,7 @@
 
 This is a Xcode 5 plugin that patches the autocomplete filter to work the same way the `Open Quickly` works.
 
-It performs very well, and the fuzzy matching actually uses Xcode's own `IDEOpenQuicklyPattern`, however for performance reasons, **the first letter of the fuzzy match must start with the same letter of the completion you want**.
+It performs very well, and the fuzzy matching actually uses Xcode's own `IDEOpenQuicklyPattern`.
 
 I wrote a blog post on how I used `dtrace` to figure out what to patch: [Reverse engineering Xcode with dtrace](http://chen.do/blog/2013/10/22/reverse-engineering-xcode-with-dtrace/?utm_source=github&utm_campaign=fuzzyautocomplete)
 
@@ -17,7 +17,7 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 * Supports Xcode's learning and context-aware priority system
 * `Tab` now inserts completion rathen than inserting prefix
 * Compatible with [KSImageNamed](https://github.com/ksuther/KSImageNamed-Xcode) (be sure to grab the newest version)
-* Performs well
+* Uses Grand Central Dispatch to parallelise matching
 * Productivity++
 
 ## Installation
@@ -33,6 +33,11 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 * Hasn't been tested with other plugins (other than `KSImageNamed`)
 
 ## Changelog
+
+#### 1.4 - 2013/10/26
+
+* Remove requirement to start fuzzy match with first letter of desired match
+* Improve performance by parallelising work
 
 #### 1.3.1 - 2013/10/24
 
