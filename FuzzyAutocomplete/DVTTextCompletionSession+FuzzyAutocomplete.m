@@ -98,15 +98,18 @@ static char insertingCompletionKey;
             IDEOpenQuicklyPattern *pattern = [IDEOpenQuicklyPattern patternWithInput:prefix];
             __block double highScore = 0.0f;
             
+            dispatch_queue_t setQueue = dispatch_queue_create("com.sproutcube.fuzzyautocomplete.filtered-set-queue", DISPATCH_QUEUE_SERIAL);
             
-            [searchSet enumerateObjectsUsingBlock:^(IDEIndexCompletionItem *item, NSUInteger idx, BOOL *stop) {
+            [searchSet enumerateObjectsWithOptions:0 usingBlock:^(IDEIndexCompletionItem *item, NSUInteger idx, BOOL *stop) {
                 double itemPriority = MAX(item.priority, 1);
                 double invertedPriority = 1 + (1.0f / itemPriority);
                 double priorityFactor = (MAX([self _priorityFactorForItem:item], 1) - 1) * XCODE_PRIORITY_FACTOR_WEIGHTING + 1;
                 double score = [pattern scoreCandidate:item.name] * invertedPriority * priorityFactor;
 
                 if (score > MINIMUM_SCORE_THRESHOLD) {
-                    [filteredSet addObject:item];
+                    dispatch_async(setQueue, ^{
+                        [filteredSet addObject:item];
+                    });
                 }
                 if (score > highScore) {
                     bestMatch = item;
@@ -114,8 +117,12 @@ static char insertingCompletionKey;
                 }
             }];
             
-            self.filteredCompletionsAlpha = filteredSet;
             
+            
+            dispatch_sync(setQueue, ^{});
+            
+            self.filteredCompletionsAlpha = filteredSet;
+
             objc_setAssociatedObject(self, &lastPrefixKey, prefix, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
             objc_setAssociatedObject(self, &lastResultSetKey, filteredSet, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
             
@@ -151,7 +158,6 @@ static char filteredCompletionCacheKey;
 - (void)_fa_setAllCompletions:(NSArray *)allCompletions
 {
     [self _fa_setAllCompletions:allCompletions];
-    NSCache *filterCache = objc_getAssociatedObject(self, &filteredCompletionCacheKey);
     NSMutableDictionary *filterCache = objc_getAssociatedObject(self, &filteredCompletionCacheKey);
     if (filterCache) {
         DLog(@"Cache clear");
@@ -168,11 +174,13 @@ static char filteredCompletionCacheKey;
     NSMutableDictionary *filteredCompletionCache = objc_getAssociatedObject(self, &filteredCompletionCacheKey);
     if (!filteredCompletionCache) {
         filteredCompletionCache = [[NSMutableDictionary alloc] init];
-        objc_setAssociatedObject(self, &filteredCompletionCacheKey, filteredCompletionCache, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        objc_setAssociatedObject(self, &filteredCompletionCacheKey, filteredCompletionCache, OBJC_ASSOCIATION_RETAIN);
     }
     NSArray *completionsForLetter = [filteredCompletionCache objectForKey:letter];
     if (!completionsForLetter) {
-        completionsForLetter = [self.allCompletions filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name beginswith[c] %@", letter]];
+        completionsForLetter = timeBlockAndLog(@"FirstPass", ^id{
+            return [self.allCompletions filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name contains[c] %@", letter]];
+        });
         [filteredCompletionCache setObject:completionsForLetter forKey:letter];
     }
     return completionsForLetter;
