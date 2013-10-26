@@ -261,7 +261,7 @@ static char filteredCompletionCacheKey;
     NSMutableDictionary *filteredCompletionCache = objc_getAssociatedObject(self, &filteredCompletionCacheKey);
     if (!filteredCompletionCache) {
         filteredCompletionCache = [[NSMutableDictionary alloc] init];
-        objc_setAssociatedObject(self, &filteredCompletionCacheKey, filteredCompletionCache, OBJC_ASSOCIATION_RETAIN);
+        objc_setAssociatedObject(self, &filteredCompletionCacheKey, filteredCompletionCache, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
     NSArray *completionsForLetter = [filteredCompletionCache objectForKey:letter];
     if (!completionsForLetter) {
