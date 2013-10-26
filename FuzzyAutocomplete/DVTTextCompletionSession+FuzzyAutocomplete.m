@@ -54,8 +54,21 @@ static char insertingCompletionKey;
     objc_setAssociatedObject(self, &insertingCompletionKey, @(value), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+- (NSUInteger)maxWorkerCount
+{
+    static NSUInteger maxWorkerCount;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        // TODO: Find better way of finding physical core count
+        maxWorkerCount = MAX(1, [[NSProcessInfo processInfo] activeProcessorCount] / 2);
+    });
+    return maxWorkerCount;
+}
+
 #define MINIMUM_SCORE_THRESHOLD 3
 #define XCODE_PRIORITY_FACTOR_WEIGHTING 0.2
+#define MIN_CHUNK_LENGTH 100
+
 // Sets the current filtering prefix
 - (void)_fa_setFilteringPrefix:(NSString *)prefix forceFilter:(BOOL)forceFilter
 {
@@ -74,53 +87,66 @@ static char insertingCompletionKey;
             return;
         }
         
-        NSString *lastPrefix = objc_getAssociatedObject(self, &lastPrefixKey);
-        NSArray *searchSet;
-        
-        // Use the last result set to filter down if it exists
-        if (lastPrefix && [prefix rangeOfString:lastPrefix].location == 0) {
-            searchSet = objc_getAssociatedObject(self, &lastResultSetKey);
-        }
-        
-        if (!searchSet) {
-            searchSet = [self filteredCompletionsBeginningWithLetter:[prefix substringToIndex:1]];
-        }
-        
         double totalTime = timeVoidBlock(^{
+            NSArray *searchSet;
+            NSString *lastPrefix = objc_getAssociatedObject(self, &lastPrefixKey);
+
+            // Use the last result set to filter down if it exists
+            if (lastPrefix && [prefix rangeOfString:lastPrefix].location == 0) {
+                searchSet = objc_getAssociatedObject(self, &lastResultSetKey);
+            }
+            
+            if (!searchSet) {
+                searchSet = [self filteredCompletionsBeginningWithLetter:[prefix substringToIndex:1]];
+            }
+            
             IDEIndexCompletionItem *originalMatch;
             __block IDEIndexCompletionItem *bestMatch;
             
             if (self.selectedCompletionIndex < self.filteredCompletionsAlpha.count) {
                 originalMatch = self.filteredCompletionsAlpha[self.selectedCompletionIndex];
             }
-            
-            NSMutableArray *filteredSet = [NSMutableArray array];
-            IDEOpenQuicklyPattern *pattern = [IDEOpenQuicklyPattern patternWithInput:prefix];
-            __block double highScore = 0.0f;
-            
-            
-            [searchSet enumerateObjectsUsingBlock:^(IDEIndexCompletionItem *item, NSUInteger idx, BOOL *stop) {
-                double itemPriority = MAX(item.priority, 1);
-                double invertedPriority = 1 + (1.0f / itemPriority);
-                double priorityFactor = (MAX([self _priorityFactorForItem:item], 1) - 1) * XCODE_PRIORITY_FACTOR_WEIGHTING + 1;
-                double score = [pattern scoreCandidate:item.name] * invertedPriority * priorityFactor;
 
-                if (score > MINIMUM_SCORE_THRESHOLD) {
-                    [filteredSet addObject:item];
-                }
-                if (score > highScore) {
-                    bestMatch = item;
-                    highScore = score;
-                }
-            }];
+            NSUInteger workerCount = MIN(MAX(searchSet.count / MIN_CHUNK_LENGTH, 1), [self maxWorkerCount]);
+            NSMutableArray *filteredList;
             
-            self.filteredCompletionsAlpha = filteredSet;
+            if (workerCount > 1) {
+                dispatch_queue_t processingQueue = dispatch_queue_create("com.sproutcube.fuzzyautocomplete.processing-queue", DISPATCH_QUEUE_CONCURRENT);
+                dispatch_queue_t reduceQueue = dispatch_queue_create("com.sproutcube.fuzzyautocomplete.reduce-queue", DISPATCH_QUEUE_SERIAL);
+                dispatch_group_t group = dispatch_group_create();
+                
+                NSMutableArray *bestMatches = [NSMutableArray array];
+                filteredList = [NSMutableArray array];
+                
+                for (NSInteger i=0; i<workerCount; i++) {
+                    dispatch_group_async(group, processingQueue, ^{
+                        NSArray *list;
+                        IDEIndexCompletionItem *bestMatch = [self bestMatchForQuery:prefix inArray:searchSet offset:i total:workerCount filteredList:&list];
+                        dispatch_async(reduceQueue, ^{
+                            if (bestMatch) {
+                                [bestMatches addObject:bestMatch];
+                            }
+                            [filteredList addObjectsFromArray:list];
+                        });
+                    });
+                }
+                
+                dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+                dispatch_sync(reduceQueue, ^{});
+                
+                bestMatch = [self bestMatchForQuery:prefix inArray:bestMatches filteredList:nil];
+            }
+            else {
+                bestMatch = [self bestMatchForQuery:prefix inArray:searchSet filteredList:&filteredList];
+            }
+            
+            self.filteredCompletionsAlpha = filteredList;
             
             objc_setAssociatedObject(self, &lastPrefixKey, prefix, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-            objc_setAssociatedObject(self, &lastResultSetKey, filteredSet, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            objc_setAssociatedObject(self, &lastResultSetKey, filteredList, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
             
-            if (filteredSet.count > 0 && bestMatch) {
-                self.selectedCompletionIndex = [filteredSet indexOfObject:bestMatch];
+            if (filteredList.count > 0 && bestMatch) {
+                self.selectedCompletionIndex = [filteredList indexOfObject:bestMatch];
             }
             else {
                 self.selectedCompletionIndex = NSNotFound;
@@ -145,14 +171,83 @@ static char insertingCompletionKey;
     }
 }
 
+- (IDEIndexCompletionItem *)bestMatchForQuery:(NSString *)query inArray:(NSArray *)array filteredList:(NSArray **)filtered
+{
+    IDEOpenQuicklyPattern *pattern = [[IDEOpenQuicklyPattern alloc] initWithPattern:query];
+    NSMutableArray *filteredList = [NSMutableArray array];
+    
+    __block double highScore = 0.0f;
+    __block IDEIndexCompletionItem *bestMatch;
+    
+    [array enumerateObjectsUsingBlock:^(IDEIndexCompletionItem *item, NSUInteger idx, BOOL *stop) {
+        double itemPriority = MAX(item.priority, 1);
+        double invertedPriority = 1 + (1.0f / itemPriority);
+        double priorityFactor = (MAX([self _priorityFactorForItem:item], 1) - 1) * XCODE_PRIORITY_FACTOR_WEIGHTING + 1;
+        double score = [pattern scoreCandidate:item.name] * invertedPriority * priorityFactor;
+        
+        if (score > MINIMUM_SCORE_THRESHOLD) {
+            [filteredList addObject:item];
+        }
+        if (score > highScore) {
+            bestMatch = item;
+            highScore = score;
+        }
+    }];
+    
+    if (filtered) {
+        *filtered = filteredList;
+    }
+    return bestMatch;
+}
+
+- (IDEIndexCompletionItem *)bestMatchForQuery:(NSString *)query inArray:(NSArray *)array offset:(NSUInteger)offset total:(NSUInteger)total filteredList:(NSArray **)filtered
+{
+    IDEOpenQuicklyPattern *pattern = [[IDEOpenQuicklyPattern alloc] initWithPattern:query];
+    NSMutableArray *filteredList = [NSMutableArray array];
+    
+    double highScore = 0.0f;
+    IDEIndexCompletionItem *bestMatch;
+    IDEIndexCompletionItem *item;
+
+    double itemPriority;
+    double invertedPriority;
+    double priorityFactor;
+    double score;
+    
+    // Sequential array access faster than striding. Who would've thought?
+    NSUInteger bound = (offset + 1) * (array.count / total);
+    for (NSUInteger i=offset * (array.count / total); i<bound; i++) {
+        item = array[i];
+        
+        itemPriority = MAX(item.priority, 1);
+        invertedPriority = 1 + (1.0f / itemPriority);
+        priorityFactor = (MAX([self _priorityFactorForItem:item], 1) - 1) * XCODE_PRIORITY_FACTOR_WEIGHTING + 1;
+        score = [pattern scoreCandidate:item.name] * invertedPriority * priorityFactor;
+        
+        if (score > MINIMUM_SCORE_THRESHOLD) {
+            [filteredList addObject:item];
+        }
+        if (score > highScore) {
+            bestMatch = item;
+            highScore = score;
+        }
+    }
+    
+    if (filtered) {
+        *filtered = filteredList;
+    }
+    return bestMatch;
+}
+
 
 static char filteredCompletionCacheKey;
 
 - (void)_fa_setAllCompletions:(NSArray *)allCompletions
 {
     [self _fa_setAllCompletions:allCompletions];
-    NSCache *filterCache = objc_getAssociatedObject(self, &filteredCompletionCacheKey);
+    NSMutableDictionary *filterCache = objc_getAssociatedObject(self, &filteredCompletionCacheKey);
     if (filterCache) {
+        DLog(@"Cache clear");
         [filterCache removeAllObjects];
     }
 }
@@ -163,14 +258,16 @@ static char filteredCompletionCacheKey;
 - (NSArray *)filteredCompletionsBeginningWithLetter:(NSString *)letter
 {
     letter = [letter lowercaseString];
-    NSCache *filteredCompletionCache = objc_getAssociatedObject(self, &filteredCompletionCacheKey);
+    NSMutableDictionary *filteredCompletionCache = objc_getAssociatedObject(self, &filteredCompletionCacheKey);
     if (!filteredCompletionCache) {
-        filteredCompletionCache = [[NSCache alloc] init];
+        filteredCompletionCache = [[NSMutableDictionary alloc] init];
         objc_setAssociatedObject(self, &filteredCompletionCacheKey, filteredCompletionCache, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
     NSArray *completionsForLetter = [filteredCompletionCache objectForKey:letter];
     if (!completionsForLetter) {
-        completionsForLetter = [self.allCompletions filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name beginswith[c] %@", letter]];
+        completionsForLetter = timeBlockAndLog(@"FirstPass", ^id{
+            return [self.allCompletions filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name contains[c] %@", letter]];
+        });
         [filteredCompletionCache setObject:completionsForLetter forKey:letter];
     }
     return completionsForLetter;
