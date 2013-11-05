@@ -178,6 +178,7 @@ static char insertingCompletionKey;
     
     __block double highScore = 0.0f;
     __block IDEIndexCompletionItem *bestMatch;
+    __block NSUInteger length = 100;
     
     [array enumerateObjectsUsingBlock:^(IDEIndexCompletionItem *item, NSUInteger idx, BOOL *stop) {
         double itemPriority = MAX(item.priority, 1);
@@ -188,9 +189,10 @@ static char insertingCompletionKey;
         if (score > MINIMUM_SCORE_THRESHOLD) {
             [filteredList addObject:item];
         }
-        if (score > highScore) {
+        if (score > highScore && item.name.length <= length) {
             bestMatch = item;
             highScore = score;
+            length = item.name.length;
         }
     }];
     
