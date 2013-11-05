@@ -34,6 +34,10 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 
 ## Changelog
 
+#### 1.5 - 2013/11/05
+
+* Shortest match will always be selected
+
 #### 1.4 - 2013/10/26
 
 * Remove requirement to start fuzzy match with first letter of desired match
