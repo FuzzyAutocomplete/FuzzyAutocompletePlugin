@@ -310,8 +310,8 @@
 				DSTROOT = "$(HOME)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/SharedFrameworks",
-					"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Frameworks",
+					"$(DEVELOPER_DIR)/../SharedFrameworks",
+					"$(DEVELOPER_DIR)/../Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FuzzyAutocomplete/FuzzyAutocomplete-Prefix.pch";
@@ -330,8 +330,8 @@
 				DSTROOT = "$(HOME)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/SharedFrameworks",
-					"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Frameworks",
+					"$(DEVELOPER_DIR)/../SharedFrameworks",
+					"$(DEVELOPER_DIR)/../Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FuzzyAutocomplete/FuzzyAutocomplete-Prefix.pch";
