@@ -87,7 +87,7 @@ static char insertingCompletionKey;
             return;
         }
         
-        double totalTime = timeVoidBlock(^{
+        double __unused totalTime = timeVoidBlock(^{
             NSArray *searchSet;
             NSString *lastPrefix = objc_getAssociatedObject(self, &lastPrefixKey);
 
