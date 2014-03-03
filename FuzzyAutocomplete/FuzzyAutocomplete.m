@@ -10,9 +10,4 @@
 
 @implementation FuzzyAutocomplete
 
-+ (void)pluginDidLoad:(NSBundle *)plugin
-{
-    ALog(@"Plugin loaded");
-}
-
 @end
