@@ -13,7 +13,7 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 ## Features
 
 * Gives Xcode's autocompletion to be able to filter like `Open Quickly` does
-* Supports Xcode 5.0, 5.0.1, 5.0.2 and 5.1
+* Supports Xcode 5.0, 5.0.1, 5.0.2 and 5.1 beta (not 5.1 release)
 * Supports Xcode's learning and context-aware priority system
 * `Tab` now inserts completion rathen than inserting prefix
 * Compatible with [KSImageNamed](https://github.com/ksuther/KSImageNamed-Xcode) (be sure to grab the newest version)
