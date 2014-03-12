@@ -23,7 +23,7 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 ## Installation
 
 * Either:
-  * Install with [Alcatraz](http://mneorr.github.io/Alcatraz/)
+  * Install with [Alcatraz](http://alcatraz.io)
   * Clone and build the project
 * Restart Xcode and enjoy!
 
