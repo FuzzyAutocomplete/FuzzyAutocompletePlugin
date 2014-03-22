@@ -29,14 +29,14 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 
 ## Notes
 
-* Only tested with Xcode 5 on 10.9
+* Only tested with Xcode 5.0 and 5.1 on 10.9
 * Hasn't been tested with other plugins (other than `KSImageNamed`)
 
 ## Changelog
 
-#### 1.6 -
+#### 1.6 - 2014/03/22
 
-* No longer prioritises shortest match by default. Can be re-enabled with `defaults write com.apple.dt.xcode FuzzyAutocompletePrioritizeShortestMatch -bool yes`
+* No longer prioritises shortest match by default. Can be re-enabled with `defaults write com.apple.dt.xcode FuzzyAutocompletePrioritizeShortestMatch -bool yes` and restarting Xcode.
 
 #### 1.5 - 2013/11/05
 
