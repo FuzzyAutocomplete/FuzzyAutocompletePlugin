@@ -34,6 +34,10 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 
 ## Changelog
 
+#### 1.6 -
+
+* No longer prioritises shortest match by default. Can be re-enabled with `defaults write com.apple.dt.xcode FuzzyAutocompletePrioritizeShortestMatch -bool yes`
+
 #### 1.5 - 2013/11/05
 
 * Shortest match will always be selected

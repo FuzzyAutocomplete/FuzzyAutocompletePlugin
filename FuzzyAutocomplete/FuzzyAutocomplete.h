@@ -10,4 +10,6 @@
 
 @interface FuzzyAutocomplete : NSObject
 
++ (BOOL)shouldPrioritizeShortestMatch;
+
 @end

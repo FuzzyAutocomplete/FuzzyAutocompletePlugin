@@ -10,4 +10,14 @@
 
 @implementation FuzzyAutocomplete
 
++ (BOOL)shouldPrioritizeShortestMatch
+{
+    static BOOL prioritizeShortestMatch;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        prioritizeShortestMatch = [[NSUserDefaults standardUserDefaults] boolForKey:@"FuzzyAutocompletePrioritizeShortestMatch"];
+    });
+    return prioritizeShortestMatch;
+}
+
 @end

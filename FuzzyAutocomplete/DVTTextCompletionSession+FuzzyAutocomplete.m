@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 Sproutcube. All rights reserved.
 //
 
+#import "FuzzyAutocomplete.h"
 #import "DVTTextCompletionSession+FuzzyAutocomplete.h"
 #import "DVTTextCompletionInlinePreviewController.h"
 #import "DVTTextCompletionListWindowController.h"
@@ -17,8 +18,11 @@
 
 @implementation DVTTextCompletionSession (FuzzyAutocomplete)
 
+static BOOL prioritizeShortestMatch;
+
 + (void)load
 {
+    prioritizeShortestMatch = [FuzzyAutocomplete shouldPrioritizeShortestMatch];
     [self swizzleMethodWithErrorLogging:@selector(_setFilteringPrefix:forceFilter:) withMethod:@selector(_fa_setFilteringPrefix:forceFilter:)];
     [self swizzleMethodWithErrorLogging:@selector(setAllCompletions:) withMethod:@selector(_fa_setAllCompletions:)];
     [self swizzleMethodWithErrorLogging:@selector(insertCurrentCompletion) withMethod:@selector(_fa_insertCurrentCompletion)];
@@ -189,11 +193,21 @@ static char insertingCompletionKey;
         if (score > MINIMUM_SCORE_THRESHOLD) {
             [filteredList addObject:item];
         }
-        if (score > highScore && item.name.length <= length) {
-            bestMatch = item;
-            highScore = score;
-            length = item.name.length;
+        
+        if (prioritizeShortestMatch) {
+            if (score > highScore && item.name.length <= length) {
+                bestMatch = item;
+                highScore = score;
+                length = item.name.length;
+            }
         }
+        else {
+            if (score > highScore) {
+                bestMatch = item;
+                highScore = score;
+            }
+        }
+        
     }];
     
     if (filtered) {
