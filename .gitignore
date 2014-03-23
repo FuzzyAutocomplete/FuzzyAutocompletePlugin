@@ -17,3 +17,4 @@ Pods/build*
 .build
 build-MacOSX
 Releases
+*.xccheckout
