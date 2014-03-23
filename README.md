@@ -27,12 +27,25 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
   * Clone and build the project
 * Restart Xcode and enjoy!
 
+## Options
+
+Changing options require restarting Xcode. All options off by default.
+
+* Shortest match being top priority: `defaults write com.apple.dt.xcode FuzzyAutocompletePrioritizeShortestMatch -bool yes`
+  * This makes it so you can always type more to match what you want without having to go through the list. Off by default as it ruins Xcode's built-in priority system.
+* Insert useful prefix when pressing `Tab`: `defaults write com.apple.dt.xcode FuzzyAutocompleteInsertUsefulPrefix -bool yes`
+  * Enables Xcode's old behaviour where pressing `Tab` inserts the common prefix of the your selected match (denoted by the underlined text). Off as it can return weird top results due to Xcode's fuzzy matching algorithm. Only works when the search prefix shares the prefix with the top match.
+
 ## Notes
 
 * Only tested with Xcode 5.0 and 5.1 on 10.9
 * Hasn't been tested with other plugins (other than `KSImageNamed`)
 
 ## Changelog
+
+#### 1.7 - 2014/03/23
+
+* Adds inserting useful prefix with `Tab` as an option.
 
 #### 1.6 - 2014/03/22
 

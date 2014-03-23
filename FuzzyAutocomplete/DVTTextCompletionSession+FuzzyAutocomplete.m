@@ -19,10 +19,12 @@
 @implementation DVTTextCompletionSession (FuzzyAutocomplete)
 
 static BOOL prioritizeShortestMatch;
+static BOOL insertPartialPrefix;
 
 + (void)load
 {
     prioritizeShortestMatch = [FuzzyAutocomplete shouldPrioritizeShortestMatch];
+    insertPartialPrefix = [FuzzyAutocomplete shouldInsertPartialPrefix];
     [self swizzleMethodWithErrorLogging:@selector(_setFilteringPrefix:forceFilter:) withMethod:@selector(_fa_setFilteringPrefix:forceFilter:)];
     [self swizzleMethodWithErrorLogging:@selector(setAllCompletions:) withMethod:@selector(_fa_setAllCompletions:)];
     [self swizzleMethodWithErrorLogging:@selector(insertCurrentCompletion) withMethod:@selector(_fa_insertCurrentCompletion)];
@@ -44,6 +46,12 @@ static char insertingCompletionKey;
 
 - (BOOL)_fa_insertUsefulPrefix
 {
+    if (insertPartialPrefix) {
+        IDEIndexCompletionItem *current = self.filteredCompletionsAlpha[self.selectedCompletionIndex];
+        if ([current.name hasPrefix:self.usefulPrefix]) {
+            return [self _fa_insertUsefulPrefix];
+        }
+    }
     return [self insertCurrentCompletion];
 }
 
@@ -156,6 +164,17 @@ static char insertingCompletionKey;
                 self.selectedCompletionIndex = NSNotFound;
             }
             
+            if (insertPartialPrefix) {
+                NSArray *prefixMatches = [self.filteredCompletionsAlpha filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name beginswith[c] %@", prefix]];
+                long long index = [self _indexOfItem:bestMatch inAlphabeticalList:prefixMatches mustBeThere:NO];
+                if (index >= 0) {
+                    self.usefulPrefix = [self _usefulPartialCompletionPrefixForItems:prefixMatches selectedIndex:index filteringPrefix:prefix];
+                }
+                else {
+                    self.usefulPrefix = nil;
+                }
+            }
+
             // IDEIndexCompletionItem doesn't implement isEqual
             DVTTextCompletionInlinePreviewController *inlinePreview = [self _inlinePreviewController];
             if (![originalMatch.name isEqual:bestMatch.name]) {

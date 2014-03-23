@@ -20,4 +20,15 @@
     return prioritizeShortestMatch;
 }
 
++ (BOOL)shouldInsertPartialPrefix
+{
+    static BOOL insertPartialPrefix;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        insertPartialPrefix = [[NSUserDefaults standardUserDefaults] boolForKey:@"FuzzyAutocompleteInsertPartialPrefix"];
+    });
+    return insertPartialPrefix;
+}
+
+
 @end
