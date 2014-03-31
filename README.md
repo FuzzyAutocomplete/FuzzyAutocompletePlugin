@@ -37,7 +37,7 @@ Changing options require restarting Xcode. All options off by default.
   * Enables Xcode's old behaviour where pressing `Tab` inserts the common prefix of the your selected match (denoted by the underlined text). Off as it can return weird top results due to Xcode's fuzzy matching algorithm. Only works when the search prefix shares the prefix with the top match.
 * Prefix Anchor: `defaults write com.apple.dt.Xcode FuzzyAutocompletePrefixAnchor -integer [x]`, where `x` is the number of characters you want to anchor.
   * This will require the completion items to match the first "x" letters you type ("x" being the integer you set). Note: this only "kicks in" *after* you've typed in more than one character.  So even if you set the Prefix Anchor to `1`, the completion results won't be filtered to the prefix until you type the second character. 
-  * This option if off by default. If the option has been set, you can turn the option off by setting the option's integer value to `0`.
+  * This option is off by default. If the option has been set, you can turn the option off by setting the option's integer value to `0`.
 
 ## Notes
 
