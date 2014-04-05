@@ -12,5 +12,6 @@
 
 + (BOOL)shouldPrioritizeShortestMatch;
 + (BOOL)shouldInsertPartialPrefix;
++ (NSUInteger) prefixAnchor;
 
 @end

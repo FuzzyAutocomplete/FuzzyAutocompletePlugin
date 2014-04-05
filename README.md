@@ -31,10 +31,13 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 
 Changing options require restarting Xcode. All options off by default.
 
-* Shortest match being top priority: `defaults write com.apple.dt.xcode FuzzyAutocompletePrioritizeShortestMatch -bool yes`
+* Shortest match being top priority: `defaults write com.apple.dt.Xcode FuzzyAutocompletePrioritizeShortestMatch -bool yes`
   * This makes it so you can always type more to match what you want without having to go through the list. Off by default as it ruins Xcode's built-in priority system.
-* Insert useful prefix when pressing `Tab`: `defaults write com.apple.dt.xcode FuzzyAutocompleteInsertUsefulPrefix -bool yes`
+* Insert useful prefix when pressing `Tab`: `defaults write com.apple.dt.Xcode FuzzyAutocompleteInsertUsefulPrefix -bool yes`
   * Enables Xcode's old behaviour where pressing `Tab` inserts the common prefix of the your selected match (denoted by the underlined text). Off as it can return weird top results due to Xcode's fuzzy matching algorithm. Only works when the search prefix shares the prefix with the top match.
+* Prefix Anchor: `defaults write com.apple.dt.Xcode FuzzyAutocompletePrefixAnchor -integer x`, where `x` is the number of characters you want to anchor.
+  * This will require the completion items to match the first "x" letters you type ("x" being the integer you set). Note: this only "kicks in" *after* you've typed in more than one character.  So even if you set the Prefix Anchor to `1`, the completion results won't be filtered to the prefix until you type the second character. 
+  * This option is off by default. If the option has been set, you can turn the option off by setting the option's integer value to `0`.
 
 ## Notes
 
@@ -49,7 +52,7 @@ Changing options require restarting Xcode. All options off by default.
 
 #### 1.6 - 2014/03/22
 
-* No longer prioritises shortest match by default. Can be re-enabled with `defaults write com.apple.dt.xcode FuzzyAutocompletePrioritizeShortestMatch -bool yes` and restarting Xcode.
+* No longer prioritises shortest match by default. Can be re-enabled with `defaults write com.apple.dt.Xcode FuzzyAutocompletePrioritizeShortestMatch -bool yes` and restarting Xcode.
 
 #### 1.5 - 2013/11/05
 

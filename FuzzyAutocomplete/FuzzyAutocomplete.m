@@ -29,6 +29,14 @@
     });
     return insertPartialPrefix;
 }
-
-
++ (NSUInteger) prefixAnchor
+{
+    static NSUInteger prefixAnchor;
+    
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        prefixAnchor = [[NSUserDefaults standardUserDefaults] integerForKey:@"FuzzyAutocompletePrefixAnchor"];
+    });
+    return prefixAnchor;
+}
 @end

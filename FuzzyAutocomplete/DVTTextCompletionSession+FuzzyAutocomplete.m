@@ -20,11 +20,13 @@
 
 static BOOL prioritizeShortestMatch;
 static BOOL insertPartialPrefix;
+static NSUInteger prefixAnchor;
 
 + (void)load
 {
     prioritizeShortestMatch = [FuzzyAutocomplete shouldPrioritizeShortestMatch];
     insertPartialPrefix = [FuzzyAutocomplete shouldInsertPartialPrefix];
+    prefixAnchor = [FuzzyAutocomplete prefixAnchor];
     [self swizzleMethodWithErrorLogging:@selector(_setFilteringPrefix:forceFilter:) withMethod:@selector(_fa_setFilteringPrefix:forceFilter:)];
     [self swizzleMethodWithErrorLogging:@selector(setAllCompletions:) withMethod:@selector(_fa_setAllCompletions:)];
     [self swizzleMethodWithErrorLogging:@selector(insertCurrentCompletion) withMethod:@selector(_fa_insertCurrentCompletion)];
@@ -102,14 +104,26 @@ static char insertingCompletionKey;
         double __unused totalTime = timeVoidBlock(^{
             NSArray *searchSet;
             NSString *lastPrefix = objc_getAssociatedObject(self, &lastPrefixKey);
-
+            
             // Use the last result set to filter down if it exists
             if (lastPrefix && [prefix rangeOfString:lastPrefix].location == 0) {
                 searchSet = objc_getAssociatedObject(self, &lastResultSetKey);
             }
             
             if (!searchSet) {
-                searchSet = [self filteredCompletionsBeginningWithLetter:[prefix substringToIndex:1]];
+                searchSet = [self filteredCompletionsBeginningWithLetter:({
+                    NSString *anchor = prefix;
+                    if (prefixAnchor > 0) {
+                        if (prefixAnchor < prefix.length){
+                            anchor = [prefix substringToIndex:prefixAnchor];
+                        }
+                    } else {
+                        anchor = [prefix substringToIndex:1];
+                    }
+                    anchor;
+                })];
+            } else if (prefixAnchor > 0 && prefix.length <= prefixAnchor){
+                searchSet = [searchSet filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name BEGINSWITH[c] %@", prefix]];
             }
             
             IDEIndexCompletionItem *originalMatch;
@@ -118,7 +132,7 @@ static char insertingCompletionKey;
             if (self.selectedCompletionIndex < self.filteredCompletionsAlpha.count) {
                 originalMatch = self.filteredCompletionsAlpha[self.selectedCompletionIndex];
             }
-
+            
             NSUInteger workerCount = MIN(MAX(searchSet.count / MIN_CHUNK_LENGTH, 1), [self maxWorkerCount]);
             NSMutableArray *filteredList;
             
@@ -174,7 +188,7 @@ static char insertingCompletionKey;
                     self.usefulPrefix = nil;
                 }
             }
-
+            
             // IDEIndexCompletionItem doesn't implement isEqual
             DVTTextCompletionInlinePreviewController *inlinePreview = [self _inlinePreviewController];
             if (![originalMatch.name isEqual:bestMatch.name]) {
@@ -204,15 +218,16 @@ static char insertingCompletionKey;
     __block NSUInteger length = 100;
     
     [array enumerateObjectsUsingBlock:^(IDEIndexCompletionItem *item, NSUInteger idx, BOOL *stop) {
+        
         double itemPriority = MAX(item.priority, 1);
         double invertedPriority = 1 + (1.0f / itemPriority);
         double priorityFactor = (MAX([self _priorityFactorForItem:item], 1) - 1) * XCODE_PRIORITY_FACTOR_WEIGHTING + 1;
         double score = [pattern scoreCandidate:item.name] * invertedPriority * priorityFactor;
         
+        
         if (score > MINIMUM_SCORE_THRESHOLD) {
             [filteredList addObject:item];
         }
-        
         if (prioritizeShortestMatch) {
             if (score > highScore && item.name.length <= length) {
                 bestMatch = item;
@@ -243,16 +258,18 @@ static char insertingCompletionKey;
     double highScore = 0.0f;
     IDEIndexCompletionItem *bestMatch;
     IDEIndexCompletionItem *item;
-
+    
     double itemPriority;
     double invertedPriority;
     double priorityFactor;
     double score;
     
+    
     // Sequential array access faster than striding. Who would've thought?
     NSUInteger bound = (offset + 1) * (array.count / total);
     for (NSUInteger i=offset * (array.count / total); i<bound; i++) {
         item = array[i];
+        
         
         itemPriority = MAX(item.priority, 1);
         invertedPriority = 1 + (1.0f / itemPriority);
@@ -301,7 +318,11 @@ static char filteredCompletionCacheKey;
     NSArray *completionsForLetter = [filteredCompletionCache objectForKey:letter];
     if (!completionsForLetter) {
         completionsForLetter = timeBlockAndLog(@"FirstPass", ^id{
-            return [self.allCompletions filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name contains[c] %@", letter]];
+            if (prefixAnchor == 0){
+                return [self.allCompletions filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name contains[c] %@", letter]];
+            } else {
+                return [self.allCompletions filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name BEGINSWITH[c] %@", letter]];
+            }
         });
         [filteredCompletionCache setObject:completionsForLetter forKey:letter];
     }
