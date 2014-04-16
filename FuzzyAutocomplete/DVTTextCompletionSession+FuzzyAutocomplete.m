@@ -191,7 +191,7 @@
 
 // Sets the current filtering prefix and calculates completion list.
 // We override here to use fuzzy matching.
-- (void)_fa_setFilteringPrefix: (NSString *) prefix forceFilter: (BOOL) forceFilter { MARK
+- (void)_fa_setFilteringPrefix: (NSString *) prefix forceFilter: (BOOL) forceFilter {
     DLog(@"filteringPrefix = @\"%@\"", prefix);
 
     self.fa_filteringTime = 0;

@@ -117,10 +117,10 @@ const char kRowHeightKey;
 - (void) _fa_updateCurrentDisplayState {
     NSTableView * tableView = [self valueForKey: @"_completionsTableView"];
 
-    // show or hide score column depending on wether we have scores
+    // show or hide score column depending on wether we have scores (width has to be negative to hide it completely)
     NSTableColumn * scoreColumn = [tableView tableColumnWithIdentifier: @"score"];
     if (scoreColumn) {
-        scoreColumn.minWidth = self.session.fa_nonZeroScores ? [self _fa_widthForScoreColumn] : -3;
+        scoreColumn.minWidth = self.session.fa_nonZeroScores ? [self _fa_widthForScoreColumn] : -tableView.intercellSpacing.width;
         scoreColumn.maxWidth = scoreColumn.width = scoreColumn.minWidth;
     }
 
