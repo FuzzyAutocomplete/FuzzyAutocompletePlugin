@@ -1,7 +1,7 @@
 ## Changelog
 
 #### 2.0.0 - 2014/04/16
-**A major update intorducing many fixes and improvements, including:**
+**A major update introducing many fixes and improvements, including:**
 
 * Visual feedback in Completion List and Inline Preview
 * Settings Window, settings now don't require Xcode restart
