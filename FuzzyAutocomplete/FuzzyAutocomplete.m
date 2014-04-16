@@ -5,38 +5,56 @@
 //  Created by Jack Chen on 18/10/2013.
 //  Copyright (c) 2013 Sproutcube. All rights reserved.
 //
+//  Extended by Leszek Slazynski.
+//  Copyright (c) 2014 United Lines of Code. All rights reserved.
+//
 
 #import "FuzzyAutocomplete.h"
+#import "FASettings.h"
 
 @implementation FuzzyAutocomplete
 
-+ (BOOL)shouldPrioritizeShortestMatch
-{
-    static BOOL prioritizeShortestMatch;
++ (void)pluginDidLoad:(NSBundle *)plugin {
     static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        prioritizeShortestMatch = [[NSUserDefaults standardUserDefaults] boolForKey:@"FuzzyAutocompletePrioritizeShortestMatch"];
-    });
-    return prioritizeShortestMatch;
+    NSString *currentApplicationName = [NSBundle mainBundle].lsl_bundleName;
+
+    if ([currentApplicationName isEqual:@"Xcode"]) {
+        dispatch_once(&onceToken, ^{
+            [self createMenuItem: plugin];
+        });
+    }
 }
 
-+ (BOOL)shouldInsertPartialPrefix
-{
-    static BOOL insertPartialPrefix;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        insertPartialPrefix = [[NSUserDefaults standardUserDefaults] boolForKey:@"FuzzyAutocompleteInsertPartialPrefix"];
-    });
-    return insertPartialPrefix;
++ (void)createMenuItem: (NSBundle *) pluginBundle {
+    NSString * name = pluginBundle.lsl_bundleName;
+    NSMenuItem * xcodeMenuItem = [[NSApp mainMenu] itemAtIndex: 0];
+    NSMenuItem * fuzzyItem = [[NSMenuItem alloc] initWithTitle: name
+                                                       action: NULL
+                                                keyEquivalent: @""];
+
+    NSString * version = [@"Plugin Version: " stringByAppendingString: pluginBundle.lsl_bundleVersion];
+    NSMenuItem * versionItem = [[NSMenuItem alloc] initWithTitle: version
+                                                          action: NULL
+                                                   keyEquivalent: @""];
+
+    NSMenuItem * settingsItem = [[NSMenuItem alloc] initWithTitle: @"Plugin Settings..."
+                                                           action: @selector(showSettingsWindow)
+                                                    keyEquivalent: @""];
+
+    settingsItem.target = [FASettings currentSettings];
+
+    fuzzyItem.submenu = [[NSMenu alloc] initWithTitle: name];
+    [fuzzyItem.submenu addItem: versionItem];
+    [fuzzyItem.submenu addItem: settingsItem];
+
+    NSInteger menuIndex = [xcodeMenuItem.submenu indexOfItemWithTitle: @"Behaviors"];
+    if (menuIndex == -1) {
+        menuIndex = 3;
+    } else {
+        ++menuIndex;
+    }
+
+    [xcodeMenuItem.submenu insertItem: fuzzyItem atIndex: menuIndex];
 }
-+ (NSUInteger) prefixAnchor
-{
-    static NSUInteger prefixAnchor;
-    
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        prefixAnchor = [[NSUserDefaults standardUserDefaults] integerForKey:@"FuzzyAutocompletePrefixAnchor"];
-    });
-    return prefixAnchor;
-}
+
 @end

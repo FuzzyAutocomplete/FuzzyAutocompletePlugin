@@ -5,15 +5,15 @@
 //
 
 #ifdef __OBJC__
+
     #import <Cocoa/Cocoa.h>
+    #import "NSBundle+LSLProperties.h"
+
+    // Used in LSLDebug
+    #define DOLog(fmt, ...) NSLog((@"FuzzyAutocomplete: " fmt), ##__VA_ARGS__);
+    #define DODLog(fil, lin, fun, fmt, ...) NSLog((@"%s:%d %s " fmt), fil, lin, fun, ##__VA_ARGS__);
+
+    #import "LSLDebug.h"
+
 #endif
 
-//#define FA_DEBUG 1
-
-#ifdef FA_DEBUG
-#define DLog(fmt, ...) NSLog((@"FuzzyAutocomplete: %s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
-#else
-#define DLog(...)
-#endif
-
-#define ALog(fmt, ...) NSLog((@"FuzzyAutocomplete: " fmt), ##__VA_ARGS__);
