@@ -539,44 +539,54 @@ static char prefixFilteredCompletionCacheKey;
     return bestMatch;
 }
 
-// Performs a simple binary search to find rirst item with given prefix.
-- (NSInteger) _fa_indexOfFirstItemWithPrefix: (NSString *) prefix inSortedArray: (NSArray *) array {
-    const NSUInteger N = array.count;
-
-    if (N == 0) return NSNotFound;
-
-    id<DVTTextCompletionItem> item;
-
-    if ([(item = array[0]).name compare: prefix options: NSCaseInsensitiveSearch] == NSOrderedDescending) {
-        if ([[item.name lowercaseString] hasPrefix: prefix]) {
-            return 0;
-        } else {
-            return NSNotFound;
-        }
-    }
-
-    if ([(item = array[N-1]).name compare: prefix options: NSCaseInsensitiveSearch] == NSOrderedAscending) {
-        return NSNotFound;
-    }
-
-    NSUInteger a = 0, b = N-1;
-    while (b > a+1) {
-        NSUInteger c = (a + b) / 2;
-        if ([(item = array[c]).name compare: prefix options: NSCaseInsensitiveSearch] == NSOrderedAscending) {
-            a = c;
-        } else {
-            b = c;
-        }
-    }
-
-    if ([[(item = array[a]).name lowercaseString] hasPrefix: prefix]) {
+// Returns index of first element passing test, or NSNotFound, assumes sorted range wrt test
+- (NSUInteger) _fa_indexOfFirstElementInSortedRange: (NSRange) range
+                                            inArray: (NSArray *) array
+                                        passingTest: (BOOL(^)(id)) test
+{
+    if (range.length == 0) return NSNotFound;
+    NSUInteger a = range.location, b = range.location + range.length - 1;
+    if (test(array[a])) {
         return a;
-    }
-    if ([[(item = array[b]).name lowercaseString] hasPrefix: prefix]) {
+    } else if (!test(array[b])) {
+        return NSNotFound;
+    } else {
+        while (b > a + 1) {
+            NSUInteger c = (a + b) / 2;
+            if (test(array[c])) {
+                b = c;
+            } else {
+                a = c;
+            }
+        }
         return b;
     }
+}
 
-    return NSNotFound;
+// Performs binary searches to find items with given prefix.
+- (NSRange) _fa_rangeOfItemsWithPrefix: (NSString *) prefix
+                         inSortedRange: (NSRange) range
+                               inArray: (NSArray *) array
+{
+    NSUInteger lowerBound = [self _fa_indexOfFirstElementInSortedRange: range inArray: array passingTest: ^BOOL(id<DVTTextCompletionItem> item) {
+        return [item.name caseInsensitiveCompare: prefix] != NSOrderedAscending;
+    }];
+
+    if (lowerBound == NSNotFound) {
+        return NSMakeRange(0, 0);
+    }
+
+    range.location += lowerBound; range.length -= lowerBound;
+
+    NSUInteger upperBound = [self _fa_indexOfFirstElementInSortedRange: range inArray: array passingTest: ^BOOL(id<DVTTextCompletionItem> item) {
+        return ![item.name.lowercaseString hasPrefix: prefix];
+    }];
+
+    if (upperBound != NSNotFound) {
+        range.length = upperBound - lowerBound;
+    }
+
+    return range;
 }
 
 // gets a subset of allCompletions for given prefix
@@ -590,26 +600,17 @@ static char prefixFilteredCompletionCacheKey;
     NSArray *completionsForPrefix = filteredCompletionCache[prefix];
     if (!completionsForPrefix) {
         NSArray * searchSet = self.allCompletions;
-        for (int i = 1; i < prefix.length; ++i) {
+        for (NSUInteger i = prefix.length - 1; i > 0; --i) {
             NSArray * cached = filteredCompletionCache[[prefix substringToIndex: i]];
             if (cached) {
                 searchSet = cached;
+                break;
             }
         }
         // searchSet is sorted so we can do a binary search
-        NSUInteger idx = [self _fa_indexOfFirstItemWithPrefix: prefix inSortedArray: searchSet];
-        if (idx == NSNotFound) {
-            completionsForPrefix = @[];
-        } else {
-            NSMutableArray * array = [NSMutableArray array];
-            const NSUInteger N = searchSet.count;
-            id<DVTTextCompletionItem> item;
-            while (idx < N && [(item = searchSet[idx]).name.lowercaseString hasPrefix: prefix]) {
-                [array addObject: item];
-                ++idx;
-            }
-            completionsForPrefix = array;
-        }
+        NSRange range = [self _fa_rangeOfItemsWithPrefix: prefix inSortedRange: NSMakeRange(0, searchSet.count) inArray: searchSet];
+        completionsForPrefix = [searchSet subarrayWithRange: range];
+        filteredCompletionCache[prefix] = completionsForPrefix;
     }
     return completionsForPrefix;
 }
