@@ -51,7 +51,11 @@
 
     [self jr_swizzleMethod: @selector(insertCurrentCompletion)
                 withMethod: @selector(_fa_insertCurrentCompletion)
-                     error: nil];    
+                     error: nil];
+
+    [self jr_swizzleMethod: @selector(_selectNextPreviousByPriority:)
+                withMethod: @selector(_fa_selectNextPreviousByPriority:)
+                     error: nil];
 }
 
 #pragma mark - public methods
@@ -138,6 +142,28 @@
 // Otherwise the cursor can be possibly placed inside a token.
 - (NSRange) _fa_rangeOfFirstWordInString: (NSString *) string {
     return NSMakeRange(0, string.length);
+}
+
+// We override to calculate _filteredCompletionsAlpha before calling the original
+// This way the hotkeys for prev/next by score use our scoring, not Xcode's
+- (void) _fa_selectNextPreviousByPriority: (BOOL) next {
+    if (![self valueForKey: @"_filteredCompletionsPriority"]) {
+        NSArray * sorted = nil;
+        NSDictionary * filteredScores = self.fa_scoresForFilteredCompletions;
+        if ([FASettings currentSettings].sortByScore) {
+            sorted = self.filteredCompletionsAlpha.reverseObjectEnumerator.allObjects;
+        } else if (filteredScores) {
+            sorted = [self.filteredCompletionsAlpha sortedArrayWithOptions: NSSortConcurrent
+                                                           usingComparator: ^(id<DVTTextCompletionItem> obj1, id<DVTTextCompletionItem> obj2)
+            {
+                NSComparisonResult result = [filteredScores[obj1.name] compare: filteredScores[obj2.name]];
+                return result == NSOrderedSame ? [obj2.name caseInsensitiveCompare: obj1.name] : result;
+            }];
+        }
+        [self setValue: sorted forKey: @"_filteredCompletionsPriority"];
+    }
+
+    [self _fa_selectNextPreviousByPriority: next];
 }
 
 // We override to add formatting to the inline preview.
@@ -350,7 +376,8 @@
 
         if ([FASettings currentSettings].sortByScore) {
             [filteredList sortWithOptions: NSSortConcurrent usingComparator:^(id<DVTTextCompletionItem> obj1, id<DVTTextCompletionItem> obj2) {
-                return [filteredScores[obj2.name] compare: filteredScores[obj1.name]];
+                NSComparisonResult result = [filteredScores[obj2.name] compare: filteredScores[obj1.name]];
+                return result == NSOrderedSame ? [obj1.name caseInsensitiveCompare: obj2.name] : result;
             }];
         }
 
@@ -381,7 +408,8 @@
         [self setValue: filteredList forKey: @"_filteredCompletionsAlpha"];
         [self setValue: partial forKey: @"_usefulPrefix"];
         [self setValue: @(selection) forKey: @"_selectedCompletionIndex"];
-        
+        [self setValue: nil forKey: @"_filteredCompletionsPriority"];
+
         [self didChangeValueForKey:@"filteredCompletionsAlpha"];
         [self didChangeValueForKey:@"usefulPrefix"];
         [self didChangeValueForKey:@"selectedCompletionIndex"];
