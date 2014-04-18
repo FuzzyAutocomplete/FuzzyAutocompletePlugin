@@ -71,6 +71,10 @@
     [self jr_swizzleMethod: @selector(_selectNextPreviousByPriority:)
                 withMethod: @selector(_fa_selectNextPreviousByPriority:)
                      error: nil];
+
+    [self jr_swizzleMethod: @selector(showCompletionsExplicitly:)
+                withMethod: @selector(_fa_showCompletionsExplicitly:)
+                     error: nil];
 }
 
 #pragma mark - public methods
@@ -130,7 +134,15 @@
     return ret;
 }
 
-// We additionally refresh the theme upon session creation.
+// We override here to hide inline preview if disabled
+- (void) _fa_showCompletionsExplicitly: (BOOL) explicitly {
+    [self _fa_showCompletionsExplicitly: explicitly];
+    if (![FASettings currentSettings].showInlinePreview) {
+        [self._inlinePreviewController hideInlinePreviewWithReason: 0x0];
+    }
+}
+
+// We additionally load the settings and refresh the theme upon session creation.
 - (instancetype) _fa_initWithTextView: (NSTextView *) textView
                            atLocation: (NSInteger) location
                        cursorLocation: (NSInteger) cursorLocation
