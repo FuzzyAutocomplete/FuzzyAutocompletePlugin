@@ -332,15 +332,10 @@
     
 }
 
-static char letterFilteredCompletionCacheKey;
-static char prefixFilteredCompletionCacheKey;
-
 // We nullify the caches when completions change.
 - (void) _fa_setAllCompletions: (NSArray *) allCompletions {
     [self _fa_setAllCompletions:allCompletions];
     [self._fa_resultsStack removeAllObjects];
-    [objc_getAssociatedObject(self, &letterFilteredCompletionCacheKey) removeAllObjects];
-    [objc_getAssociatedObject(self, &prefixFilteredCompletionCacheKey) removeAllObjects];
 }
 
 #pragma mark - helpers
@@ -358,7 +353,7 @@ static char prefixFilteredCompletionCacheKey;
 
     const NSInteger anchor = [FASettings currentSettings].prefixAnchor;
 
-    FAFilteringResults * lastResults = self._fa_resultsStack.count ? self._fa_resultsStack.lastObject : nil;
+    FAFilteringResults * lastResults = [self _fa_lastFilteringResults];
 
     NAMED_TIMER_START(ObtainSearchSet);
 
@@ -633,52 +628,33 @@ static char prefixFilteredCompletionCacheKey;
 // gets a subset of allCompletions for given prefix
 - (NSArray *) _fa_filteredCompletionsForPrefix: (NSString *) prefix {
     prefix = [prefix lowercaseString];
-    NSMutableDictionary *filteredCompletionCache = objc_getAssociatedObject(self, &prefixFilteredCompletionCacheKey);
-    if (!filteredCompletionCache) {
-        filteredCompletionCache = [NSMutableDictionary dictionary];
-        objc_setAssociatedObject(self, &prefixFilteredCompletionCacheKey, filteredCompletionCache, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    }
-    NSArray *completionsForPrefix = filteredCompletionCache[prefix];
-    if (!completionsForPrefix) {
-        NSArray * searchSet = self.allCompletions;
-        for (NSUInteger i = prefix.length - 1; i > 0; --i) {
-            NSArray * cached = filteredCompletionCache[[prefix substringToIndex: i]];
-            if (cached) {
-                searchSet = cached;
-                break;
-            }
-        }
+    FAFilteringResults * lastResults = [self _fa_lastFilteringResults];
+    NSArray * array;
+    if ([lastResults.query.lowercaseString hasPrefix: prefix]) {
+        array = lastResults.allItems;
+    } else {
+        NSArray * searchSet = lastResults.allItems ?: self.allCompletions;
         // searchSet is sorted so we can do a binary search
         NSRange range = [self _fa_rangeOfItemsWithPrefix: prefix inSortedRange: NSMakeRange(0, searchSet.count) inArray: searchSet];
-        completionsForPrefix = [searchSet subarrayWithRange: range];
-        filteredCompletionCache[prefix] = completionsForPrefix;
+        array = [searchSet subarrayWithRange: range];
     }
-    return completionsForPrefix;
+    return array;
 }
 
 // gets a subset of allCompletions for given letter
 - (NSArray *) _fa_filteredCompletionsForLetter: (NSString *) letter {
     letter = [letter lowercaseString];
-    NSMutableDictionary *filteredCompletionCache = objc_getAssociatedObject(self, &letterFilteredCompletionCacheKey);
-    if (!filteredCompletionCache) {
-        filteredCompletionCache = [NSMutableDictionary dictionary];
-        objc_setAssociatedObject(self, &letterFilteredCompletionCacheKey, filteredCompletionCache, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    }
-    NSArray *completionsForLetter = [filteredCompletionCache objectForKey:letter];
-    if (!completionsForLetter) {
-        NSString * lowerAndUpper = [letter stringByAppendingString: letter.uppercaseString];
-        NSCharacterSet * set = [NSCharacterSet characterSetWithCharactersInString: lowerAndUpper];
-        NSMutableArray * array = [NSMutableArray array];
-        for (id<DVTTextCompletionItem> item in self.allCompletions) {
-            NSRange range = [item.name rangeOfCharacterFromSet: set];
-            if (range.location != NSNotFound) {
-                [array addObject: item];
-            }
+
+    NSString * lowerAndUpper = [letter stringByAppendingString: letter.uppercaseString];
+    NSCharacterSet * set = [NSCharacterSet characterSetWithCharactersInString: lowerAndUpper];
+    NSMutableArray * array = [NSMutableArray array];
+    for (id<DVTTextCompletionItem> item in self.allCompletions) {
+        NSRange range = [item.name rangeOfCharacterFromSet: set];
+        if (range.location != NSNotFound) {
+            [array addObject: item];
         }
-        completionsForLetter = array;
-        filteredCompletionCache[letter] = completionsForLetter;
     }
-    return completionsForLetter;
+    return array;
 }
 
 - (void)_fa_debugCompletionsByScore:(NSArray *)completions withQuery:(NSString *)query {
@@ -762,6 +738,10 @@ static char kResultsStackKey;
 
 - (void) set_fa_resultsStack: (NSMutableArray *) stack {
     objc_setAssociatedObject(self, &kResultsStackKey, stack, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (FAFilteringResults *) _fa_lastFilteringResults {
+    return self._fa_resultsStack.count ? self._fa_resultsStack.lastObject : nil;
 }
 
 @end
