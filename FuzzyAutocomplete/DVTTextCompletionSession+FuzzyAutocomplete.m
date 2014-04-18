@@ -300,8 +300,6 @@
             [resultsStack addObject: results];
         }
 
-        [self setPendingRequestState: 0];
-
         NSString * partial = [self _usefulPartialCompletionPrefixForItems: results.filteredItems
                                                             selectedIndex: results.selection
                                                           filteringPrefix: prefix];
@@ -328,10 +326,6 @@
 
         if (![FASettings currentSettings].showInlinePreview) {
             [self._inlinePreviewController hideInlinePreviewWithReason: 0x0];
-        } else {
-            if ([self._inlinePreviewController isShowingInlinePreview]) {
-                [self._inlinePreviewController hideInlinePreviewWithReason:0x8];
-            }
         }
 
     }
