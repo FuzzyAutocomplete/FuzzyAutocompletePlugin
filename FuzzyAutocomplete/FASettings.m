@@ -11,7 +11,7 @@
 #import "FATheme.h"
 
 // increment to show settings screen to the user
-static const NSUInteger kSettingsVersion = 1;
+static const NSUInteger kSettingsVersion = 2;
 
 @interface FASettings () <NSWindowDelegate>
 
@@ -163,7 +163,7 @@ static const double kDefaultMaxPrefixBonus = 0.5;
                                           defaultButton: @"View"
                                         alternateButton: @"Skip"
                                             otherButton: nil
-                              informativeTextWithFormat: @"New settings are available for %@ plugin. Do you want to review them now? You can always access the settings later from the Menu: Xcode > %@ > Plugin Settings...", pluginName, pluginName];
+                              informativeTextWithFormat: @"New settings are available for %@ plugin. Do you want to review them now? You can always access the settings later from the Menu: Editor > %@ > Plugin Settings...", pluginName, pluginName];
         if ([alert runModal] == NSAlertDefaultReturn) {
             [self showSettingsWindow];
         }

@@ -20,41 +20,53 @@
 
     if ([currentApplicationName isEqual:@"Xcode"]) {
         dispatch_once(&onceToken, ^{
-            [self createMenuItem: plugin];
+            [self createMenuItem];
+            [[NSNotificationCenter defaultCenter] addObserver: self
+                                                     selector: @selector(menuDidChange:)
+                                                         name: NSMenuDidChangeItemNotification
+                                                       object: nil];
         });
     }
 }
 
-+ (void)createMenuItem: (NSBundle *) pluginBundle {
++ (void) menuDidChange: (NSNotification *) notification {
+    [self createMenuItem];
+}
+
++ (void)createMenuItem {
+    NSBundle * pluginBundle = [NSBundle bundleForClass: self];
     NSString * name = pluginBundle.lsl_bundleName;
-    NSMenuItem * xcodeMenuItem = [[NSApp mainMenu] itemAtIndex: 0];
-    NSMenuItem * fuzzyItem = [[NSMenuItem alloc] initWithTitle: name
-                                                       action: NULL
-                                                keyEquivalent: @""];
+    NSMenuItem * editorMenuItem = [[NSApp mainMenu] itemWithTitle: @"Editor"];
 
-    NSString * version = [@"Plugin Version: " stringByAppendingString: pluginBundle.lsl_bundleVersion];
-    NSMenuItem * versionItem = [[NSMenuItem alloc] initWithTitle: version
-                                                          action: NULL
-                                                   keyEquivalent: @""];
+    if (editorMenuItem && ![editorMenuItem.submenu itemWithTitle: name]) {
+        NSMenuItem * fuzzyItem = [[NSMenuItem alloc] initWithTitle: name
+                                                            action: NULL
+                                                     keyEquivalent: @""];
 
-    NSMenuItem * settingsItem = [[NSMenuItem alloc] initWithTitle: @"Plugin Settings..."
-                                                           action: @selector(showSettingsWindow)
-                                                    keyEquivalent: @""];
+        NSString * version = [@"Plugin Version: " stringByAppendingString: pluginBundle.lsl_bundleVersion];
+        NSMenuItem * versionItem = [[NSMenuItem alloc] initWithTitle: version
+                                                              action: NULL
+                                                       keyEquivalent: @""];
 
-    settingsItem.target = [FASettings currentSettings];
+        NSMenuItem * settingsItem = [[NSMenuItem alloc] initWithTitle: @"Plugin Settings..."
+                                                               action: @selector(showSettingsWindow)
+                                                        keyEquivalent: @""];
 
-    fuzzyItem.submenu = [[NSMenu alloc] initWithTitle: name];
-    [fuzzyItem.submenu addItem: versionItem];
-    [fuzzyItem.submenu addItem: settingsItem];
+        settingsItem.target = [FASettings currentSettings];
 
-    NSInteger menuIndex = [xcodeMenuItem.submenu indexOfItemWithTitle: @"Behaviors"];
-    if (menuIndex == -1) {
-        menuIndex = 3;
-    } else {
-        ++menuIndex;
+        fuzzyItem.submenu = [[NSMenu alloc] initWithTitle: name];
+        [fuzzyItem.submenu addItem: versionItem];
+        [fuzzyItem.submenu addItem: settingsItem];
+
+        NSInteger menuIndex = [editorMenuItem.submenu indexOfItemWithTitle: @"Show Completions"];
+        if (menuIndex == -1) {
+            [editorMenuItem.submenu addItem: [NSMenuItem separatorItem]];
+            [editorMenuItem.submenu addItem: fuzzyItem];
+        } else {
+            [editorMenuItem.submenu insertItem: fuzzyItem atIndex: menuIndex];
+        }
+        
     }
-
-    [xcodeMenuItem.submenu insertItem: fuzzyItem atIndex: menuIndex];
 }
 
 @end
