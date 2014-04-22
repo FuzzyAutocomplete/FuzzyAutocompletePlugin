@@ -10,4 +10,7 @@
 
 @interface DVTTextCompletionListWindowController (FuzzyAutocomplete)
 
+/// Swizzles methods to enable/disable the plugin
++ (void) fa_swizzleMethods;
+
 @end

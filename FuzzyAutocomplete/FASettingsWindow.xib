@@ -600,6 +600,17 @@ Prefix - maximum bonus factor for prefix matches</string>
                                         <action selector="performClose:" target="QvC-M9-y7g" id="mdx-Bh-Qs0"/>
                                     </connections>
                                 </button>
+                                <button appearanceType="aqua" id="YRw-rp-yGK">
+                                    <rect key="frame" x="163" y="21" width="112" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Enable Plugin" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="wHj-pr-yyH">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="-2" name="value" keyPath="self.pluginEnabled" id="ZAy-9y-8fd"/>
+                                    </connections>
+                                </button>
                             </subviews>
                         </view>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>

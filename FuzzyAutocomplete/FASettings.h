@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSString * FASettingsPluginEnabledDidChangeNotification;
+
 @interface FASettings : NSObject
 
 /// Gets the singleton. Note that the settings are not loaded automatically.
@@ -21,6 +23,9 @@
 
 /// Reset to the default values.
 - (IBAction) resetDefaults: (id) sender;
+
+/// Is the plugin enabled.
+@property (nonatomic, readonly) BOOL pluginEnabled;
 
 /// How many workers should work in parallel.
 @property (nonatomic, readonly) NSInteger prefixAnchor;

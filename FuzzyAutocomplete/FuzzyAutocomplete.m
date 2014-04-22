@@ -12,6 +12,10 @@
 #import "FuzzyAutocomplete.h"
 #import "FASettings.h"
 
+#import "DVTTextCompletionSession+FuzzyAutocomplete.h"
+#import "DVTTextCompletionListWindowController+FuzzyAutocomplete.h"
+#import "DVTTextCompletionInlinePreviewController+FuzzyAutocomplete.h"
+
 @implementation FuzzyAutocomplete
 
 + (void)pluginDidLoad:(NSBundle *)plugin {
@@ -22,11 +26,33 @@
         dispatch_once(&onceToken, ^{
             [self createMenuItem];
             [[NSNotificationCenter defaultCenter] addObserver: self
+                                                     selector: @selector(applicationDidFinishLaunching:)
+                                                         name: NSApplicationDidFinishLaunchingNotification
+                                                       object: nil];
+            [[NSNotificationCenter defaultCenter] addObserver: self
                                                      selector: @selector(menuDidChange:)
                                                          name: NSMenuDidChangeItemNotification
                                                        object: nil];
         });
     }
+}
+
++ (void) pluginEnabledOrDisabled: (NSNotification *) notification {
+    if (notification.object == [FASettings currentSettings]) {
+        [self swizzleMethods];
+    }
+}
+
++ (void) applicationDidFinishLaunching: (NSNotification *) notification {
+    [[NSNotificationCenter defaultCenter] removeObserver: self name: NSApplicationDidFinishLaunchingNotification object: nil];
+    [[FASettings currentSettings] loadFromDefaults];
+    if ([FASettings currentSettings].pluginEnabled) {
+        [self swizzleMethods];
+    }
+    [[NSNotificationCenter defaultCenter] addObserver: self
+                                             selector: @selector(pluginEnabledOrDisabled:)
+                                                 name: FASettingsPluginEnabledDidChangeNotification
+                                               object: nil];
 }
 
 + (void) menuDidChange: (NSNotification *) notification {
@@ -67,6 +93,12 @@
         }
         
     }
+}
+
++ (void) swizzleMethods {
+    [DVTTextCompletionSession fa_swizzleMethods];
+    [DVTTextCompletionListWindowController fa_swizzleMethods];
+    [DVTTextCompletionInlinePreviewController fa_swizzleMethods];
 }
 
 @end

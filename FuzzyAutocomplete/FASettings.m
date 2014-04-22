@@ -10,10 +10,14 @@
 #import "FASettings.h"
 #import "FATheme.h"
 
+NSString * FASettingsPluginEnabledDidChangeNotification = @"io.github.FuzzyAutocomplete.PluginEnabledDidChange";
+
 // increment to show settings screen to the user
 static const NSUInteger kSettingsVersion = 2;
 
 @interface FASettings () <NSWindowDelegate>
+
+@property (nonatomic, readwrite) BOOL pluginEnabled;
 
 @property (nonatomic, readwrite) double minimumScoreThreshold;
 @property (nonatomic, readwrite) BOOL filterByScore;
@@ -70,7 +74,15 @@ static const NSUInteger kSettingsVersion = 2;
             style.alignment = NSCenterTextAlignment;
             [attributed addAttribute: NSParagraphStyleAttributeName value: style range: NSMakeRange(0, attributed.length)];
             label.attributedStringValue = attributed;
+
+            BOOL enabled = self.pluginEnabled;
+
             [NSApp runModalForWindow: window];
+
+            if (self.pluginEnabled != enabled) {
+                [[NSNotificationCenter defaultCenter] postNotificationName: FASettingsPluginEnabledDidChangeNotification object: self];
+            }
+
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
     }
@@ -83,6 +95,8 @@ static const NSUInteger kSettingsVersion = 2;
 }
 
 #pragma mark - defaults
+
+static const BOOL kDefaultPluginEnabled = YES;
 
 static const double kDefaultMinimumScoreThreshold = 0.01;
 static const NSInteger kDefaultPrefixAnchor = 0;
@@ -101,6 +115,8 @@ static const double kDefaultPriorityFactorPower = 0.5;
 static const double kDefaultMaxPrefixBonus = 0.5;
 
 - (IBAction)resetDefaults:(id)sender {
+    self.pluginEnabled = kDefaultPluginEnabled;
+
     self.minimumScoreThreshold = kDefaultMinimumScoreThreshold;
     self.filterByScore = kDefaultFilterByScore;
     self.sortByScore = kDefaultSortByScore;
@@ -134,6 +150,8 @@ static const double kDefaultMaxPrefixBonus = 0.5;
     number = [defaults objectForKey: k ## Name ## Key]; \
     [self setValue: number ?: @(kDefault ## Name) forKey: @#name]
 
+    loadNumber(pluginEnabled, PluginEnabled);
+
     loadNumber(minimumScoreThreshold, MinimumScoreThreshold);
     loadNumber(sortByScore, SortByScore);
     loadNumber(filterByScore, FilterByScore);
@@ -156,7 +174,9 @@ static const double kDefaultMaxPrefixBonus = 0.5;
     self.scoreFormat = [defaults stringForKey: kScoreFormatKey] ?: kDefaultScoreFormat;
 
     number = [defaults objectForKey: kSettingsVersionKey];
+
     if (!number || [number unsignedIntegerValue] < kSettingsVersion) {
+        [self migrateSettingsFromVersion: [number unsignedIntegerValue]];
         NSString * pluginName = [NSBundle bundleForClass: self.class].lsl_bundleName;
         [defaults setObject: @(kSettingsVersion) forKey: kSettingsVersionKey];
         NSAlert * alert = [NSAlert alertWithMessageText: [NSString stringWithFormat: @"New settings for %@.", pluginName]
@@ -171,6 +191,17 @@ static const double kDefaultMaxPrefixBonus = 0.5;
 
     [[NSUserDefaults standardUserDefaults] synchronize];
 
+}
+
+# pragma mark - migrate
+
+- (void) migrateSettingsFromVersion:(NSUInteger)version {
+    switch (version) {
+        case 0: // just break, dont migrate for 0
+            break;
+        case 1: // dont break, fall through to higher cases
+            ;
+    }
 }
 
 # pragma mark - boilerplate
@@ -193,6 +224,8 @@ _ ## name = name; \
 #define INTEGER_SETTINGS_SETTER(name, Name) NUMBER_SETTINGS_SETTER(name, Name, NSInteger)
 
 SETTINGS_KEY(SettingsVersion);
+
+BOOL_SETTINGS_SETTER(pluginEnabled, PluginEnabled)
 
 BOOL_SETTINGS_SETTER(showScores, ShowScores)
 BOOL_SETTINGS_SETTER(filterByScore, FilterByScore)

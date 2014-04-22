@@ -20,7 +20,7 @@
 
 @implementation DVTTextCompletionListWindowController (FuzzyAutocomplete)
 
-+ (void) load {
++ (void) fa_swizzleMethods {
     [self jr_swizzleMethod: @selector(tableView:willDisplayCell:forTableColumn:row:)
                 withMethod: @selector(_fa_tableView:willDisplayCell:forTableColumn:row:)
                      error: NULL];

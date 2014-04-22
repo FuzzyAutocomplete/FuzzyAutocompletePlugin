@@ -39,7 +39,7 @@
 
 @implementation DVTTextCompletionSession (FuzzyAutocomplete)
 
-+ (void) load {
++ (void) fa_swizzleMethods {
     [self jr_swizzleMethod: @selector(_setFilteringPrefix:forceFilter:)
                 withMethod: @selector(_fa_setFilteringPrefix:forceFilter:)
                      error: NULL];
