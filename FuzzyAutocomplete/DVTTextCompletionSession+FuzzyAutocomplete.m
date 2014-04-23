@@ -353,9 +353,9 @@
     results.query = query;
 
     NSArray *searchSet = nil;
-    NSMutableArray * filteredList;
-    NSMutableDictionary *filteredRanges;
-    NSMutableDictionary *filteredScores;
+    NSMutableArray * filteredList = nil;
+    __block NSMutableDictionary * filteredRanges = nil;
+    __block NSMutableDictionary * filteredScores = nil;
 
     const NSInteger anchor = [FASettings currentSettings].prefixAnchor;
 
@@ -397,19 +397,19 @@
         dispatch_queue_t reduceQueue = dispatch_queue_create("io.github.FuzzyAutocomplete.reduce-queue", DISPATCH_QUEUE_SERIAL);
         dispatch_group_t group = dispatch_group_create();
 
-        NSMutableArray *bestMatches = [NSMutableArray array];
-        filteredList = [NSMutableArray array];
-        filteredRanges = [NSMutableDictionary dictionary];
-        filteredScores = [NSMutableDictionary dictionary];
-
+        NSMutableArray * sortedItemArrays = [NSMutableArray array];
+        for (NSInteger i = 0; i < workerCount; ++i) {
+            [sortedItemArrays addObject: @[]];
+        }
+    
         for (NSInteger i = 0; i < workerCount; ++i) {
             dispatch_group_async(group, processingQueue, ^{
-                NSArray *list;
-                NSDictionary *rangesMap;
-                NSDictionary *scoresMap;
+                NSMutableArray *list;
+                NSMutableDictionary *rangesMap;
+                NSMutableDictionary *scoresMap;
                 NAMED_TIMER_START(Processing);
-                id<DVTTextCompletionItem> bestMatch = [self _fa_bestMatchForQuery: query
-                                                                          inArray: [NSArray arrayWithArray: searchSet]
+                id<DVTTextCompletionItem> goodMatch = [self _fa_bestMatchForQuery: query
+                                                                          inArray: searchSet
                                                                            offset: i
                                                                             total: workerCount
                                                                      filteredList: &list
@@ -418,12 +418,18 @@
                 NAMED_TIMER_STOP(Processing);
                 dispatch_async(reduceQueue, ^{
                     NAMED_TIMER_START(Reduce);
-                    if (bestMatch) {
-                        [bestMatches addObject:bestMatch];
+                    sortedItemArrays[i] = list;
+                    if (!filteredRanges) {
+                        filteredRanges = rangesMap;
+                        filteredScores = scoresMap;
+                        bestMatch = goodMatch;
+                    } else {
+                        [filteredRanges addEntriesFromDictionary: rangesMap];
+                        [filteredScores addEntriesFromDictionary: scoresMap];
+                        if ([filteredScores[goodMatch.name] doubleValue] > [filteredScores[bestMatch.name] doubleValue]) {
+                            bestMatch = goodMatch;
+                        }
                     }
-                    [filteredList addObjectsFromArray:list];
-                    [filteredRanges addEntriesFromDictionary:rangesMap];
-                    [filteredScores addEntriesFromDictionary:scoresMap];
                     NAMED_TIMER_STOP(Reduce);
                 });
             });
@@ -432,12 +438,10 @@
         dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
         dispatch_sync(reduceQueue, ^{});
 
-        bestMatch = [self _fa_bestMatchForQuery: query
-                                        inArray: bestMatches
-                                   filteredList: nil
-                                      rangesMap: nil
-                                         scores: nil];
-
+        filteredList = sortedItemArrays[0];
+        for (NSInteger i = 1; i < workerCount; ++i) {
+            [filteredList addObjectsFromArray: sortedItemArrays[i]];
+        }
     }
 
     NAMED_TIMER_STOP(CalculateScores);
@@ -474,8 +478,18 @@
     NAMED_TIMER_STOP(SortByScore);
 
     NAMED_TIMER_START(FindSelection);
-
-    results.selection = filteredList.count && bestMatch ? [filteredList indexOfObject:bestMatch] : NSNotFound;
+    
+    if (!filteredList.count || !bestMatch) {
+        results.selection = NSNotFound;
+    } else {
+        if ([FASettings currentSettings].sortByScore) {
+            results.selection = 0;
+        } else {
+            results.selection = [self _fa_indexOfFirstElementInSortedRange: NSMakeRange(0, filteredList.count) inArray: filteredList passingTest: ^BOOL(id<DVTTextCompletionItem> item) {
+                return [item.name caseInsensitiveCompare: bestMatch.name] != NSOrderedAscending;
+            }];
+        }
+    }
 
     NAMED_TIMER_STOP(FindSelection);
 
@@ -489,9 +503,9 @@
 // Score the items, store filtered list, matched ranges, scores and the best match.
 - (id<DVTTextCompletionItem>) _fa_bestMatchForQuery: (NSString *) query
                                             inArray: (NSArray *) array
-                                       filteredList: (NSArray **) filtered
-                                          rangesMap: (NSDictionary **) ranges
-                                             scores: (NSDictionary **) scores
+                                       filteredList: (NSMutableArray **) filtered
+                                          rangesMap: (NSMutableDictionary **) ranges
+                                             scores: (NSMutableDictionary **) scores
 {
     return [self _fa_bestMatchForQuery:query inArray:array offset:0 total:1 filteredList:filtered rangesMap:ranges scores:scores];
 }
@@ -501,14 +515,14 @@
                                             inArray: (NSArray *) array
                                              offset: (NSUInteger) offset
                                               total: (NSUInteger) total
-                                       filteredList: (NSArray **) filtered
-                                          rangesMap: (NSDictionary **) ranges
-                                             scores: (NSDictionary **) scores
+                                       filteredList: (NSMutableArray **) filtered
+                                          rangesMap: (NSMutableDictionary **) ranges
+                                             scores: (NSMutableDictionary **) scores
 {
     IDEOpenQuicklyPattern *pattern = [[IDEOpenQuicklyPattern alloc] initWithPattern:query];
-    NSMutableArray *filteredList = filtered ? [NSMutableArray arrayWithCapacity: array.count] : nil;
-    NSMutableDictionary *filteredRanges = ranges ? [NSMutableDictionary dictionaryWithCapacity: array.count] : nil;
-    NSMutableDictionary *filteredScores = scores ? [NSMutableDictionary dictionaryWithCapacity: array.count] : nil;
+    NSMutableArray *filteredList = filtered ? [NSMutableArray arrayWithCapacity: array.count / total] : nil;
+    NSMutableDictionary *filteredRanges = ranges ? [NSMutableDictionary dictionaryWithCapacity: array.count / total] : nil;
+    NSMutableDictionary *filteredScores = scores ? [NSMutableDictionary dictionaryWithCapacity: array.count / total] : nil;
 
     double highScore = 0.0f;
     id<DVTTextCompletionItem> bestMatch;
