@@ -23,12 +23,13 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 * Xcode's autocompletion matches like **Open Quickly** does
 * Supports Xcode's learning and context-aware priority system
 * [New] Visualizes matches in Completion List and Inline Preview
-* [New] Easily customizable via a Settings Window
+* [New] Easily customizable via a Settings Window (Editor > FuzzyAutocomplete)
 * [New] [Optional] Sorts items by their score for easier searching
 * [New] [Optional] Hides items based on a threshold for less clutter
 * [New] [Optional] Shows the query and number of matches in Header View
 * [New] [Optional] Shows match scores for items in the List
-* [Optional] Treats first few query letters as a rquired prefix
+* [New] Selects prev/next completion with shortcuts (default `⌃>` / `⌃.`) 
+* [Optional] Treats first few query letters as a required prefix
 * Productivity++
   
 *[New] denotes a feature added in 2.0*  
@@ -44,9 +45,26 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 * Either:
   * Install with [Alcatraz](http://alcatraz.io/)
   * Clone and build the project
-* Restart Xcode and enjoy!
+  * Download and unzip a release to  
+  `~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/`
+* Restart Xcode and enjoy!  
+  * You should now see a `FuzzyAutocomplete` menu item in `Editor` menu
 
 ## Changelog
+
+#### 2.0.1 - 2014/04/25
+**A minor update with small bugfixes and improvements, including:**
+
+* Replaced letter- and prefix- caches with simple cached results stack  
+  thus making backspacing much faster (Issue #29)
+* Previous/Next completion shortcuts now work properly (Issue #36)
+* Completion List now automatically shows for one letter (Issue #37)
+* Hide Inline Preview more reliably when disabled in settings
+* Moved FuzzyAutocomplete menu item into Editor menu
+* Added option to disable plugin in settings
+* Fixed alphabetical sorting of results when using parallel scoring
+* Reliability++
+* Performance++
 
 #### 2.0.0 - 2014/04/16
 **A major update introducing many fixes and improvements, including:**
