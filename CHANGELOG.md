@@ -1,5 +1,20 @@
 ## Changelog
 
+#### 2.0.1 - 2014/04/25
+**A minor update with small bugfixes and improvements, including:**
+
+* Replaced letter- and prefix- caches with simple cached results stack  
+  thus making backspacing much faster (Issue #29)
+* Previous/Next completion shortcuts now work properly (Issue #36)
+* Completion List now automatically shows for one letter (Issue #37)
+* Hide Inline Preview more reliably when disabled in settings
+* Moved FuzzyAutocomplete menu item into Editor menu
+* Added option to disable plugin in settings
+* Fixed alphabetical sorting of results when using parallel scoring
+* Reliability++
+* Performance++
+
+
 #### 2.0.0 - 2014/04/16
 **A major update introducing many fixes and improvements, including:**
 

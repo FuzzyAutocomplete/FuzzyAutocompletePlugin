@@ -20,7 +20,7 @@
 
 @implementation DVTTextCompletionListWindowController (FuzzyAutocomplete)
 
-+ (void) load {
++ (void) fa_swizzleMethods {
     [self jr_swizzleMethod: @selector(tableView:willDisplayCell:forTableColumn:row:)
                 withMethod: @selector(_fa_tableView:willDisplayCell:forTableColumn:row:)
                      error: NULL];
@@ -209,15 +209,19 @@ const char kRowHeightKey;
     NSTableView * tableView = [self valueForKey: @"_completionsTableView"];
     FATextCompletionListHeaderView * header = (FATextCompletionListHeaderView *) tableView.headerView;
     NSInteger rows = MIN(8, [self.session.filteredCompletionsAlpha count]);
-    double delta = header && rows ? (header.frame.size.height + 1) / rows : 0;
 
-    tableView.rowHeight += delta;
+    if (header && rows) {
+        tableView.rowHeight += (header.frame.size.height + 1) / rows;
+    }
 }
 
 // Restore the original row height.
 - (void) _fa_hackRestoreRowHeight {
     NSTableView * tableView = [self valueForKey: @"_completionsTableView"];
-    tableView.rowHeight = [objc_getAssociatedObject(self, &kRowHeightKey) doubleValue];
+    double rowHeight = [objc_getAssociatedObject(self, &kRowHeightKey) doubleValue];
+    if (rowHeight > 0) {
+        tableView.rowHeight = rowHeight;
+    }
 }
 
 @end

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5056" systemVersion="13C64" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1080" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5056"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5053"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="FASettings"/>
@@ -432,11 +432,11 @@ Especially useful for adjusting the threshold and debugging.</string>
                                                         </textFieldCell>
                                                     </textField>
                                                     <textField appearanceType="aqua" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="p9C-uQ-vB1">
-                                                        <rect key="frame" x="3" y="228" width="327" height="22"/>
+                                                        <rect key="frame" x="2" y="228" width="314" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="INi-rI-kyY">
                                                             <font key="font" metaFont="miniSystem"/>
-                                                            <string key="title">If enabled the completion list header will contain time it took to score the completion items. Useful mostly for profiling and debugging.</string>
+                                                            <string key="title">If enabled, the completion list header will contain time it took to score the completion items. Useful mostly for profiling and debugging.</string>
                                                             <color key="textColor" name="disabledControlTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
@@ -577,7 +577,26 @@ Prefix - maximum bonus factor for prefix matches</string>
                                             </view>
                                         </tabViewItem>
                                     </tabViewItems>
+                                    <connections>
+                                        <binding destination="-2" name="hidden" keyPath="self.pluginEnabled" id="nKZ-FT-NQP">
+                                            <dictionary key="options">
+                                                <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                            </dictionary>
+                                        </binding>
+                                    </connections>
                                 </tabView>
+                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="NM7-2O-2kt">
+                                    <rect key="frame" x="-2" y="188" width="365" height="29"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" enabled="NO" sendsActionOnEndEditing="YES" alignment="center" title="Plugin Disabled" id="eif-IO-BeY">
+                                        <font key="font" metaFont="system" size="24"/>
+                                        <color key="textColor" name="disabledControlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                    <connections>
+                                        <binding destination="-2" name="hidden" keyPath="self.pluginEnabled" id="6ef-NH-vpb"/>
+                                    </connections>
+                                </textField>
                                 <button verticalHuggingPriority="750" id="aKv-xC-QE4">
                                     <rect key="frame" x="14" y="12" width="143" height="32"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -598,6 +617,17 @@ Prefix - maximum bonus factor for prefix matches</string>
                                     </buttonCell>
                                     <connections>
                                         <action selector="performClose:" target="QvC-M9-y7g" id="mdx-Bh-Qs0"/>
+                                    </connections>
+                                </button>
+                                <button appearanceType="aqua" id="YRw-rp-yGK">
+                                    <rect key="frame" x="163" y="21" width="112" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Enable Plugin" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="wHj-pr-yyH">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="-2" name="value" keyPath="self.pluginEnabled" id="ZAy-9y-8fd"/>
                                     </connections>
                                 </button>
                             </subviews>

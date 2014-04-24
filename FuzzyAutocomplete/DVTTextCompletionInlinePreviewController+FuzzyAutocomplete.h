@@ -10,6 +10,9 @@
 
 @interface DVTTextCompletionInlinePreviewController (FuzzyAutocomplete)
 
+/// Swizzles methods to enable/disable the plugin
++ (void) fa_swizzleMethods;
+
 /// Matched ranges mapped to preview space.
 @property (nonatomic, retain) NSArray * fa_matchedRanges;
 

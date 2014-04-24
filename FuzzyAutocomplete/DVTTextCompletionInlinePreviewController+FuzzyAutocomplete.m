@@ -15,7 +15,7 @@
 
 @implementation DVTTextCompletionInlinePreviewController (FuzzyAutocomplete)
 
-+ (void) load {
++ (void) fa_swizzleMethods {
     [self jr_swizzleMethod: @selector(ghostComplementRange)
                 withMethod: @selector(_fa_ghostComplementRange)
                      error: NULL];
