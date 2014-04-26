@@ -34,6 +34,10 @@
     DVTTextCompletionSession * session = [self valueForKey: @"_session"];
 
     NSArray * ranges = [session fa_matchedRangesForItem: item];
+    ranges = [ranges arrayByAddingObjectsFromArray: [session fa_secondPassMatchedRangesForItem: item]];
+    ranges = [ranges sortedArrayUsingComparator:^NSComparisonResult(NSValue * v1, NSValue * v2) {
+        return [@(v1.rangeValue.location) compare: @(v2.rangeValue.location)];
+    }];
 
     if (!ranges.count) {
         self.fa_matchedRanges = nil;

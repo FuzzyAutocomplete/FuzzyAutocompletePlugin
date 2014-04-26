@@ -20,6 +20,7 @@
 @property (nonatomic, retain, readonly) NSColor * listTextColorForSelectedScore;
 
 @property (nonatomic, retain, readonly) NSDictionary * listTextAttributesForMatchedRanges;
+@property (nonatomic, retain, readonly) NSDictionary * listTextAttributesForSecondPassMatchedRanges;
 
 @property (nonatomic, retain, readonly) NSDictionary * previewTextAttributesForNotMatchedRanges;
 
