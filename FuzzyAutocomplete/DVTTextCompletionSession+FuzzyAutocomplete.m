@@ -12,6 +12,8 @@
 #import "DVTTextCompletionInlinePreviewController.h"
 #import "DVTTextCompletionInlinePreviewController+FuzzyAutocomplete.h"
 #import "DVTTextCompletionListWindowController.h"
+#import "DVTCompletingTextView.h"
+#import "DVTTextStorage.h"
 #import "IDEOpenQuicklyPattern.h"
 #import "FATheme.h"
 #import "DVTFontAndColorTheme.h"
@@ -74,6 +76,10 @@
 
     [self jr_swizzleMethod: @selector(showCompletionsExplicitly:)
                 withMethod: @selector(_fa_showCompletionsExplicitly:)
+                     error: nil];
+
+    [self jr_swizzleMethod: @selector(hideCompletionsWithReason:)
+                withMethod: @selector(_fa_hideCompletionsWithReason:)
                      error: nil];
 }
 
@@ -242,6 +248,40 @@
         range = NSUnionRange(range, [val rangeValue]);
     }
     return [self _fa_usefulPartialCompletionPrefixForItems:items selectedIndex:index filteringPrefix:[item.name substringWithRange: range]];
+}
+
+// We override here to add autocorrection of letter case
+- (void) _fa_hideCompletionsWithReason: (int) reason {
+    if (!self.fa_insertingCompletion) {
+        NSString * filteringPrefix = [self valueForKey: @"_filteringPrefix"];
+        NSArray * completions = self.filteredCompletionsAlpha;
+
+        NSIndexSet * indexSet = [completions indexesOfObjectsPassingTest:^BOOL(id<DVTTextCompletionItem> obj, NSUInteger idx, BOOL *stop) {
+            return [obj.name caseInsensitiveCompare: filteringPrefix] == NSOrderedSame;
+        }];
+
+        if (indexSet.count == 1) {
+            id<DVTTextCompletionItem> item = completions[indexSet.firstIndex];
+            if (![item.name isEqualToString: filteringPrefix]) {
+
+                NSUInteger start_location = [[self valueForKey: @"_wordStartLocation"] unsignedIntegerValue];
+                NSUInteger end_location = [[self valueForKey: @"_cursorLocation"] unsignedIntegerValue];
+
+                DVTCompletingTextView * textView = self.textView;
+                DVTTextStorage * storage = textView.textStorage;
+
+                NSRange range = NSMakeRange(start_location, end_location-start_location);
+
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [storage beginEditing];
+                    [storage replaceCharactersInRange: range withString: item.completionText withUndoManager: [textView undoManager]];
+                    [storage endEditing];
+                    [textView didChangeText];
+                });
+            }
+        }
+    }
+    [self _fa_hideCompletionsWithReason: reason];
 }
 
 // Sets the current filtering prefix and calculates completion list.
