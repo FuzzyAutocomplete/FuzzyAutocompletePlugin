@@ -797,13 +797,11 @@ static char insertingCompletionKey;
 }
 
 - (NSDictionary *) fa_matchedRangesForFilteredCompletions {
-    NSArray * stack = [self _fa_resultsStack];
-    return stack.count ? [stack.lastObject ranges] : nil;
+    return [self._fa_resultsStack.lastObject ranges];
 }
 
 - (NSDictionary *) fa_scoresForFilteredCompletions {
-    NSArray * stack = [self _fa_resultsStack];
-    return stack.count ? [stack.lastObject scores] : nil;
+    return [self._fa_resultsStack.lastObject scores];
 }
 
 static char kResultsStackKey;
@@ -816,7 +814,7 @@ static char kResultsStackKey;
 }
 
 - (FAFilteringResults *) _fa_lastFilteringResults {
-    return self._fa_resultsStack.count ? self._fa_resultsStack.lastObject : nil;
+    return self._fa_resultsStack.lastObject;
 }
 
 @end
