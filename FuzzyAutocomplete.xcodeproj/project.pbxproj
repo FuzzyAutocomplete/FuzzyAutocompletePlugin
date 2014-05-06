@@ -27,6 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1C5CF4601918DB6200AF581C /* NSArray+FirstObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+FirstObject.h"; sourceTree = "<group>"; };
 		580BC1EA181243D600D53F1F /* DVTFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DVTFoundation.framework; path = ../../../../Applications/Xcode.app/Contents/SharedFrameworks/DVTFoundation.framework; sourceTree = "<group>"; };
 		580BC1EB181243D600D53F1F /* DVTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DVTKit.framework; path = ../../../../Applications/Xcode.app/Contents/SharedFrameworks/DVTKit.framework; sourceTree = "<group>"; };
 		58501C0418165B0600AA3179 /* JRSwizzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRSwizzle.h; sourceTree = "<group>"; };
@@ -190,6 +191,7 @@
 				656B790818F8680100D2C6D7 /* LSLDebug.h */,
 				65E6847218F897400093A671 /* NSBundle+LSLProperties.h */,
 				65E6847318F897400093A671 /* NSBundle+LSLProperties.m */,
+				1C5CF4601918DB6200AF581C /* NSArray+FirstObject.h */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";

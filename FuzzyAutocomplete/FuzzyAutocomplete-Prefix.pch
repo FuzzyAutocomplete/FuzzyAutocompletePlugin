@@ -8,6 +8,7 @@
 
     #import <Cocoa/Cocoa.h>
     #import "NSBundle+LSLProperties.h"
+    #import "NSArray+FirstObject.h"
 
     // Used in LSLDebug
     #define DOLog(fmt, ...) NSLog((@"FuzzyAutocomplete: " fmt), ##__VA_ARGS__);
