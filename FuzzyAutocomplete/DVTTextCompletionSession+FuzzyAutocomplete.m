@@ -305,18 +305,22 @@
 
         NSUInteger selection = results.bestMatchIndex;
         NSArray * prevSelectionRanges = [self fa_matchedRangesForItem: prevSelection];
-        if (prevSelectionRanges && prevSelectionRanges.count == prevSelectionPrevRanges.count) {
-            NSComparator comparator = nil;
-            if ([FASettings currentSettings].sortByScore) {
-                comparator = [self _fa_itemComparatorByScores: results.scores reverse: YES];
-            } else {
-                comparator = [self _fa_itemComparatorByName];
-            }
-            NSUInteger prevSelectionIndex = [self _fa_indexOfElement: prevSelection
-                                                       inSortedArray: results.filteredItems
-                                                     usingComparator: comparator];
-            if (prevSelectionIndex != NSNotFound) {
-                selection = prevSelectionIndex;
+        if (prevSelectionRanges.count && prevSelectionRanges.count == prevSelectionPrevRanges.count) {
+            NSRange lastRangePrev = [prevSelectionPrevRanges.lastObject rangeValue];
+            NSRange lastRange = [prevSelectionRanges.lastObject rangeValue];
+            if (lastRange.location == lastRangePrev.location && lastRange.length >= lastRangePrev.length) {
+                NSComparator comparator = nil;
+                if ([FASettings currentSettings].sortByScore) {
+                    comparator = [self _fa_itemComparatorByScores: results.scores reverse: YES];
+                } else {
+                    comparator = [self _fa_itemComparatorByName];
+                }
+                NSUInteger prevSelectionIndex = [self _fa_indexOfElement: prevSelection
+                                                           inSortedArray: results.filteredItems
+                                                         usingComparator: comparator];
+                if (prevSelectionIndex != NSNotFound) {
+                    selection = prevSelectionIndex;
+                }
             }
         }
 
