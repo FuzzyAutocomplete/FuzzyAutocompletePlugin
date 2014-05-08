@@ -44,6 +44,10 @@
     [self jr_swizzleMethod: @selector(_updateCurrentDisplayStateForQuickHelp)
                 withMethod: @selector(_fa_updateCurrentDisplayStateForQuickHelp)
                      error: NULL];
+
+    [self jr_swizzleMethod: @selector(_preferredWindowFrameForTextFrame:columnsWidth:titleColumnX:)
+                withMethod: @selector(_fa_preferredWindowFrameForTextFrame:columnsWidth:titleColumnX:)
+                     error: nil];
 }
 
 #pragma mark - overrides
@@ -137,6 +141,13 @@ const char kRowHeightKey;
         [tableView sizeLastColumnToFit];
     }
 }
+
+// We modify titleColumnX with score column's width, so that title column is aligned with typed text
+- (CGRect) _fa_preferredWindowFrameForTextFrame: (CGRect) textFrame columnsWidth: (double *) widths titleColumnX: (double) titleX {
+    NSTableView * tableView = [self valueForKey: @"_completionsTableView"];
+    return [self _fa_preferredWindowFrameForTextFrame: textFrame columnsWidth: widths titleColumnX: titleX + [self _fa_widthForScoreColumn] + tableView.intercellSpacing.width];
+}
+
 
 // We add visual feedback for the matched ranges. Also format the score column.
 - (void) _fa_tableView: (NSTableView *) aTableView
