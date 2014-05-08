@@ -257,21 +257,18 @@
 
     // Let the original handler deal with the zero letter case
     if (prefix.length == 0) {
-        NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
-
         [self._fa_resultsStack removeAllObjects];
 
+        NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
         [self _fa_setFilteringPrefix:prefix forceFilter:forceFilter];
         if (![FASettings currentSettings].showInlinePreview) {
             [self._inlinePreviewController hideInlinePreviewWithReason: 0x0];
         }
-
         self.fa_filteringTime = [NSDate timeIntervalSinceReferenceDate] - start;
 
         if ([FASettings currentSettings].showTiming) {
             [self._listWindowController _updateCurrentDisplayState];
         }
-
         return;
     }
 
@@ -282,13 +279,12 @@
     }
 
     @try {
-
         NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
 
         [self setValue: prefix forKey: @"_filteringPrefix"];
 
-        id<DVTTextCompletionItem> prevSelection = nil;
-        NSArray * prevSelectionPrevRanges = nil;
+        id<DVTTextCompletionItem> previousSelection = nil;
+        NSArray * previousSelectionRanges = nil;
 
         FAFilteringResults * results;
 
@@ -296,33 +292,16 @@
             results = [resultsStack lastObject];
         } else {
             if (self.selectedCompletionIndex != NSNotFound) {
-                prevSelection = self.filteredCompletionsAlpha[self.selectedCompletionIndex];
-                prevSelectionPrevRanges = [self fa_matchedRangesForItem: prevSelection];
+                previousSelection = self.filteredCompletionsAlpha[self.selectedCompletionIndex];
+                previousSelectionRanges = [self fa_matchedRangesForItem: previousSelection];
             }
             results = [self _fa_calculateResultsForQuery: prefix];
             [resultsStack addObject: results];
         }
 
-        NSUInteger selection = results.bestMatchIndex;
-        NSArray * prevSelectionRanges = [self fa_matchedRangesForItem: prevSelection];
-        if (prevSelectionRanges.count && prevSelectionRanges.count == prevSelectionPrevRanges.count) {
-            NSRange lastRangePrev = [prevSelectionPrevRanges.lastObject rangeValue];
-            NSRange lastRange = [prevSelectionRanges.lastObject rangeValue];
-            if (lastRange.location == lastRangePrev.location && lastRange.length >= lastRangePrev.length) {
-                NSComparator comparator = nil;
-                if ([FASettings currentSettings].sortByScore) {
-                    comparator = [self _fa_itemComparatorByScores: results.scores reverse: YES];
-                } else {
-                    comparator = [self _fa_itemComparatorByName];
-                }
-                NSUInteger prevSelectionIndex = [self _fa_indexOfElement: prevSelection
-                                                           inSortedArray: results.filteredItems
-                                                         usingComparator: comparator];
-                if (prevSelectionIndex != NSNotFound) {
-                    selection = prevSelectionIndex;
-                }
-            }
-        }
+        NSUInteger selection = [self _fa_getSelectionForFilteringResults: results
+                                                       previousSelection: previousSelection
+                                                                  ranges: previousSelectionRanges];
 
         NSString * partial = [self _usefulPartialCompletionPrefixForItems: results.filteredItems
                                                             selectedIndex: selection
@@ -331,7 +310,6 @@
         self.fa_filteringTime = [NSDate timeIntervalSinceReferenceDate] - start;
 
         NAMED_TIMER_START(SendNotifications);
-
         // send the notifications in the same way the original does
         [self willChangeValueForKey:@"filteredCompletionsAlpha"];
         [self willChangeValueForKey:@"usefulPrefix"];
@@ -345,21 +323,15 @@
         [self didChangeValueForKey:@"filteredCompletionsAlpha"];
         [self didChangeValueForKey:@"usefulPrefix"];
         [self didChangeValueForKey:@"selectedCompletionIndex"];
-
         NAMED_TIMER_STOP(SendNotifications);
 
         if (![FASettings currentSettings].showInlinePreview) {
             [self._inlinePreviewController hideInlinePreviewWithReason: 0x0];
         }
 
-    }
-    @catch (NSException *exception) {
+    } @catch (NSException *exception) {
         RLog(@"Caught an Exception %@", exception);
     }
-    @finally {
-        
-    }
-    
 }
 
 // We nullify the caches when completions change.
@@ -370,23 +342,42 @@
 
 #pragma mark - helpers
 
-// Calculate all the results needed by setFilteringPrefix
-- (FAFilteringResults *)_fa_calculateResultsForQuery: (NSString *) query {
+// Get new selection based on previous one (either keep it or select the best match)
+- (NSUInteger) _fa_getSelectionForFilteringResults: (FAFilteringResults *) results
+                                 previousSelection: (id<DVTTextCompletionItem>) previousSelection
+                                            ranges: (NSArray *) previousSelectionRanges
+{
+    NSUInteger selection = results.bestMatchIndex;
+    NSArray * previousSelectionNewRanges = [self fa_matchedRangesForItem: previousSelection];
+    if (previousSelectionNewRanges.count && previousSelectionNewRanges.count == previousSelectionRanges.count) {
+        NSRange lastRangePrev = [previousSelectionRanges.lastObject rangeValue];
+        NSRange lastRange = [previousSelectionNewRanges.lastObject rangeValue];
+        if (lastRange.location == lastRangePrev.location && lastRange.length >= lastRangePrev.length) {
+            NSComparator comparator = nil;
+            if ([FASettings currentSettings].sortByScore) {
+                comparator = [self _fa_itemComparatorByScores: results.scores reverse: YES];
+            } else {
+                comparator = [self _fa_itemComparatorByName];
+            }
+            NSUInteger prevSelectionIndex = [self _fa_indexOfElement: previousSelection
+                                                       inSortedArray: results.filteredItems
+                                                     usingComparator: comparator];
+            if (prevSelectionIndex != NSNotFound) {
+                selection = prevSelectionIndex;
+            }
+        }
+    }
+    return selection;
+}
 
-    FAFilteringResults * results = [[FAFilteringResults alloc] init];
-    results.query = query;
-
-    NSArray *searchSet = nil;
-    NSMutableArray * filteredList = nil;
-    __block NSMutableDictionary * filteredRanges = nil;
-    __block NSMutableDictionary * filteredScores = nil;
-
+// Get the completions fo search and filter (possibly incrementally) for given query
+- (NSArray *) _fa_obtainSearchSetForQuery: (NSString *) query {
+    NSArray * searchSet;
     const NSInteger anchor = [FASettings currentSettings].prefixAnchor;
-
+    
     FAFilteringResults * lastResults = [self _fa_lastFilteringResults];
-
+    
     NAMED_TIMER_START(ObtainSearchSet);
-
     if (lastResults.query.length && [[query lowercaseString] hasPrefix: [lastResults.query lowercaseString]]) {
         if (lastResults.query.length >= anchor) {
             searchSet = lastResults.allItems;
@@ -400,16 +391,27 @@
             searchSet = [self _fa_filteredCompletionsForLetter: [query substringToIndex:1]];
         }
     }
-
     NAMED_TIMER_STOP(ObtainSearchSet);
 
+    return searchSet;
+}
+
+// Calculate all the results needed by setFilteringPrefix
+- (FAFilteringResults *)_fa_calculateResultsForQuery: (NSString *) query {
+
+    NSArray * searchSet = [self _fa_obtainSearchSetForQuery: query];
+
+    FAFilteringResults * results = [[FAFilteringResults alloc] init];
+    results.query = query;
+
+    NSMutableArray * filteredList = nil;
+    __block NSMutableDictionary * filteredRanges = nil, * filteredScores = nil;
     __block id<DVTTextCompletionItem> bestMatch = nil;
 
     NSUInteger workerCount = [FASettings currentSettings].parallelScoring ? [FASettings currentSettings].maximumWorkers : 1;
     workerCount = MIN(MAX(searchSet.count / MIN_CHUNK_LENGTH, 1), workerCount);
 
     NAMED_TIMER_START(CalculateScores);
-
     if (workerCount < 2) {
         bestMatch = [self _fa_bestMatchForQuery: query
                                         inArray: searchSet
@@ -429,8 +431,7 @@
         for (NSInteger i = 0; i < workerCount; ++i) {
             dispatch_group_async(group, processingQueue, ^{
                 NSMutableArray *list;
-                NSMutableDictionary *rangesMap;
-                NSMutableDictionary *scoresMap;
+                NSMutableDictionary * rangesMap, * scoresMap;
                 NAMED_TIMER_START(Processing);
                 id<DVTTextCompletionItem> goodMatch = [self _fa_bestMatchForQuery: query
                                                                           inArray: searchSet
@@ -467,39 +468,23 @@
             [filteredList addObjectsFromArray: sortedItemArrays[i]];
         }
     }
-
     NAMED_TIMER_STOP(CalculateScores);
 
     results.allItems = [NSArray arrayWithArray: filteredList];
 
     NAMED_TIMER_START(FilterByScore);
-
-    double threshold = [FASettings currentSettings].minimumScoreThreshold;
-    if ([FASettings currentSettings].filterByScore && threshold != 0) {
-        if ([FASettings currentSettings].normalizeScores) {
-            threshold *= [filteredScores[bestMatch.name] doubleValue];
-        }
-        NSMutableArray * newArray = [NSMutableArray array];
-        for (id<DVTTextCompletionItem> item in filteredList) {
-            if ([filteredScores[item.name] doubleValue] >= threshold) {
-                [newArray addObject: item];
-            }
-        }
-        filteredList = newArray;
+    if ([FASettings currentSettings].filterByScore && [FASettings currentSettings].minimumScoreThreshold > 0) {
+        filteredList = [self _fa_filterResults: filteredList scores: filteredScores bestMatch: bestMatch];
     }
-
     NAMED_TIMER_STOP(FilterByScore);
 
     NAMED_TIMER_START(SortByScore);
-
     if ([FASettings currentSettings].sortByScore) {
         [filteredList sortWithOptions: NSSortConcurrent usingComparator: [self _fa_itemComparatorByScores: filteredScores reverse: YES]];
     }
-
     NAMED_TIMER_STOP(SortByScore);
 
-    NAMED_TIMER_START(FindSelection);
-    
+    NAMED_TIMER_START(FindBestMatch);
     if (!filteredList.count || !bestMatch) {
         results.bestMatchIndex = NSNotFound;
     } else {
@@ -511,8 +496,7 @@
                                               usingComparator: [self _fa_itemComparatorByName]];
         }
     }
-
-    NAMED_TIMER_STOP(FindSelection);
+    NAMED_TIMER_STOP(FindBestMatch);
 
     results.filteredItems = filteredList;
     results.ranges = filteredRanges;
@@ -614,6 +598,23 @@
         *scores = filteredScores;
     }
     return bestMatch;
+}
+
+- (NSMutableArray *) _fa_filterResults: (NSMutableArray *) filteredList
+                                scores: (NSDictionary *) filteredScores
+                             bestMatch: (id<DVTTextCompletionItem>) bestMatch
+{
+    double threshold = [FASettings currentSettings].minimumScoreThreshold;
+    if ([FASettings currentSettings].normalizeScores) {
+        threshold *= [filteredScores[bestMatch.name] doubleValue];
+    }
+    NSMutableArray * newArray = [NSMutableArray array];
+    for (id<DVTTextCompletionItem> item in filteredList) {
+        if ([filteredScores[item.name] doubleValue] >= threshold) {
+            [newArray addObject: item];
+        }
+    }
+    return newArray;
 }
 
 // Returns index of first element passing test, or NSNotFound, assumes sorted range wrt test
