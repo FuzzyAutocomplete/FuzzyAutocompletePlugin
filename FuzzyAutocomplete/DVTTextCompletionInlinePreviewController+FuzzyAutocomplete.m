@@ -23,9 +23,20 @@
     [self jr_swizzleMethod: @selector(_showPreviewForItem:)
                 withMethod: @selector(_fa_showPreviewForItem:)
                      error: NULL];
+
+    [self jr_swizzleMethod: @selector(hideInlinePreviewWithReason:)
+                withMethod: @selector(_fa_hideInlinePreviewWithReason:)
+                     error: nil];
 }
 
 #pragma mark - overrides
+
+- (void)_fa_hideInlinePreviewWithReason: (int) reason {
+    DVTTextCompletionSession * session = [self valueForKey: @"_session"];
+    NSTextView * textView = (NSTextView *) session.textView;
+    textView.insertionPointColor = [textView.insertionPointColor colorWithAlphaComponent: 1];
+    [self _fa_hideInlinePreviewWithReason: reason];
+}
 
 // We added calculation of matchedRanges and ghostRange here.
 - (void) _fa_showPreviewForItem: (id<DVTTextCompletionItem>) item {
@@ -43,6 +54,7 @@
 
     NSUInteger previewLength = self.previewRange.length;
     NSString *previewText;
+    NSTextView * textView = (NSTextView *) session.textView;
 
     if (previewLength == item.completionText.length) {
         previewText = item.completionText;
@@ -51,10 +63,8 @@
     } else if (previewLength == item.displayText.length) {
         previewText = item.displayText;
     } else {
-        NSTextView * textView = (NSTextView *) session.textView;
         previewText = [[textView.textStorage attributedSubstringFromRange: self.previewRange] string];
     }
-
     ranges = [session fa_convertRanges: ranges
                             fromString: item.name
                               toString: previewText
@@ -62,12 +72,18 @@
 
     if (!ranges.count) {
         self.fa_overridedGhostRange = nil;
+        textView.insertionPointColor = [textView.insertionPointColor colorWithAlphaComponent: 1];
     } else {
         NSRange lastRange = [[ranges lastObject] rangeValue];
         NSUInteger start = NSMaxRange(lastRange);
         NSUInteger end = NSMaxRange(self.previewRange);
         NSRange override = NSMakeRange(start, end - start);
         self.fa_overridedGhostRange = [NSValue valueWithRange: override];
+        if (session.cursorLocation == start) {
+            textView.insertionPointColor = [textView.insertionPointColor colorWithAlphaComponent: 1];
+        } else {
+            textView.insertionPointColor = [textView.insertionPointColor colorWithAlphaComponent: 0];
+        }
     }
 
     self.fa_matchedRanges = ranges;
