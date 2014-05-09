@@ -181,6 +181,21 @@ const char kRowHeightKey;
             [attributed addAttributes: attributes range: [val rangeValue]];
         }
 
+
+        NSString * prefix = self.session.usefulPrefix;
+        if ([item.name hasPrefix: prefix] && ![item.displayText hasPrefix: prefix]) {
+            NSRange prefixRange = NSMakeRange(0, prefix.length);
+            NSArray * prefixRanges = [self.session fa_convertRanges: @[ [NSValue valueWithRange: prefixRange] ]
+                                                         fromString: item.name
+                                                           toString: item.displayText
+                                                          addOffset: 0];
+            prefixRange = NSMakeRange(0, 0);
+            for (NSValue * val in prefixRanges) {
+                prefixRange = NSUnionRange(prefixRange, [val rangeValue]);
+            }
+            [attributed addAttributes: self._usefulPrefixAttributes range: prefixRange];
+        }
+
         [aCell setAttributedStringValue: attributed];
     }
 
