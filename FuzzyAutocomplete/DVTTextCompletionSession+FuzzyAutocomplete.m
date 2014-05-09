@@ -93,20 +93,31 @@
             [newRanges addObject: [NSValue valueWithRange: range]];
         }
     } else {
-        // TODO: consider changing to componentsSeparatedByString: for performance (?)
-        NSRegularExpression * selectorSegmentRegex = [NSRegularExpression regularExpressionWithPattern: @"[a-zA-Z_][a-zA-Z0-9_]*:" options: 0 error: NULL];
-        [selectorSegmentRegex enumerateMatchesInString: fromString options: 0 range: NSMakeRange(0, fromString.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+        NSRegularExpression * wordSegmentRegex = [NSRegularExpression regularExpressionWithPattern: @"\\w*\\W?" options: 0 error: NULL];
+        NSMutableArray * rangesStack = originalRanges.reverseObjectEnumerator.allObjects.mutableCopy;
+        __block NSRange searchRange = NSMakeRange(0, toString.length);
+        [wordSegmentRegex enumerateMatchesInString: fromString options: 0 range: NSMakeRange(0, fromString.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
             NSRange nameRange = result.range;
-            NSRange dispRange = [toString rangeOfString: [fromString substringWithRange: nameRange]];
+            NSRange dispRange = [toString rangeOfString: [fromString substringWithRange: nameRange] options: 0 range: searchRange];
             if (dispRange.location != NSNotFound) {
-                for (NSValue * value in originalRanges) {
-                    NSRange range = [value rangeValue];
+                NSRange range;
+                while (rangesStack.count && NSMaxRange(range = [rangesStack.lastObject rangeValue]) < nameRange.location) {
+                    [rangesStack removeLastObject];
+                }
+                while (rangesStack.count && range.location < NSMaxRange(nameRange)) {
                     NSRange intersection = NSIntersectionRange(range, nameRange);
-                    if (intersection.length > 0) {
                         intersection.location += dispRange.location - nameRange.location + additionalOffset;
                         [newRanges addObject: [NSValue valueWithRange: intersection]];
+
+                    if (NSMaxRange(range) < NSMaxRange(nameRange)) {
+                        [rangesStack removeLastObject];
+                        range = [rangesStack.lastObject rangeValue];
+                    } else {
+                        break;
                     }
                 }
+                searchRange.location = NSMaxRange(dispRange);
+                searchRange.length = toString.length - searchRange.location;
             }
         }];
     }

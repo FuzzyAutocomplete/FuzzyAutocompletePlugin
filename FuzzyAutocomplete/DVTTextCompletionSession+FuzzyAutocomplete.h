@@ -38,9 +38,11 @@
 ///
 /// Handled cases:
 ///
-/// a) fromString is a substring of toString
+/// a) fromString is a substring of toString - offset ranges
 ///
-/// b) both fromString and toString contain segments ending with colons
+/// b) both fromString and toString contain word segments
+///    try to find ranges within segments (may divide ranges)
+///
 - (NSArray *) fa_convertRanges: (NSArray *) originalRanges
                     fromString: (NSString *) fromString
                       toString: (NSString *) toString
