@@ -285,6 +285,7 @@
 
         id<DVTTextCompletionItem> previousSelection = nil;
         NSArray * previousSelectionRanges = nil;
+        BOOL wasBest = YES;
 
         FAFilteringResults * results;
 
@@ -294,6 +295,7 @@
             if (self.selectedCompletionIndex != NSNotFound) {
                 previousSelection = self.filteredCompletionsAlpha[self.selectedCompletionIndex];
                 previousSelectionRanges = [self fa_matchedRangesForItem: previousSelection];
+                wasBest = self.selectedCompletionIndex == [self _fa_lastFilteringResults].bestMatchIndex;
             }
             results = [self _fa_calculateResultsForQuery: prefix];
             [resultsStack addObject: results];
@@ -301,7 +303,8 @@
 
         NSUInteger selection = [self _fa_getSelectionForFilteringResults: results
                                                        previousSelection: previousSelection
-                                                                  ranges: previousSelectionRanges];
+                                                                  ranges: previousSelectionRanges
+                                                            wasBestMatch: wasBest];
 
         NSString * partial = [self _usefulPartialCompletionPrefixForItems: results.filteredItems
                                                             selectedIndex: selection
@@ -346,10 +349,11 @@
 - (NSUInteger) _fa_getSelectionForFilteringResults: (FAFilteringResults *) results
                                  previousSelection: (id<DVTTextCompletionItem>) previousSelection
                                             ranges: (NSArray *) previousSelectionRanges
+                                      wasBestMatch: (BOOL) wasBest
 {
     NSUInteger selection = results.bestMatchIndex;
     NSArray * previousSelectionNewRanges = [self fa_matchedRangesForItem: previousSelection];
-    if (previousSelectionNewRanges.count && previousSelectionNewRanges.count == previousSelectionRanges.count) {
+    if (!wasBest && previousSelectionNewRanges.count && previousSelectionNewRanges.count == previousSelectionRanges.count) {
         NSRange lastRangePrev = [previousSelectionRanges.lastObject rangeValue];
         NSRange lastRange = [previousSelectionNewRanges.lastObject rangeValue];
         if (lastRange.location == lastRangePrev.location && lastRange.length >= lastRangePrev.length) {
