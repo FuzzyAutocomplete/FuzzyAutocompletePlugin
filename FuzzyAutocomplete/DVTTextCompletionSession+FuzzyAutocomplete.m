@@ -12,7 +12,9 @@
 #import "DVTTextCompletionInlinePreviewController.h"
 #import "DVTTextCompletionInlinePreviewController+FuzzyAutocomplete.h"
 #import "DVTTextCompletionListWindowController.h"
-#import "IDEOpenQuicklyPattern.h"
+#import "DVTCompletingTextView.h"
+#import "DVTTextStorage.h"
+#import "FAMatchPattern.h"
 #import "FATheme.h"
 #import "DVTFontAndColorTheme.h"
 #import "JRSwizzle.h"
@@ -29,6 +31,7 @@
 @property (nonatomic, retain) NSArray * filteredItems;
 @property (nonatomic, retain) NSDictionary * scores;
 @property (nonatomic, retain) NSDictionary * ranges;
+@property (nonatomic, retain) NSDictionary * secondPassRanges;
 @property (nonatomic, assign) NSUInteger bestMatchIndex;
 
 @end
@@ -74,6 +77,10 @@
 
     [self jr_swizzleMethod: @selector(showCompletionsExplicitly:)
                 withMethod: @selector(_fa_showCompletionsExplicitly:)
+                     error: nil];
+
+    [self jr_swizzleMethod: @selector(hideCompletionsWithReason:)
+                withMethod: @selector(_fa_hideCompletionsWithReason:)
                      error: nil];
 }
 
@@ -122,6 +129,10 @@
         }];
     }
     return newRanges;
+}
+
+- (NSArray *) fa_secondPassMatchedRangesForItem: (id<DVTTextCompletionItem>) item {
+    return [[self fa_secondPassMatchedRangesForFilteredCompletions] objectForKey: item.name];
 }
 
 - (NSArray *) fa_matchedRangesForItem: (id<DVTTextCompletionItem>) item {
@@ -244,11 +255,45 @@
     }
     NSRange range = NSMakeRange(0, prefix.length);
     id<DVTTextCompletionItem> item = items[index];
-    NSArray * ranges = [[[IDEOpenQuicklyPattern alloc] initWithPattern: prefix] matchedRanges: item.name];
+    NSArray * ranges = [[[FAMatchPattern alloc] initWithPattern: prefix] matchedRanges: item.name];
     for (NSValue * val in ranges) {
         range = NSUnionRange(range, [val rangeValue]);
     }
     return [self _fa_usefulPartialCompletionPrefixForItems:items selectedIndex:index filteringPrefix:[item.name substringWithRange: range]];
+}
+
+// We override here to add autocorrection of letter case
+- (void) _fa_hideCompletionsWithReason: (int) reason {
+    if (!self.fa_insertingCompletion) {
+        NSString * filteringPrefix = [self valueForKey: @"_filteringPrefix"];
+        NSArray * completions = self.filteredCompletionsAlpha;
+
+        NSIndexSet * indexSet = [completions indexesOfObjectsPassingTest:^BOOL(id<DVTTextCompletionItem> obj, NSUInteger idx, BOOL *stop) {
+            return [obj.name caseInsensitiveCompare: filteringPrefix] == NSOrderedSame;
+        }];
+
+        if (indexSet.count == 1) {
+            id<DVTTextCompletionItem> item = completions[indexSet.firstIndex];
+            if (![item.name isEqualToString: filteringPrefix]) {
+
+                NSUInteger start_location = [[self valueForKey: @"_wordStartLocation"] unsignedIntegerValue];
+                NSUInteger end_location = [[self valueForKey: @"_cursorLocation"] unsignedIntegerValue];
+
+                DVTCompletingTextView * textView = self.textView;
+                DVTTextStorage * storage = textView.textStorage;
+
+                NSRange range = NSMakeRange(start_location, end_location-start_location);
+
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [storage beginEditing];
+                    [storage replaceCharactersInRange: range withString: item.completionText withUndoManager: [textView undoManager]];
+                    [storage endEditing];
+                    [textView didChangeText];
+                });
+            }
+        }
+    }
+    [self _fa_hideCompletionsWithReason: reason];
 }
 
 // Sets the current filtering prefix and calculates completion list.
@@ -389,7 +434,7 @@
 - (NSArray *) _fa_obtainSearchSetForQuery: (NSString *) query {
     NSArray * searchSet;
     const NSInteger anchor = [FASettings currentSettings].prefixAnchor;
-    
+
     FAFilteringResults * lastResults = [self _fa_lastFilteringResults];
     
     NAMED_TIMER_START(ObtainSearchSet);
@@ -420,7 +465,8 @@
     results.query = query;
 
     NSMutableArray * filteredList = nil;
-    __block NSMutableDictionary * filteredRanges = nil, * filteredScores = nil;
+    __block NSMutableDictionary * filteredRanges = nil, * filteredScores = nil, * filteredSecondPassRanges = nil;
+;
     __block id<DVTTextCompletionItem> bestMatch = nil;
 
     NSUInteger workerCount = [FASettings currentSettings].parallelScoring ? [FASettings currentSettings].maximumWorkers : 1;
@@ -432,7 +478,8 @@
                                         inArray: searchSet
                                    filteredList: &filteredList
                                       rangesMap: &filteredRanges
-                                         scores: &filteredScores];
+                                         scores: &filteredScores
+                               secondPassRanges: &filteredSecondPassRanges];
     } else {
         dispatch_queue_t processingQueue = dispatch_queue_create("io.github.FuzzyAutocomplete.processing-queue", DISPATCH_QUEUE_CONCURRENT);
         dispatch_queue_t reduceQueue = dispatch_queue_create("io.github.FuzzyAutocomplete.reduce-queue", DISPATCH_QUEUE_SERIAL);
@@ -446,7 +493,7 @@
         for (NSInteger i = 0; i < workerCount; ++i) {
             dispatch_group_async(group, processingQueue, ^{
                 NSMutableArray *list;
-                NSMutableDictionary * rangesMap, * scoresMap;
+                NSMutableDictionary * rangesMap, * secondMap, * scoresMap;
                 NAMED_TIMER_START(Processing);
                 id<DVTTextCompletionItem> goodMatch = [self _fa_bestMatchForQuery: query
                                                                           inArray: searchSet
@@ -454,18 +501,21 @@
                                                                             total: workerCount
                                                                      filteredList: &list
                                                                         rangesMap: &rangesMap
-                                                                           scores: &scoresMap];
+                                                                           scores: &scoresMap
+                                                                 secondPassRanges: &secondMap];
                 NAMED_TIMER_STOP(Processing);
                 dispatch_async(reduceQueue, ^{
                     NAMED_TIMER_START(Reduce);
                     sortedItemArrays[i] = list;
                     if (!filteredRanges) {
                         filteredRanges = rangesMap;
+                        filteredSecondPassRanges = secondMap;
                         filteredScores = scoresMap;
                         bestMatch = goodMatch;
                     } else {
                         [filteredRanges addEntriesFromDictionary: rangesMap];
                         [filteredScores addEntriesFromDictionary: scoresMap];
+                        [filteredSecondPassRanges addEntriesFromDictionary: secondMap];
                         if ([filteredScores[goodMatch.name] doubleValue] > [filteredScores[bestMatch.name] doubleValue]) {
                             bestMatch = goodMatch;
                         }
@@ -515,6 +565,7 @@
 
     results.filteredItems = filteredList;
     results.ranges = filteredRanges;
+    results.secondPassRanges = filteredSecondPassRanges;
     results.scores = filteredScores;
 
     return results;
@@ -526,8 +577,9 @@
                                        filteredList: (NSMutableArray **) filtered
                                           rangesMap: (NSMutableDictionary **) ranges
                                              scores: (NSMutableDictionary **) scores
+                                   secondPassRanges: (NSMutableDictionary **) second
 {
-    return [self _fa_bestMatchForQuery:query inArray:array offset:0 total:1 filteredList:filtered rangesMap:ranges scores:scores];
+    return [self _fa_bestMatchForQuery:query inArray:array offset:0 total:1 filteredList:filtered rangesMap:ranges scores:scores secondPassRanges: second];
 }
 
 // Score some of the items, store filtered list, matched ranges, scores and the best match.
@@ -538,10 +590,12 @@
                                        filteredList: (NSMutableArray **) filtered
                                           rangesMap: (NSMutableDictionary **) ranges
                                              scores: (NSMutableDictionary **) scores
+                                   secondPassRanges: (NSMutableDictionary **) second
 {
-    IDEOpenQuicklyPattern *pattern = [[IDEOpenQuicklyPattern alloc] initWithPattern:query];
+    FAMatchPattern *pattern = [[FAMatchPattern alloc] initWithPattern:query];
     NSMutableArray *filteredList = filtered ? [NSMutableArray arrayWithCapacity: array.count / total] : nil;
     NSMutableDictionary *filteredRanges = ranges ? [NSMutableDictionary dictionaryWithCapacity: array.count / total] : nil;
+    NSMutableDictionary *filteredSecond = second ? [NSMutableDictionary dictionaryWithCapacity: array.count / total] : nil;
     NSMutableDictionary *filteredScores = scores ? [NSMutableDictionary dictionaryWithCapacity: array.count / total] : nil;
 
     double highScore = 0.0f;
@@ -562,6 +616,7 @@
     for (NSUInteger i = lower_bound; i < upper_bound; ++i) {
         item = array[i];
         NSArray * rangesArray;
+        NSArray * secondPassArray;
         double matchScore;
 
         MULTI_TIMER_START(Matching);
@@ -574,7 +629,7 @@
                 matchScore = 0;
             }
         } else {
-            matchScore = [pattern scoreCandidate:item.name matchedRanges:&rangesArray];
+            matchScore = [pattern scoreCandidate:item.name matchedRanges:&rangesArray secondPassRanges: &secondPassArray];
         }
         MULTI_TIMER_STOP(Matching);
 
@@ -591,6 +646,7 @@
             if (score > 0) {
                 [filteredList addObject:item];
                 filteredRanges[item.name] = rangesArray ?: @[];
+                filteredSecond[item.name] = secondPassArray ?: @[];
                 filteredScores[item.name] = @(score);
             }
             if (score > highScore) {
@@ -608,6 +664,9 @@
     }
     if (ranges) {
         *ranges = filteredRanges;
+    }
+    if (second) {
+        *second = filteredSecond;
     }
     if (scores) {
         *scores = filteredScores;
@@ -753,7 +812,7 @@
 }
 
 - (void)_fa_debugCompletionsByScore:(NSArray *)completions withQuery:(NSString *)query {
-    IDEOpenQuicklyPattern *pattern = [IDEOpenQuicklyPattern patternWithInput:query];
+    FAMatchPattern *pattern = [FAMatchPattern patternWithInput:query];
     NSMutableArray *completionsWithScore = [NSMutableArray arrayWithCapacity:completions.count];
 
     [completions enumerateObjectsUsingBlock:^(id<DVTTextCompletionItem> item, NSUInteger idx, BOOL *stop) {
@@ -818,6 +877,11 @@ static char insertingCompletionKey;
 
 - (NSDictionary *) fa_matchedRangesForFilteredCompletions {
     return [self._fa_resultsStack.lastObject ranges];
+}
+
+- (NSDictionary *) fa_secondPassMatchedRangesForFilteredCompletions {
+    NSArray * stack = [self _fa_resultsStack];
+    return stack.count ? [stack.lastObject secondPassRanges] : nil;
 }
 
 - (NSDictionary *) fa_scoresForFilteredCompletions {

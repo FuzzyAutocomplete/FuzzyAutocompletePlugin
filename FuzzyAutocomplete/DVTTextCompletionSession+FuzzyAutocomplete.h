@@ -30,6 +30,9 @@
 /// Gets array of ranges matched by current search string in given items name.
 - (NSArray *) fa_matchedRangesForItem: (id<DVTTextCompletionItem>) item;
 
+/// Gets array of ranges matched in second pass by current search string in given items name.
+- (NSArray *) fa_secondPassMatchedRangesForItem: (id<DVTTextCompletionItem>) item;
+
 /// Retrieves a previously calculated autocompletion score for given item.
 - (NSNumber *) fa_scoreForItem: (id<DVTTextCompletionItem>) item;
 

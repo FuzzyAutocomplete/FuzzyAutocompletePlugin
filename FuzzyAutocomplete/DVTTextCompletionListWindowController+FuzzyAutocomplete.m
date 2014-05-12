@@ -163,6 +163,7 @@ const char kRowHeightKey;
     } else if ([aTableColumn.identifier isEqualToString:@"title"]) {
         id<DVTTextCompletionItem> item = self.session.filteredCompletionsAlpha[rowIndex];
         NSArray * ranges = [self.session fa_matchedRangesForItem: item];
+        NSArray * second = [self.session fa_secondPassMatchedRangesForItem: item];
 
         if (!ranges.count) {
             return;
@@ -175,10 +176,19 @@ const char kRowHeightKey;
                                        toString: item.displayText
                                       addOffset: 0];
 
+        second = [self.session fa_convertRanges: second
+                                     fromString: item.name
+                                       toString: item.displayText
+                                      addOffset: 0];
+
         NSDictionary * attributes = [FATheme cuurrentTheme].listTextAttributesForMatchedRanges;
+        NSDictionary * altAttributes = [FATheme cuurrentTheme].listTextAttributesForSecondPassMatchedRanges;
 
         for (NSValue * val in ranges) {
             [attributed addAttributes: attributes range: [val rangeValue]];
+        }
+        for (NSValue * val in second) {
+            [attributed addAttributes: altAttributes range: [val rangeValue]];
         }
 
 
