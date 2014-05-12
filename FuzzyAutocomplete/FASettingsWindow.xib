@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5056" systemVersion="13C64" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1080" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5053"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5056"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="FASettings"/>
@@ -104,7 +104,7 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <button id="t1d-cf-qrh">
-                                                        <rect key="frame" x="2" y="78" width="327" height="18"/>
+                                                        <rect key="frame" x="2" y="78" width="159" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <buttonCell key="cell" type="check" title="Show Inline Preview" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="iqp-L1-E6w">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -114,12 +114,24 @@
                                                             <binding destination="-2" name="value" keyPath="self.showInlinePreview" id="Jx5-Mu-gwy"/>
                                                         </connections>
                                                     </button>
+                                                    <button appearanceType="aqua" id="cLf-PE-ctp">
+                                                        <rect key="frame" x="233" y="77" width="98" height="20"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Hide Cursor" bezelStyle="regularSquare" imagePosition="left" controlSize="small" state="on" inset="2" id="b1n-ld-44y">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="smallSystem"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <binding destination="-2" name="enabled" keyPath="self.showInlinePreview" id="kcV-Ng-jRb"/>
+                                                            <binding destination="-2" name="value" keyPath="self.hideCursorInNonPrefixPreview" id="WIH-Eg-Jfb"/>
+                                                        </connections>
+                                                    </button>
                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="Kdd-yK-MCT">
                                                         <rect key="frame" x="2" y="55" width="327" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="t19-cZ-VTC">
                                                             <font key="font" metaFont="miniSystem"/>
-                                                            <string key="title">If you find it confusing that the query is not visible before the cursor disable this setting or enable 'Show List Header' which shows the query.</string>
+                                                            <string key="title">If you find it confusing that the query is not visible before the cursor disable preview, hide the cursor or 'Show List Header' to show the query.</string>
                                                             <color key="textColor" name="disabledControlTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>

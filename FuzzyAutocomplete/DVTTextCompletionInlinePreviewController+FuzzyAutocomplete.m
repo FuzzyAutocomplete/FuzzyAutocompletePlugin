@@ -10,6 +10,7 @@
 #import "DVTTextCompletionSession.h"
 #import "DVTTextCompletionSession+FuzzyAutocomplete.h"
 #import "DVTFontAndColorTheme.h"
+#import "FASettings.h"
 #import "JRSwizzle.h"
 #import <objc/runtime.h>
 
@@ -79,7 +80,7 @@
         NSUInteger end = NSMaxRange(self.previewRange);
         NSRange override = NSMakeRange(start, end - start);
         self.fa_overridedGhostRange = [NSValue valueWithRange: override];
-        if (session.cursorLocation == start) {
+        if (![FASettings currentSettings].hideCursorInNonPrefixPreview || session.cursorLocation == start) {
             textView.insertionPointColor = [textView.insertionPointColor colorWithAlphaComponent: 1];
         } else {
             textView.insertionPointColor = [textView.insertionPointColor colorWithAlphaComponent: 0];

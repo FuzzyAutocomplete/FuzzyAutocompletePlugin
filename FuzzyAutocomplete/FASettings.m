@@ -13,24 +13,9 @@
 NSString * FASettingsPluginEnabledDidChangeNotification = @"io.github.FuzzyAutocomplete.PluginEnabledDidChange";
 
 // increment to show settings screen to the user
-static const NSUInteger kSettingsVersion = 2;
+static const NSUInteger kSettingsVersion = 3;
 
 @interface FASettings () <NSWindowDelegate>
-
-@property (nonatomic, readwrite) BOOL pluginEnabled;
-
-@property (nonatomic, readwrite) double minimumScoreThreshold;
-@property (nonatomic, readwrite) BOOL filterByScore;
-@property (nonatomic, readwrite) BOOL sortByScore;
-@property (nonatomic, readwrite) BOOL showScores;
-@property (nonatomic, readwrite) NSString * scoreFormat;
-@property (nonatomic, readwrite) NSInteger maximumWorkers;
-@property (nonatomic, readwrite) BOOL parallelScoring;
-
-@property (nonatomic, readwrite) double matchScorePower;
-@property (nonatomic, readwrite) double priorityPower;
-@property (nonatomic, readwrite) double priorityFactorPower;
-@property (nonatomic, readwrite) double maxPrefixBonus;
 
 @end
 
@@ -104,6 +89,7 @@ static const BOOL kDefaultSortByScore = YES;
 static const BOOL kDefaultFilterByScore = YES;
 static const BOOL kDefaultShowScores = NO;
 static const BOOL kDefaultShowInlinePreview = YES;
+static const BOOL kDefaultHideCursorInNonPrefixPreview = YES;
 static const BOOL kDefaultShowListHeader = NO;
 static const BOOL kDefaultNormalizeScores = NO;
 static const BOOL kDefaultShowTiming = NO;
@@ -125,6 +111,7 @@ static const double kDefaultMaxPrefixBonus = 0.5;
     self.normalizeScores = kDefaultNormalizeScores;
     self.showListHeader = kDefaultShowListHeader;
     self.showInlinePreview = kDefaultShowInlinePreview;
+    self.hideCursorInNonPrefixPreview = kDefaultHideCursorInNonPrefixPreview;
     self.showTiming = kDefaultShowTiming;
     self.prefixAnchor = kDefaultPrefixAnchor;
 
@@ -160,6 +147,7 @@ static const double kDefaultMaxPrefixBonus = 0.5;
     loadNumber(maximumWorkers, MaximumWorkers);
     loadNumber(normalizeScores, NormalizeScores);
     loadNumber(showInlinePreview, ShowInlinePreview);
+    loadNumber(hideCursorInNonPrefixPreview, HideCursorInNonPrefixPreview);
     loadNumber(showListHeader, ShowListHeader);
     loadNumber(showTiming, ShowTiming);
     loadNumber(prefixAnchor, PrefixAnchor);
@@ -183,7 +171,7 @@ static const double kDefaultMaxPrefixBonus = 0.5;
                                           defaultButton: @"View"
                                         alternateButton: @"Skip"
                                             otherButton: nil
-                              informativeTextWithFormat: @"New settings are available for %@ plugin. Do you want to review them now? You can always access the settings later from the Menu: Editor > %@ > Plugin Settings...", pluginName, pluginName];
+                              informativeTextWithFormat: @"New settings are available for %@ plugin. Do you want to review them now?\n\nYou can always access the settings later from the Menu:\nEditor > %@ > Plugin Settings...", pluginName, pluginName];
         if ([alert runModal] == NSAlertDefaultReturn) {
             [self showSettingsWindow];
         }
@@ -200,6 +188,7 @@ static const double kDefaultMaxPrefixBonus = 0.5;
         case 0: // just break, dont migrate for 0
             break;
         case 1: // dont break, fall through to higher cases
+        case 2:
             ;
     }
 }
@@ -233,6 +222,7 @@ BOOL_SETTINGS_SETTER(sortByScore, SortByScore)
 BOOL_SETTINGS_SETTER(parallelScoring, ParallelScoring)
 BOOL_SETTINGS_SETTER(normalizeScores, NormalizeScores)
 BOOL_SETTINGS_SETTER(showInlinePreview, ShowInlinePreview)
+BOOL_SETTINGS_SETTER(hideCursorInNonPrefixPreview, HideCursorInNonPrefixPreview)
 BOOL_SETTINGS_SETTER(showListHeader, ShowListHeader)
 BOOL_SETTINGS_SETTER(showTiming, ShowTiming)
 

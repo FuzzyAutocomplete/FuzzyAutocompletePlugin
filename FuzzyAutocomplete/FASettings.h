@@ -54,6 +54,9 @@ extern NSString * FASettingsPluginEnabledDidChangeNotification;
 /// Should the inline preview be visible.
 @property (nonatomic, readonly) BOOL showInlinePreview;
 
+/// Should the inline preview be visible.
+@property (nonatomic, readonly) BOOL hideCursorInNonPrefixPreview;
+
 /// Should the scores be divided by maximum score so that are from [0, 1].
 @property (nonatomic, readonly) BOOL normalizeScores;
 
