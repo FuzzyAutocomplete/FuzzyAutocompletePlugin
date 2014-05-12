@@ -7,8 +7,20 @@
 //
 
 #import "FAMatchPattern.h"
+#import "FASettings.h"
 
-@implementation FAMatchPattern
+@implementation FAMatchPattern {
+    BOOL _useTwoPasses;
+    NSInteger _minLengthForTwoPasses;
+}
+
+- (instancetype) initWithPattern: (NSString *) patternString {
+    if ((self = [super initWithPattern: patternString])) {
+        _useTwoPasses = [FASettings currentSettings].correctWordOrder;
+        _minLengthForTwoPasses = [FASettings currentSettings].correctWordOrderAfter + 1;
+    }
+    return self;
+}
 
 - (double)scoreCandidate:(NSString *)candidate matchedRanges:(NSArray *__autoreleasing *)ranges {
     return [self scoreCandidate: candidate matchedRanges: ranges secondPassRanges: nil];
@@ -61,7 +73,7 @@
 }
 
 - (double) scoreCandidate: (NSString *) candidate matchedRanges: (NSArray **) ranges secondPassRanges:(NSArray **)secondPass {
-    if ([super matchesCandidate: candidate]) {
+    if (!_useTwoPasses || self.pattern.length < _minLengthForTwoPasses || [super matchesCandidate: candidate]) {
         return [super scoreCandidate: candidate matchedRanges: ranges];
     } else {
         if ([self matchesRepeatedCandidate: candidate]) {
@@ -81,7 +93,7 @@
     if ([super matchesCandidate: candidate]) {
         return YES;
     } else {
-        if ([self matchesRepeatedCandidate: candidate]) {
+        if (_useTwoPasses && self.pattern.length >= _minLengthForTwoPasses && [self matchesRepeatedCandidate: candidate]) {
             return [super matchesCandidate: [self twoPassesCandidateForCandidate: candidate]];
         } else {
             return NO;

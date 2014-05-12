@@ -24,6 +24,18 @@
                             <rect key="frame" x="1" y="1" width="363" height="363"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
+                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="NM7-2O-2kt">
+                                    <rect key="frame" x="-2" y="188" width="365" height="29"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" enabled="NO" sendsActionOnEndEditing="YES" alignment="center" title="Plugin Disabled" id="eif-IO-BeY">
+                                        <font key="font" metaFont="system" size="24"/>
+                                        <color key="textColor" name="disabledControlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                    <connections>
+                                        <binding destination="-2" name="hidden" keyPath="self.pluginEnabled" id="6ef-NH-vpb"/>
+                                    </connections>
+                                </textField>
                                 <tabView appearanceType="aqua" id="Mdg-2I-czT">
                                     <rect key="frame" x="5" y="42" width="350" height="316"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -122,8 +134,8 @@
                                                             <font key="font" metaFont="smallSystem"/>
                                                         </buttonCell>
                                                         <connections>
-                                                            <binding destination="-2" name="enabled" keyPath="self.showInlinePreview" id="kcV-Ng-jRb"/>
                                                             <binding destination="-2" name="value" keyPath="self.hideCursorInNonPrefixPreview" id="WIH-Eg-Jfb"/>
+                                                            <binding destination="-2" name="enabled" keyPath="self.showInlinePreview" id="kcV-Ng-jRb"/>
                                                         </connections>
                                                     </button>
                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="Kdd-yK-MCT">
@@ -588,6 +600,121 @@ Prefix - maximum bonus factor for prefix matches</string>
                                                 </subviews>
                                             </view>
                                         </tabViewItem>
+                                        <tabViewItem label="Experimental" identifier="" id="cLr-kq-bCU">
+                                            <view key="view" id="fD4-kl-liU">
+                                                <rect key="frame" x="10" y="33" width="330" height="270"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <button appearanceType="aqua" id="gI4-JG-kD6">
+                                                        <rect key="frame" x="2" y="251" width="179" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Correct Letter Case" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Afd-ED-Riu">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <binding destination="-2" name="value" keyPath="self.correctLetterCase" id="jzy-NV-I6A"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button appearanceType="aqua" id="s9b-en-hhk">
+                                                        <rect key="frame" x="232" y="250" width="97" height="21"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Best Match Only" bezelStyle="regularSquare" imagePosition="left" controlSize="mini" state="on" inset="2" id="s0B-gG-nDH">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="miniSystem"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <binding destination="-2" name="enabled" keyPath="self.correctLetterCase" id="JDf-kp-GTu"/>
+                                                            <binding destination="-2" name="value" keyPath="self.correctLetterCaseBestMatchOnly" id="gMN-N5-q00"/>
+                                                        </connections>
+                                                    </button>
+                                                    <textField appearanceType="aqua" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="dAH-9j-Nr5">
+                                                        <rect key="frame" x="2" y="228" width="321" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="hKG-gD-tqS">
+                                                            <font key="font" metaFont="miniSystem"/>
+                                                            <string key="title">If enabled, when exactly one completion matching typed text is present, the text will be autocorrected to that item upon hiding completions.</string>
+                                                            <color key="textColor" name="disabledControlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <button appearanceType="aqua" id="oyQ-SM-heA">
+                                                        <rect key="frame" x="2" y="197" width="146" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Correct Word Order" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="fib-fy-RKd">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <binding destination="-2" name="value" keyPath="self.correctWordOrder" id="vJ4-7X-wK6"/>
+                                                        </connections>
+                                                    </button>
+                                                    <stepper appearanceType="aqua" horizontalHuggingPriority="750" verticalHuggingPriority="750" id="RIc-hE-LFP">
+                                                        <rect key="frame" x="311" y="193" width="19" height="27"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <stepperCell key="cell" continuous="YES" alignment="left" maxValue="80" id="QvB-rv-1NT"/>
+                                                        <connections>
+                                                            <binding destination="-2" name="hidden" keyPath="self.correctWordOrder" id="5vh-71-zMg">
+                                                                <dictionary key="options">
+                                                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                                                </dictionary>
+                                                            </binding>
+                                                            <binding destination="-2" name="value" keyPath="self.correctWordOrderAfter" id="aiu-xb-99T"/>
+                                                        </connections>
+                                                    </stepper>
+                                                    <textField appearanceType="aqua" verticalHuggingPriority="750" id="cHX-bH-B0C">
+                                                        <rect key="frame" x="236" y="196" width="78" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="2f0-iq-bcw">
+                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" id="fRA-9A-KgD">
+                                                                <real key="minimum" value="0.0"/>
+                                                                <real key="maximum" value="80"/>
+                                                                <metadata>
+                                                                    <real key="inspectorSampleValue" value="1"/>
+                                                                </metadata>
+                                                            </numberFormatter>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <connections>
+                                                            <binding destination="-2" name="hidden" keyPath="self.correctWordOrder" id="ssQ-Dd-StM">
+                                                                <dictionary key="options">
+                                                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                                                </dictionary>
+                                                            </binding>
+                                                            <binding destination="-2" name="value" keyPath="self.correctWordOrderAfter" id="bpU-xB-QEI"/>
+                                                        </connections>
+                                                    </textField>
+                                                    <textField appearanceType="aqua" horizontalHuggingPriority="251" verticalHuggingPriority="750" id="SA5-Ki-1vp">
+                                                        <rect key="frame" x="152" y="199" width="82" height="14"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="After Letters" id="ZdI-7e-8kV">
+                                                            <font key="font" metaFont="smallSystem"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <connections>
+                                                            <binding destination="-2" name="hidden" keyPath="self.correctWordOrder" id="H14-S5-S1Q">
+                                                                <dictionary key="options">
+                                                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                                                </dictionary>
+                                                            </binding>
+                                                        </connections>
+                                                    </textField>
+                                                    <textField appearanceType="aqua" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="cnT-1h-TTf">
+                                                        <rect key="frame" x="2" y="174" width="323" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="EX2-rQ-gUM">
+                                                            <font key="font" metaFont="miniSystem"/>
+                                                            <string key="title">If enabled, the fuzzy match will try to account for wrong order of words. Increase [After] how many letters to start to improve performance.</string>
+                                                            <color key="textColor" name="disabledControlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                </subviews>
+                                            </view>
+                                        </tabViewItem>
                                     </tabViewItems>
                                     <connections>
                                         <binding destination="-2" name="hidden" keyPath="self.pluginEnabled" id="nKZ-FT-NQP">
@@ -597,18 +724,6 @@ Prefix - maximum bonus factor for prefix matches</string>
                                         </binding>
                                     </connections>
                                 </tabView>
-                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="NM7-2O-2kt">
-                                    <rect key="frame" x="-2" y="188" width="365" height="29"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" enabled="NO" sendsActionOnEndEditing="YES" alignment="center" title="Plugin Disabled" id="eif-IO-BeY">
-                                        <font key="font" metaFont="system" size="24"/>
-                                        <color key="textColor" name="disabledControlTextColor" catalog="System" colorSpace="catalog"/>
-                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    </textFieldCell>
-                                    <connections>
-                                        <binding destination="-2" name="hidden" keyPath="self.pluginEnabled" id="6ef-NH-vpb"/>
-                                    </connections>
-                                </textField>
                                 <button verticalHuggingPriority="750" id="aKv-xC-QE4">
                                     <rect key="frame" x="14" y="12" width="143" height="32"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>

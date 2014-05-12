@@ -8,7 +8,10 @@
 
 #import "IDEOpenQuicklyPattern.h"
 
+/// Fuzzy Autocomplete Match Pattern
 @interface FAMatchPattern : IDEOpenQuicklyPattern
+
+- (instancetype) initWithPattern: (NSString *) patternString;
 
 - (double) scoreCandidate: (NSString *) candidate matchedRanges: (NSArray **) ranges secondPassRanges: (NSArray **) secondPassRanges;
 - (double) scoreCandidate: (NSString *) candidate matchedRanges: (NSArray **) ranges;

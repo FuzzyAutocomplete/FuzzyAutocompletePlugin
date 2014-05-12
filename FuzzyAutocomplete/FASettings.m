@@ -100,6 +100,13 @@ static const double kDefaultPriorityPower = 0.5;
 static const double kDefaultPriorityFactorPower = 0.5;
 static const double kDefaultMaxPrefixBonus = 0.5;
 
+// experimental
+
+static const BOOL kDefaultCorrectLetterCase = NO;
+static const BOOL kDefaultCorrectLetterCaseBestMatchOnly = NO;
+static const BOOL kDefaultCorrectWordOrder = NO;
+static const NSInteger kDefaultCorrectWordOrderAfter = 2;
+
 - (IBAction)resetDefaults:(id)sender {
     self.pluginEnabled = kDefaultPluginEnabled;
 
@@ -119,6 +126,11 @@ static const double kDefaultMaxPrefixBonus = 0.5;
     self.priorityPower = kDefaultPriorityPower;
     self.priorityFactorPower = kDefaultPriorityFactorPower;
     self.maxPrefixBonus = kDefaultMaxPrefixBonus;
+
+    self.correctLetterCase = kDefaultCorrectLetterCase;
+    self.correctLetterCaseBestMatchOnly = kDefaultCorrectLetterCaseBestMatchOnly;
+    self.correctWordOrder = kDefaultCorrectWordOrder;
+    self.correctWordOrderAfter = kDefaultCorrectWordOrderAfter;
 
     NSUInteger processors = [[NSProcessInfo processInfo] activeProcessorCount];
     self.parallelScoring = processors > 1;
@@ -156,6 +168,11 @@ static const double kDefaultMaxPrefixBonus = 0.5;
     loadNumber(priorityPower, PriorityPower);
     loadNumber(priorityFactorPower, PriorityFactorPower);
     loadNumber(maxPrefixBonus, MaxPrefixBonus);
+
+    loadNumber(correctLetterCase, CorrectLetterCase);
+    loadNumber(correctLetterCaseBestMatchOnly, CorrectLetterCaseBestMatchOnly);
+    loadNumber(correctWordOrder, CorrectWordOrder);
+    loadNumber(correctWordOrderAfter, CorrectWordOrderAfter);
 
 #undef loadNumber
 
@@ -225,9 +242,13 @@ BOOL_SETTINGS_SETTER(showInlinePreview, ShowInlinePreview)
 BOOL_SETTINGS_SETTER(hideCursorInNonPrefixPreview, HideCursorInNonPrefixPreview)
 BOOL_SETTINGS_SETTER(showListHeader, ShowListHeader)
 BOOL_SETTINGS_SETTER(showTiming, ShowTiming)
+BOOL_SETTINGS_SETTER(correctLetterCase, CorrectLetterCase);
+BOOL_SETTINGS_SETTER(correctLetterCaseBestMatchOnly, CorrectLetterCaseBestMatchOnly);
+BOOL_SETTINGS_SETTER(correctWordOrder, CorrectWordOrder);
 
 INTEGER_SETTINGS_SETTER(maximumWorkers, MaximumWorkers)
 INTEGER_SETTINGS_SETTER(prefixAnchor, PrefixAnchor)
+INTEGER_SETTINGS_SETTER(correctWordOrderAfter, CorrectWordOrderAfter);
 
 DOUBLE_SETTINGS_SETTER(minimumScoreThreshold, MinimumScoreThreshold)
 DOUBLE_SETTINGS_SETTER(matchScorePower, MatchScorePower)

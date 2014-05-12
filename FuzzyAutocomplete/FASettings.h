@@ -72,5 +72,17 @@ extern NSString * FASettingsPluginEnabledDidChangeNotification;
 @property (nonatomic, readonly) double priorityFactorPower;
 @property (nonatomic, readonly) double maxPrefixBonus;
 
+/// Should the plugin autocorrect letter case.
+@property (nonatomic, readonly) BOOL correctLetterCase;
+
+/// Should the letter case be corrected only if match has highest score.
+@property (nonatomic, readonly) BOOL correctLetterCaseBestMatchOnly;
+
+/// Should the plugin autocorrect wordOrder.
+@property (nonatomic, readonly) BOOL correctWordOrder;
+
+/// After how many letters should attempt to correct word order.
+@property (nonatomic, readonly) NSInteger correctWordOrderAfter;
+
 
 @end

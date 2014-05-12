@@ -264,7 +264,7 @@
 
 // We override here to add autocorrection of letter case
 - (void) _fa_hideCompletionsWithReason: (int) reason {
-    if (!self.fa_insertingCompletion) {
+    if ([FASettings currentSettings].correctLetterCase && reason == 2 && !self.fa_insertingCompletion) {
         NSString * filteringPrefix = [self valueForKey: @"_filteringPrefix"];
         NSArray * completions = self.filteredCompletionsAlpha;
 
@@ -272,7 +272,9 @@
             return [obj.name caseInsensitiveCompare: filteringPrefix] == NSOrderedSame;
         }];
 
-        if (indexSet.count == 1) {
+        BOOL bestOnly = [FASettings currentSettings].correctLetterCaseBestMatchOnly;
+
+        if (indexSet.count == 1 && (!bestOnly || indexSet.firstIndex == [self _fa_lastFilteringResults].bestMatchIndex)) {
             id<DVTTextCompletionItem> item = completions[indexSet.firstIndex];
             if (![item.name isEqualToString: filteringPrefix]) {
 
@@ -284,11 +286,16 @@
 
                 NSRange range = NSMakeRange(start_location, end_location-start_location);
 
+                // dispatch async so it is done after hiding the completions and friends
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [storage beginEditing];
-                    [storage replaceCharactersInRange: range withString: item.completionText withUndoManager: [textView undoManager]];
-                    [storage endEditing];
-                    [textView didChangeText];
+                    // eg inserting a ':' might cause reindent and replace of a wrong range
+                    NSAttributedString * attributed = [storage attributedSubstringFromRange: range];
+                    if ([attributed.string isEqualToString: filteringPrefix]) {
+                        [storage beginEditing];
+                        [storage replaceCharactersInRange: range withString: item.completionText withUndoManager: [textView undoManager]];
+                        [storage endEditing];
+                        [textView didChangeText];
+                    }
                 });
             }
         }
