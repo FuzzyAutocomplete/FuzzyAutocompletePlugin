@@ -56,10 +56,6 @@
                 withMethod: @selector(_fa_attributesForCompletionAtCharacterIndex:effectiveRange:)
                      error: NULL];
 
-    [self jr_swizzleMethod: @selector(rangeOfFirstWordInString:)
-                withMethod: @selector(_fa_rangeOfFirstWordInString:)
-                     error: NULL];
-
     [self jr_swizzleMethod: @selector(initWithTextView:atLocation:cursorLocation:)
                 withMethod: @selector(_fa_initWithTextView:atLocation:cursorLocation:)
                      error: NULL];
@@ -164,13 +160,6 @@
         session._fa_resultsStack = [NSMutableArray array];
     }
     return session;
-}
-
-// Based on the first word, either completionString or name is used for preview.
-// We override in such a way that the name is always used.
-// Otherwise the cursor can be possibly placed inside a token.
-- (NSRange) _fa_rangeOfFirstWordInString: (NSString *) string {
-    return NSMakeRange(0, string.length);
 }
 
 // We override to calculate _filteredCompletionsAlpha before calling the original
