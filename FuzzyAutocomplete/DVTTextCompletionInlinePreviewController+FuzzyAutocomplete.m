@@ -116,6 +116,7 @@ static char matchedRangesKey;
 
 @implementation FAPreviewItem {
     id<DVTTextCompletionItem> _item;
+    NSString * _completionText;
 }
 
 @dynamic displayType, icon, displayText, descriptionText, priority, notRecommended, parentText, name;
@@ -123,6 +124,10 @@ static char matchedRangesKey;
 + (instancetype)previewItemForItem:(id<DVTTextCompletionItem>)item {
     FAPreviewItem * ret = [FAPreviewItem new];
     ret->_item = item;
+    NSString * completionText = item.completionText;
+    completionText = [completionText stringByReplacingOccurrencesOfString:@"<#" withString:@""];
+    completionText = [completionText stringByReplacingOccurrencesOfString:@"#>" withString:@""];
+    ret->_completionText = completionText;
     return ret;
 }
 
@@ -131,7 +136,7 @@ static char matchedRangesKey;
 }
 
 - (NSString *)completionText {
-    return _item.name;
+    return _completionText;
 }
 
 @end
