@@ -90,8 +90,8 @@
         }
     } else {
         // TODO: consider changing to componentsSeparatedByString: for performance (?)
-        NSRegularExpression * selectorSegmentRegex = [NSRegularExpression regularExpressionWithPattern: @"[a-zA-Z_][a-zA-Z0-9_]*:" options: 0 error: NULL];
-        [selectorSegmentRegex enumerateMatchesInString: fromString options: 0 range: NSMakeRange(0, fromString.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+        NSRegularExpression * completionSegmentRegex = [NSRegularExpression regularExpressionWithPattern: @"[a-zA-Z_][a-zA-Z0-9_]*[^a-zA-Z0-9_]" options: 0 error: NULL];
+        [completionSegmentRegex enumerateMatchesInString: fromString options: 0 range: NSMakeRange(0, fromString.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
             NSRange nameRange = result.range;
             NSRange dispRange = [toString rangeOfString: [fromString substringWithRange: nameRange]];
             if (dispRange.location != NSNotFound) {
