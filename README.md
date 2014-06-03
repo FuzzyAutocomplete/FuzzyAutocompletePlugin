@@ -2,7 +2,9 @@
 
 ## `FuzzyAutocomplete 2.0` 
  
-This is a Xcode 5 plugin that patches the autocomplete filter to work the same way the **Open Quickly** works. It performs very well, and the fuzzy matching actually uses Xcode's own `IDEOpenQuicklyPattern`.
+This is a Xcode 5+ plugin that patches the autocomplete filter to work the same way the **Open Quickly** works. It performs very well, and the fuzzy matching actually uses Xcode's own `IDEOpenQuicklyPattern`.
+
+For Xcode 6 Beta and Swift support check out the `xcode6` branch.
 
 ![Demo](demo.gif)
 
