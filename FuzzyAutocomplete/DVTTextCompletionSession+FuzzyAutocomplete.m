@@ -526,6 +526,9 @@
 
     DLog(@"Process elements %lu %lu (%lu)", lower_bound, upper_bound, array.count);
 
+    NSMutableCharacterSet * identStartSet = [NSMutableCharacterSet letterCharacterSet];
+    [identStartSet addCharactersInString: @"_@"];
+    
     MULTI_TIMER_INIT(Matching); MULTI_TIMER_INIT(Scoring); MULTI_TIMER_INIT(Writing);
 
     for (NSUInteger i = lower_bound; i < upper_bound; ++i) {
@@ -533,17 +536,23 @@
         NSArray * rangesArray;
         double matchScore;
 
+        NSInteger nameOffset = [item.name rangeOfCharacterFromSet: identStartSet].location;
+        if (nameOffset == NSNotFound) {
+            nameOffset = 0;
+        }
+        NSString * nameToMatch = !nameOffset ? item.name : [item.name substringFromIndex: nameOffset];
+        
         MULTI_TIMER_START(Matching);
         if (query.length == 1) {
-            NSRange range = [item.name rangeOfString: query options: NSCaseInsensitiveSearch];
+            NSRange range = [nameToMatch rangeOfString: query options: NSCaseInsensitiveSearch];
             if (range.location != NSNotFound) {
                 rangesArray = @[ [NSValue valueWithRange:range] ];
-                matchScore = MAX(0.001, [pattern scoreCandidate:item.name matchedRanges:&rangesArray]);
+                matchScore = MAX(0.001, [pattern scoreCandidate:nameToMatch matchedRanges:&rangesArray]);
             } else {
                 matchScore = 0;
             }
         } else {
-            matchScore = [pattern scoreCandidate:item.name matchedRanges:&rangesArray];
+            matchScore = [pattern scoreCandidate:nameToMatch matchedRanges:&rangesArray];
         }
         MULTI_TIMER_STOP(Matching);
 
@@ -552,12 +561,22 @@
             double factor = [self _priorityFactorForItem:item];
             double score = normalization * [method scoreItem: item
                                                 searchString: query
+                                                 matchedName: nameToMatch
                                                   matchScore: matchScore
                                                matchedRanges: rangesArray
                                               priorityFactor: factor];
             MULTI_TIMER_STOP(Scoring);
             MULTI_TIMER_START(Writing);
             if (score > 0) {
+                if (nameOffset) {
+                    NSMutableArray * realRanges = [NSMutableArray array];
+                    for (NSValue * v in rangesArray) {
+                        NSRange r = v.rangeValue;
+                        r.location += nameOffset;
+                        [realRanges addObject: [NSValue valueWithRange: r]];
+                    }
+                    rangesArray = realRanges;
+                }
                 [filteredList addObject:item];
                 filteredRanges[item.name] = rangesArray ?: @[];
                 filteredScores[item.name] = @(score);
@@ -680,7 +699,7 @@
             @"factor"     : @(factor),
             @"priority"   : @(item.priority),
             @"matchScore" : @(matchScore),
-            @"score"      : @([self._fa_currentScoringMethod scoreItem: item searchString: query matchScore: matchScore matchedRanges: ranges priorityFactor: factor])
+            @"score"      : @([self._fa_currentScoringMethod scoreItem: item searchString: query matchedName: item.name matchScore: matchScore matchedRanges: ranges priorityFactor: factor])
         }];
     }];
 

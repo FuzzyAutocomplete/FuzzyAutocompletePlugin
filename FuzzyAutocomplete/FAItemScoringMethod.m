@@ -13,6 +13,7 @@
 
 - (double) scoreItem: (id<DVTTextCompletionItem>) item
         searchString: (NSString *) query
+         matchedName: (NSString *) matchedName
           matchScore: (double) matchScore
        matchedRanges: (NSArray *) rangesArray
       priorityFactor: (double) priorityFactor
