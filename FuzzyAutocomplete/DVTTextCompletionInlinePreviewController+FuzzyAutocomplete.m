@@ -13,7 +13,7 @@
 #import "JRSwizzle.h"
 #import <objc/runtime.h>
 
-// A helper class that switches completionText to be equal to name.
+// A helper class that ensures completionText does not contain tokens.
 // Otherwise the cursor can be possibly placed inside a token.
 @interface FAPreviewItem : NSObject <DVTTextCompletionItem>
 + (instancetype) previewItemForItem: (id<DVTTextCompletionItem>) item;
