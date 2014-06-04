@@ -49,11 +49,12 @@
 - (double) scoreTwoPassesCandidate: (NSString *) finalCandidate matchedRanges: (NSArray **) ranges secondPassRanges:(NSArray **)secondPass {
     NSUInteger originalLength = finalCandidate.length / 2;
 
-    double final = [super scoreCandidate: finalCandidate matchedRanges: ranges];
+    NSArray * localRanges = nil;
+    double final = [super scoreCandidate: finalCandidate matchedRanges: &localRanges];
 
     NSMutableArray * secondPassRanges = secondPass ? [NSMutableArray array] : nil;
     NSMutableArray * newRanges = ranges ? [NSMutableArray array] : nil;
-    for (NSValue * v in *ranges) {
+    for (NSValue * v in localRanges) {
         NSRange r = [v rangeValue];
         if (r.location > originalLength) {
             r.location -= originalLength + 1;
