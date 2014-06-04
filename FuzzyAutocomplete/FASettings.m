@@ -37,38 +37,55 @@ static const NSUInteger kSettingsVersion = 3;
     [self loadFromDefaults];
     NSBundle * bundle = [NSBundle bundleForClass: [self class]];
     NSArray * objects;
-    if ([bundle loadNibNamed: @"FASettingsWindow" owner: self topLevelObjects: &objects]) {
-        NSWindow * window = nil;
+    NSWindow * window = nil;
+    @try {
+        [bundle loadNibNamed: @"FASettingsWindow" owner: self topLevelObjects: &objects];
         for (id object in objects) {
             if ([object isKindOfClass: [NSWindow class]]) {
                 window = object;
                 break;
             }
         }
-        if (window) {
-            window.minSize = window.frame.size;
-            window.maxSize = window.frame.size;
-            NSString * title = bundle.lsl_bundleNameWithVersion;
-            NSTextField * label = (NSTextField *) [window.contentView viewWithTag: 42];
-            NSMutableAttributedString * attributed = [[NSMutableAttributedString alloc] initWithString: title];
-            FATheme * theme = [FATheme cuurrentTheme];
-            [attributed addAttributes: theme.listTextAttributesForMatchedRanges range: NSMakeRange(0, 1)];
-            [attributed addAttributes: theme.listTextAttributesForMatchedRanges range: NSMakeRange(5, 1)];
-            [attributed addAttributes: theme.previewTextAttributesForNotMatchedRanges range: NSMakeRange(18, title.length-18)];
-            NSMutableParagraphStyle * style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-            style.alignment = NSCenterTextAlignment;
-            [attributed addAttribute: NSParagraphStyleAttributeName value: style range: NSMakeRange(0, attributed.length)];
-            label.attributedStringValue = attributed;
+    }
+    @catch (NSException *exception) {
+        RLog(@"Exception while opening Settings Window: %@", exception);
+    }
+    
+    if (window) {
+        window.minSize = window.frame.size;
+        window.maxSize = window.frame.size;
+        NSString * title = bundle.lsl_bundleNameWithVersion;
+        NSTextField * label = (NSTextField *) [window.contentView viewWithTag: 42];
+        NSMutableAttributedString * attributed = [[NSMutableAttributedString alloc] initWithString: title];
+        FATheme * theme = [FATheme cuurrentTheme];
+        [attributed addAttributes: theme.listTextAttributesForMatchedRanges range: NSMakeRange(0, 1)];
+        [attributed addAttributes: theme.listTextAttributesForMatchedRanges range: NSMakeRange(5, 1)];
+        [attributed addAttributes: theme.previewTextAttributesForNotMatchedRanges range: NSMakeRange(18, title.length-18)];
+        NSMutableParagraphStyle * style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        style.alignment = NSCenterTextAlignment;
+        [attributed addAttribute: NSParagraphStyleAttributeName value: style range: NSMakeRange(0, attributed.length)];
+        label.attributedStringValue = attributed;
 
-            BOOL enabled = self.pluginEnabled;
+        BOOL enabled = self.pluginEnabled;
 
-            [NSApp runModalForWindow: window];
+        [NSApp runModalForWindow: window];
 
-            if (self.pluginEnabled != enabled) {
-                [[NSNotificationCenter defaultCenter] postNotificationName: FASettingsPluginEnabledDidChangeNotification object: self];
+        if (self.pluginEnabled != enabled) {
+            [[NSNotificationCenter defaultCenter] postNotificationName: FASettingsPluginEnabledDidChangeNotification object: self];
+        }
+
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    } else {
+        NSString * reportIssueURL = [bundle objectForInfoDictionaryKey: @"FAReportIssueURL"];
+        if (reportIssueURL) {
+            NSAlert * alert = [NSAlert alertWithMessageText: [NSString stringWithFormat: @"Failed to open %@ settings.", bundle.lsl_bundleName]
+                                              defaultButton: @"OK"
+                                            alternateButton: @"Report an Issue"
+                                                otherButton: nil
+                                  informativeTextWithFormat: @"This might happen when updating the plugin to a newer version. To completely load the new plugin Xcode restart is required.\n\nIf the issue persists after a restart please report an issue."];
+            if ([alert runModal] == NSAlertAlternateReturn) {
+                [[NSWorkspace sharedWorkspace] openURL: [NSURL URLWithString: reportIssueURL]];
             }
-
-            [[NSUserDefaults standardUserDefaults] synchronize];
         }
     }
 }

@@ -59,10 +59,6 @@
                 withMethod: @selector(_fa_attributesForCompletionAtCharacterIndex:effectiveRange:)
                      error: NULL];
 
-    [self jr_swizzleMethod: @selector(rangeOfFirstWordInString:)
-                withMethod: @selector(_fa_rangeOfFirstWordInString:)
-                     error: NULL];
-
     [self jr_swizzleMethod: @selector(initWithTextView:atLocation:cursorLocation:)
                 withMethod: @selector(_fa_initWithTextView:atLocation:cursorLocation:)
                      error: NULL];
@@ -100,12 +96,28 @@
             [newRanges addObject: [NSValue valueWithRange: range]];
         }
     } else {
-        NSRegularExpression * wordSegmentRegex = [NSRegularExpression regularExpressionWithPattern: @"\\w*\\W?" options: 0 error: NULL];
         NSMutableArray * rangesStack = originalRanges.reverseObjectEnumerator.allObjects.mutableCopy;
-        __block NSRange searchRange = NSMakeRange(0, toString.length);
-        [wordSegmentRegex enumerateMatchesInString: fromString options: 0 range: NSMakeRange(0, fromString.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
-            NSRange nameRange = result.range;
-            NSRange dispRange = [toString rangeOfString: [fromString substringWithRange: nameRange] options: 0 range: searchRange];
+        NSRange toSearchRange = NSMakeRange(0, toString.length);
+
+        NSCharacterSet * identifierChars = [self.textView.class identifierChars];
+        NSCharacterSet * nonIdentifierChars = identifierChars.invertedSet;
+
+        NSRange curr, search = NSMakeRange(0, fromString.length);
+        while ((curr = [fromString rangeOfCharacterFromSet: identifierChars
+                                                   options: 0
+                                                     range: search])
+               .location != NSNotFound)
+        {
+            search.location = curr.location;
+            search.length = fromString.length - search.location;
+            curr = [fromString rangeOfCharacterFromSet: nonIdentifierChars
+                                               options: 0
+                                                 range: search];
+            curr.length = (curr.location == NSNotFound ? fromString.length : curr.location+1) - search.location;
+            curr.location = search.location;
+            
+            NSRange nameRange = curr;
+            NSRange dispRange = [toString rangeOfString: [fromString substringWithRange: nameRange] options: 0 range: toSearchRange];
             if (dispRange.location != NSNotFound) {
                 NSRange range;
                 while (rangesStack.count && NSMaxRange(range = [rangesStack.lastObject rangeValue]) < nameRange.location) {
@@ -123,10 +135,16 @@
                         break;
                     }
                 }
-                searchRange.location = NSMaxRange(dispRange);
-                searchRange.length = toString.length - searchRange.location;
+                toSearchRange.location = NSMaxRange(dispRange);
+                toSearchRange.length = toString.length - toSearchRange.location;
             }
-        }];
+            
+            search.location = NSMaxRange(curr);
+            search.length = fromString.length - search.location;
+            if (search.length < 1) {
+                break;
+            }
+        }
     }
     return newRanges;
 }
@@ -186,13 +204,6 @@
         session._fa_resultsStack = [NSMutableArray array];
     }
     return session;
-}
-
-// Based on the first word, either completionString or name is used for preview.
-// We override in such a way that the name is always used.
-// Otherwise the cursor can be possibly placed inside a token.
-- (NSRange) _fa_rangeOfFirstWordInString: (NSString *) string {
-    return NSMakeRange(0, string.length);
 }
 
 // We override to calculate _filteredCompletionsAlpha before calling the original
@@ -617,7 +628,9 @@
     NSUInteger upper_bound = offset == total - 1 ? array.count : (offset + 1) * (array.count / total);
 
     DLog(@"Process elements %lu %lu (%lu)", lower_bound, upper_bound, array.count);
-
+    
+    NSCharacterSet * identStartSet = [self.textView.class identifierChars];
+    
     MULTI_TIMER_INIT(Matching); MULTI_TIMER_INIT(Scoring); MULTI_TIMER_INIT(Writing);
 
     for (NSUInteger i = lower_bound; i < upper_bound; ++i) {
@@ -626,17 +639,23 @@
         NSArray * secondPassArray;
         double matchScore;
 
+        NSInteger nameOffset = [item.name rangeOfCharacterFromSet: identStartSet].location;
+        if (nameOffset == NSNotFound) {
+            nameOffset = 0;
+        }
+        NSString * nameToMatch = !nameOffset ? item.name : [item.name substringFromIndex: nameOffset];
+        
         MULTI_TIMER_START(Matching);
         if (query.length == 1) {
-            NSRange range = [item.name rangeOfString: query options: NSCaseInsensitiveSearch];
+            NSRange range = [nameToMatch rangeOfString: query options: NSCaseInsensitiveSearch];
             if (range.location != NSNotFound) {
                 rangesArray = @[ [NSValue valueWithRange:range] ];
-                matchScore = MAX(0.001, [pattern scoreCandidate:item.name matchedRanges:&rangesArray]);
+                matchScore = MAX(0.001, [pattern scoreCandidate:nameToMatch matchedRanges:&rangesArray]);
             } else {
                 matchScore = 0;
             }
         } else {
-            matchScore = [pattern scoreCandidate:item.name matchedRanges:&rangesArray secondPassRanges: &secondPassArray];
+            matchScore = [pattern scoreCandidate:nameToMatch matchedRanges:&rangesArray secondPassRanges: &secondPassArray];
         }
         MULTI_TIMER_STOP(Matching);
 
@@ -645,12 +664,22 @@
             double factor = [self _priorityFactorForItem:item];
             double score = normalization * [method scoreItem: item
                                                 searchString: query
+                                                 matchedName: nameToMatch
                                                   matchScore: matchScore
                                                matchedRanges: rangesArray
                                               priorityFactor: factor];
             MULTI_TIMER_STOP(Scoring);
             MULTI_TIMER_START(Writing);
             if (score > 0) {
+                if (nameOffset) {
+                    NSMutableArray * realRanges = [NSMutableArray array];
+                    for (NSValue * v in rangesArray) {
+                        NSRange r = v.rangeValue;
+                        r.location += nameOffset;
+                        [realRanges addObject: [NSValue valueWithRange: r]];
+                    }
+                    rangesArray = realRanges;
+                }
                 [filteredList addObject:item];
                 filteredRanges[item.name] = rangesArray ?: @[];
                 filteredSecond[item.name] = secondPassArray ?: @[];
@@ -832,7 +861,7 @@
             @"factor"     : @(factor),
             @"priority"   : @(item.priority),
             @"matchScore" : @(matchScore),
-            @"score"      : @([self._fa_currentScoringMethod scoreItem: item searchString: query matchScore: matchScore matchedRanges: ranges priorityFactor: factor])
+            @"score"      : @([self._fa_currentScoringMethod scoreItem: item searchString: query matchedName: item.name matchScore: matchScore matchedRanges: ranges priorityFactor: factor])
         }];
     }];
 

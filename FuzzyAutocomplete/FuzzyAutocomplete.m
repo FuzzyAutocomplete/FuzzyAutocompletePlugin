@@ -33,6 +33,12 @@
                                                      selector: @selector(menuDidChange:)
                                                          name: NSMenuDidChangeItemNotification
                                                        object: nil];
+            
+            // when installing through Alcatraz the application has already launched
+            if ([NSApplication sharedApplication].currentEvent) {
+                [self applicationDidFinishLaunching: nil];
+            }
+            
         });
     }
 }

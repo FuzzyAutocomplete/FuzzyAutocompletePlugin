@@ -14,6 +14,12 @@
 #import "JRSwizzle.h"
 #import <objc/runtime.h>
 
+// A helper class that ensures completionText does not contain tokens.
+// Otherwise the cursor can be possibly placed inside a token.
+@interface FAPreviewItem : NSObject <DVTTextCompletionItem>
++ (instancetype) previewItemForItem: (id<DVTTextCompletionItem>) item;
+@end
+
 @implementation DVTTextCompletionInlinePreviewController (FuzzyAutocomplete)
 
 + (void) fa_swizzleMethods {
@@ -41,6 +47,8 @@
 
 // We added calculation of matchedRanges and ghostRange here.
 - (void) _fa_showPreviewForItem: (id<DVTTextCompletionItem>) item {
+    item = [FAPreviewItem previewItemForItem: item];
+
     [self _fa_showPreviewForItem: item];
 
     DVTTextCompletionSession * session = [self valueForKey: @"_session"];
@@ -126,3 +134,31 @@ static char matchedRangesKey;
 }
 
 @end
+
+@implementation FAPreviewItem {
+    id<DVTTextCompletionItem> _item;
+    NSString * _completionText;
+}
+
+@dynamic displayType, icon, displayText, descriptionText, priority, notRecommended, parentText, name;
+
++ (instancetype)previewItemForItem:(id<DVTTextCompletionItem>)item {
+    FAPreviewItem * ret = [FAPreviewItem new];
+    ret->_item = item;
+    NSString * completionText = item.completionText;
+    completionText = [completionText stringByReplacingOccurrencesOfString:@"<#" withString:@""];
+    completionText = [completionText stringByReplacingOccurrencesOfString:@"#>" withString:@""];
+    ret->_completionText = completionText;
+    return ret;
+}
+
+- (id)forwardingTargetForSelector:(SEL)aSelector {
+    return _item;
+}
+
+- (NSString *)completionText {
+    return _completionText;
+}
+
+@end
+
