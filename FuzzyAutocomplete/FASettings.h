@@ -54,6 +54,9 @@ extern NSString * FASettingsPluginEnabledDidChangeNotification;
 /// Should the inline preview be visible.
 @property (nonatomic, readonly) BOOL showInlinePreview;
 
+/// Should the inline preview be visible.
+@property (nonatomic, readonly) BOOL hideCursorInNonPrefixPreview;
+
 /// Should the scores be divided by maximum score so that are from [0, 1].
 @property (nonatomic, readonly) BOOL normalizeScores;
 
@@ -68,6 +71,18 @@ extern NSString * FASettingsPluginEnabledDidChangeNotification;
 @property (nonatomic, readonly) double priorityPower;
 @property (nonatomic, readonly) double priorityFactorPower;
 @property (nonatomic, readonly) double maxPrefixBonus;
+
+/// Should the plugin autocorrect letter case.
+@property (nonatomic, readonly) BOOL correctLetterCase;
+
+/// Should the letter case be corrected only if match has highest score.
+@property (nonatomic, readonly) BOOL correctLetterCaseBestMatchOnly;
+
+/// Should the plugin autocorrect wordOrder.
+@property (nonatomic, readonly) BOOL correctWordOrder;
+
+/// After how many letters should attempt to correct word order.
+@property (nonatomic, readonly) NSInteger correctWordOrderAfter;
 
 
 @end

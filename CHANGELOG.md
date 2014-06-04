@@ -1,5 +1,20 @@
 ## Changelog
 
+#### 2.1.0 - 2014/06/04
+**An update with new features, improvements and bugfixes, including:**
+
+* Preliminary support for Xcode 6 and Swift
+* Correct Word Order by two-pass matching, useful when:  
+  you don't remember the order (eg rangemake)  
+  want to narrow down without backspacing (eg nsexceptioninvalid)
+* Correct Letter Case by replacing with exact match if there is only one
+* Option to hide cursor when inline preview shows a non-prefix match
+* Keep the selection when narrowing the search (unless it was the best match)
+* Better inline previews, including token text, just without tokens
+* Improved range convertions and highlighting
+* Fixed useful prefix underlining when it spans multiple segments
+* Fixed completion list positioning
+
 #### 2.0.1 - 2014/04/25
 **A minor update with small bugfixes and improvements, including:**
 

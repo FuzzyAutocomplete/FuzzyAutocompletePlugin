@@ -17,6 +17,7 @@
 @property (nonatomic, retain, readwrite) NSColor * listTextColorForScore;
 @property (nonatomic, retain, readwrite) NSColor * listTextColorForSelectedScore;
 @property (nonatomic, retain, readwrite) NSDictionary * listTextAttributesForMatchedRanges;
+@property (nonatomic, retain, readwrite) NSDictionary * listTextAttributesForSecondPassMatchedRanges;
 @property (nonatomic, retain, readwrite) NSDictionary * previewTextAttributesForNotMatchedRanges;
 
 @end
@@ -34,6 +35,7 @@
 }
 
 - (instancetype) init {
+//    makerange
     if ((self = [super init])) {
         DVTFontAndColorTheme * theme = [DVTFontAndColorTheme currentTheme];
         [self loadFromTheme: theme];
@@ -50,15 +52,30 @@
     self.previewTextAttributesForNotMatchedRanges = @{
         NSForegroundColorAttributeName  : theme.sourceTextCompletionPreviewColor,
     };
+    //315 -> 280 -> 200 -> 160 vs 110
+//    rangemake
+    //550 750 700 -> 430 720 680 -> 410 670 610 -> 440 660 600 vs 440 370 210
+//    NSA
+//    NSA
+//    NSA
+//    NSA
 }
 
 - (void) loadListAttributesFromTheme:(DVTFontAndColorTheme *)theme {
     NSColor * color = [NSColor colorWithCalibratedRed:0.886 green:0.777 blue:0.045 alpha:1.000];
+    NSColor * altColor = [NSColor colorWithCalibratedRed:0.886 green:0.412 blue:0.045 alpha:1.000];
     self.listTextAttributesForMatchedRanges = @{
         NSUnderlineStyleAttributeName   : @1,
         NSBackgroundColorAttributeName  : [color colorWithAlphaComponent: 0.25],
         NSUnderlineColorAttributeName   : color,
     };
+
+    self.listTextAttributesForSecondPassMatchedRanges = @{
+        NSUnderlineStyleAttributeName   : @1,
+        NSBackgroundColorAttributeName  : [altColor colorWithAlphaComponent: 0.25],
+        NSUnderlineColorAttributeName   : altColor,
+    };
+
 
     self.listTextColorForScore = [NSColor colorWithCalibratedRed:0.497 green:0.533 blue:0.993 alpha:1.000];
     self.listTextColorForSelectedScore = [NSColor colorWithCalibratedRed:0.838 green:0.850 blue:1.000 alpha:1.000];

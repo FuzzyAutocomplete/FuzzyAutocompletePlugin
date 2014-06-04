@@ -10,8 +10,15 @@
 #import "DVTTextCompletionSession.h"
 #import "DVTTextCompletionSession+FuzzyAutocomplete.h"
 #import "DVTFontAndColorTheme.h"
+#import "FASettings.h"
 #import "JRSwizzle.h"
 #import <objc/runtime.h>
+
+// A helper class that ensures completionText does not contain tokens.
+// Otherwise the cursor can be possibly placed inside a token.
+@interface FAPreviewItem : NSObject <DVTTextCompletionItem>
++ (instancetype) previewItemForItem: (id<DVTTextCompletionItem>) item;
+@end
 
 @implementation DVTTextCompletionInlinePreviewController (FuzzyAutocomplete)
 
@@ -23,17 +30,34 @@
     [self jr_swizzleMethod: @selector(_showPreviewForItem:)
                 withMethod: @selector(_fa_showPreviewForItem:)
                      error: NULL];
+
+    [self jr_swizzleMethod: @selector(hideInlinePreviewWithReason:)
+                withMethod: @selector(_fa_hideInlinePreviewWithReason:)
+                     error: nil];
 }
 
 #pragma mark - overrides
 
+- (void)_fa_hideInlinePreviewWithReason: (int) reason {
+    DVTTextCompletionSession * session = [self valueForKey: @"_session"];
+    NSTextView * textView = (NSTextView *) session.textView;
+    textView.insertionPointColor = [textView.insertionPointColor colorWithAlphaComponent: 1];
+    [self _fa_hideInlinePreviewWithReason: reason];
+}
+
 // We added calculation of matchedRanges and ghostRange here.
 - (void) _fa_showPreviewForItem: (id<DVTTextCompletionItem>) item {
+    item = [FAPreviewItem previewItemForItem: item];
+
     [self _fa_showPreviewForItem: item];
 
     DVTTextCompletionSession * session = [self valueForKey: @"_session"];
 
     NSArray * ranges = [session fa_matchedRangesForItem: item];
+    ranges = [ranges arrayByAddingObjectsFromArray: [session fa_secondPassMatchedRangesForItem: item]];
+    ranges = [ranges sortedArrayUsingComparator:^NSComparisonResult(NSValue * v1, NSValue * v2) {
+        return [@(v1.rangeValue.location) compare: @(v2.rangeValue.location)];
+    }];
 
     if (!ranges.count) {
         self.fa_matchedRanges = nil;
@@ -43,6 +67,7 @@
 
     NSUInteger previewLength = self.previewRange.length;
     NSString *previewText;
+    NSTextView * textView = (NSTextView *) session.textView;
 
     if (previewLength == item.completionText.length) {
         previewText = item.completionText;
@@ -51,10 +76,8 @@
     } else if (previewLength == item.displayText.length) {
         previewText = item.displayText;
     } else {
-        NSTextView * textView = (NSTextView *) session.textView;
         previewText = [[textView.textStorage attributedSubstringFromRange: self.previewRange] string];
     }
-
     ranges = [session fa_convertRanges: ranges
                             fromString: item.name
                               toString: previewText
@@ -62,12 +85,18 @@
 
     if (!ranges.count) {
         self.fa_overridedGhostRange = nil;
+        textView.insertionPointColor = [textView.insertionPointColor colorWithAlphaComponent: 1];
     } else {
         NSRange lastRange = [[ranges lastObject] rangeValue];
         NSUInteger start = NSMaxRange(lastRange);
         NSUInteger end = NSMaxRange(self.previewRange);
         NSRange override = NSMakeRange(start, end - start);
         self.fa_overridedGhostRange = [NSValue valueWithRange: override];
+        if (![FASettings currentSettings].hideCursorInNonPrefixPreview || session.cursorLocation == start) {
+            textView.insertionPointColor = [textView.insertionPointColor colorWithAlphaComponent: 1];
+        } else {
+            textView.insertionPointColor = [textView.insertionPointColor colorWithAlphaComponent: 0];
+        }
     }
 
     self.fa_matchedRanges = ranges;
@@ -105,3 +134,31 @@ static char matchedRangesKey;
 }
 
 @end
+
+@implementation FAPreviewItem {
+    id<DVTTextCompletionItem> _item;
+    NSString * _completionText;
+}
+
+@dynamic displayType, icon, displayText, descriptionText, priority, notRecommended, parentText, name;
+
++ (instancetype)previewItemForItem:(id<DVTTextCompletionItem>)item {
+    FAPreviewItem * ret = [FAPreviewItem new];
+    ret->_item = item;
+    NSString * completionText = item.completionText;
+    completionText = [completionText stringByReplacingOccurrencesOfString:@"<#" withString:@""];
+    completionText = [completionText stringByReplacingOccurrencesOfString:@"#>" withString:@""];
+    ret->_completionText = completionText;
+    return ret;
+}
+
+- (id)forwardingTargetForSelector:(SEL)aSelector {
+    return _item;
+}
+
+- (NSString *)completionText {
+    return _completionText;
+}
+
+@end
+
