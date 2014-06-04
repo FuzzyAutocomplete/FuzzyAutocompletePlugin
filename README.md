@@ -1,16 +1,16 @@
 # Fuzzy Autocomplete for Xcode
 
-## `FuzzyAutocomplete 2.0` 
+## `FuzzyAutocomplete 2.1` 
  
-This is a Xcode 5 plugin that patches the autocomplete filter to work the same way the **Open Quickly** works. It performs very well, and the fuzzy matching actually uses Xcode's own `IDEOpenQuicklyPattern`.
+This is a Xcode 5+ plugin that patches the autocomplete filter to work the same way the **Open Quickly** works. It performs very well, and the fuzzy matching actually uses Xcode's own `IDEOpenQuicklyPattern`.
 
 ![Demo](demo.gif)
 
 ## Authors
 FuzzyAutocomplete is brought to you by:
 
-* [Jack Chen (chendo)](http://github.com/chendo) - original creator of the plugin
-* [Leszek Ślażyński (slazyk)](http://github.com/slazyk) - author of the 2.0 version
+* [Leszek Ślażyński (slazyk)](http://github.com/slazyk) - author of the 2.x version
+* [Jack Chen (chendo)](http://github.com/chendo) - original creator of the 1.x version
 
 See @chendo's original blog post about how he figured out what to patch: [Reverse engineering Xcode with dtrace](http://chen.do/blog/2013/10/22/reverse-engineering-xcode-with-dtrace/?utm_source=github&utm_campaign=fuzzyautocomplete)
 
@@ -22,6 +22,8 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 
 * Xcode's autocompletion matches like **Open Quickly** does
 * Supports Xcode's learning and context-aware priority system
+* [New] [Experimental] Corrects word order for you (eg. `rangemake` vs `makerange`)
+* [New] [Experimental] Auto-corrects case when pressing space (eg. `CGFLoat`)
 * [New] Visualizes matches in Completion List and Inline Preview
 * [New] Easily customizable via a Settings Window (Editor > FuzzyAutocomplete)
 * [New] [Optional] Sorts items by their score for easier searching
@@ -33,11 +35,12 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 * Productivity++
   
 *[New] denotes a feature added in 2.0*  
-*[Optional] denotes a feature which can be configured in settings*
-
+*[Optional] denotes a feature which can be configured in settings*  
+*[Experimental] denotes ... well just guess what it denotes*
 
 ## Compatibility
-* Supports Xcode 5.1, 5.0
+* Supports Xcode 5.0+
+* Supports OS X 10.8+
 * Compatible with [KSImageNamed](https://github.com/ksuther/KSImageNamed-Xcode)
 
 ## Installation
@@ -51,6 +54,21 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
   * You should now see a `FuzzyAutocomplete` menu item in `Editor` menu
 
 ## Changelog
+
+#### 2.1.0 - 2014/06/04
+**An update with new features, improvements and bugfixes, including:**
+
+* Preliminary support for Xcode 6 and Swift
+* Correct Word Order by two-pass matching, useful when:  
+  you don't remember the order (eg rangemake)  
+  want to narrow down without backspacing (eg nsexceptioninvalid)
+* Correct Letter Case by replacing with exact match if there is only one
+* Option to hide cursor when inline preview shows a non-prefix match
+* Keep the selection when narrowing the search (unless it was the best match)
+* Better inline previews, including token text, just without tokens
+* Improved range convertions and highlighting
+* Fixed useful prefix underlining when it spans multiple segments
+* Fixed completion list positioning
 
 #### 2.0.1 - 2014/04/25
 **A minor update with small bugfixes and improvements, including:**
