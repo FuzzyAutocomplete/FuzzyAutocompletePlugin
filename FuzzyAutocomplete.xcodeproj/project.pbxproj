@@ -66,6 +66,7 @@
 		658A7C8218A13279007655E0 /* DVTPreferenceSet-Protocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DVTPreferenceSet-Protocol.h"; sourceTree = "<group>"; };
 		65A066A318F2CE4600B15293 /* FASettingsWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FASettingsWindow.xib; sourceTree = "<group>"; };
 		65AA753518F367360057D0A7 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		65C8108D193FA29500CE8D9E /* DVTCompletingTextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DVTCompletingTextView.h; sourceTree = "<group>"; };
 		65DB740C18A12FBF001CDD83 /* DVTFontAndColorTheme.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DVTFontAndColorTheme.h; sourceTree = "<group>"; };
 		65E6847218F897400093A671 /* NSBundle+LSLProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+LSLProperties.h"; sourceTree = "<group>"; };
 		65E6847318F897400093A671 /* NSBundle+LSLProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+LSLProperties.m"; sourceTree = "<group>"; };
@@ -93,6 +94,7 @@
 			isa = PBXGroup;
 			children = (
 				58BA07C018124BFC0070060D /* DVTInvalidation-Protocol.h */,
+				65C8108D193FA29500CE8D9E /* DVTCompletingTextView.h */,
 				58BA07C118124C0A0070060D /* DVTTextCompletionDataSourceDelegate-Protocol.h */,
 				58DA96F21813D38A00D0082B /* DVTTextCompletionInlinePreviewController.h */,
 				58DA96F31813D48D00D0082B /* DVTTextCompletionItem-Protocol.h */,

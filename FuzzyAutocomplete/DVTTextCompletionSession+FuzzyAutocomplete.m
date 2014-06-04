@@ -12,6 +12,7 @@
 #import "DVTTextCompletionInlinePreviewController.h"
 #import "DVTTextCompletionInlinePreviewController+FuzzyAutocomplete.h"
 #import "DVTTextCompletionListWindowController.h"
+#import "DVTCompletingTextView.h"
 #import "IDEOpenQuicklyPattern.h"
 #import "FATheme.h"
 #import "DVTFontAndColorTheme.h"
@@ -89,10 +90,24 @@
             [newRanges addObject: [NSValue valueWithRange: range]];
         }
     } else {
-        // TODO: consider changing to componentsSeparatedByString: for performance (?)
-        NSRegularExpression * completionSegmentRegex = [NSRegularExpression regularExpressionWithPattern: @"[a-zA-Z_][a-zA-Z0-9_]*[^a-zA-Z0-9_]" options: 0 error: NULL];
-        [completionSegmentRegex enumerateMatchesInString: fromString options: 0 range: NSMakeRange(0, fromString.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
-            NSRange nameRange = result.range;
+        NSCharacterSet * identifierChars = [self.textView.class identifierChars];
+        NSCharacterSet * nonIdentifierChars = identifierChars.invertedSet;
+
+        NSRange curr, search = NSMakeRange(0, fromString.length);
+        while ((curr = [fromString rangeOfCharacterFromSet: identifierChars
+                                                   options: 0
+                                                     range: search])
+               .location != NSNotFound)
+        {
+            search.location = curr.location;
+            search.length = fromString.length - search.location;
+            curr = [fromString rangeOfCharacterFromSet: nonIdentifierChars
+                                               options: 0
+                                                 range: search];
+            curr.length = (curr.location == NSNotFound ? fromString.length : curr.location+1) - search.location;
+            curr.location = search.location;
+            
+            NSRange nameRange = curr;
             NSRange dispRange = [toString rangeOfString: [fromString substringWithRange: nameRange]];
             if (dispRange.location != NSNotFound) {
                 for (NSValue * value in originalRanges) {
@@ -104,7 +119,13 @@
                     }
                 }
             }
-        }];
+            
+            search.location = NSMaxRange(curr);
+            search.length = fromString.length - search.location;
+            if (search.length < 1) {
+                break;
+            }
+        }
     }
     return newRanges;
 }
@@ -525,9 +546,8 @@
     NSUInteger upper_bound = offset == total - 1 ? array.count : (offset + 1) * (array.count / total);
 
     DLog(@"Process elements %lu %lu (%lu)", lower_bound, upper_bound, array.count);
-
-    NSMutableCharacterSet * identStartSet = [NSMutableCharacterSet letterCharacterSet];
-    [identStartSet addCharactersInString: @"_@"];
+    
+    NSCharacterSet * identStartSet = [self.textView.class identifierChars];
     
     MULTI_TIMER_INIT(Matching); MULTI_TIMER_INIT(Scoring); MULTI_TIMER_INIT(Writing);
 
