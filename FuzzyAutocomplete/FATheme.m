@@ -35,7 +35,6 @@
 }
 
 - (instancetype) init {
-//    makerange
     if ((self = [super init])) {
         DVTFontAndColorTheme * theme = [DVTFontAndColorTheme currentTheme];
         [self loadFromTheme: theme];
@@ -52,13 +51,6 @@
     self.previewTextAttributesForNotMatchedRanges = @{
         NSForegroundColorAttributeName  : theme.sourceTextCompletionPreviewColor,
     };
-    //315 -> 280 -> 200 -> 160 vs 110
-//    rangemake
-    //550 750 700 -> 430 720 680 -> 410 670 610 -> 440 660 600 vs 440 370 210
-//    NSA
-//    NSA
-//    NSA
-//    NSA
 }
 
 - (void) loadListAttributesFromTheme:(DVTFontAndColorTheme *)theme {
