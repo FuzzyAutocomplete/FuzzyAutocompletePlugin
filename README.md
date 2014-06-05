@@ -1,4 +1,4 @@
-# Fuzzy Autocomplete for Xcode
+# ![Fz](https://avatars3.githubusercontent.com/u/7301270?s=25) Fuzzy Autocomplete for Xcode
 
 ## `FuzzyAutocomplete 2.1` 
  
