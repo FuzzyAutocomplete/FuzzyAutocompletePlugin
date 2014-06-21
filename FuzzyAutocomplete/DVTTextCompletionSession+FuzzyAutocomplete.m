@@ -293,7 +293,7 @@
                 NSUInteger end_location = [[self valueForKey: @"_cursorLocation"] unsignedIntegerValue];
 
                 DVTCompletingTextView * textView = self.textView;
-                DVTTextStorage * storage = textView.textStorage;
+                DVTTextStorage * storage = (DVTTextStorage *) textView.textStorage;
 
                 NSRange range = NSMakeRange(start_location, end_location-start_location);
 

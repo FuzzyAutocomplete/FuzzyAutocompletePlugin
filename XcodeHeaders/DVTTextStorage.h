@@ -138,7 +138,7 @@
 - (void)fixAttributesInRange:(struct _NSRange)arg1;
 - (void)fixSyntaxColoringInRange:(struct _NSRange)arg1;
 - (void)fixAttachmentAttributeInRange:(struct _NSRange)arg1;
-@property(retain) id <DVTTextStorageDelegate> delegate;
+@property(assign) id <DVTTextStorageDelegate> delegate;
 - (id)_associatedTextViews;
 - (void)replaceCharactersInRange:(struct _NSRange)arg1 withAttributedString:(id)arg2 withUndoManager:(id)arg3;
 - (void)replaceCharactersInRange:(struct _NSRange)arg1 withString:(id)arg2 withUndoManager:(id)arg3;
