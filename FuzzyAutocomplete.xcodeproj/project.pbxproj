@@ -283,7 +283,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "touch ${SRCROOT}/FuzzyAutocomplete/FASettingsWindow.xib";
+			shellScript = "touch \"${SRCROOT}/FuzzyAutocomplete/FASettingsWindow.xib\"";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
