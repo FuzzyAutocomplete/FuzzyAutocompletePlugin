@@ -218,6 +218,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 58C3C25518110DB70031D9CD /* Build configuration list for PBXNativeTarget "FuzzyAutocomplete" */;
 			buildPhases = (
+				65A65FFE19DEEE5800875A65 /* Xcode 6 Missing XIB Workaround */,
 				58C3C23F18110DB70031D9CD /* Sources */,
 				58C3C24018110DB70031D9CD /* Frameworks */,
 				58C3C24118110DB70031D9CD /* Resources */,
@@ -268,6 +269,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		65A65FFE19DEEE5800875A65 /* Xcode 6 Missing XIB Workaround */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Xcode 6 Missing XIB Workaround";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "touch ${SRCROOT}/FuzzyAutocomplete/FASettingsWindow.xib";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		58C3C23F18110DB70031D9CD /* Sources */ = {
