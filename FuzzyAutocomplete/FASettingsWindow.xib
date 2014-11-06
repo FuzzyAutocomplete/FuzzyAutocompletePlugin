@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5056" systemVersion="13C64" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <deployment defaultVersion="1080" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5056"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6250"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="FASettings"/>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <window title="Settings" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" resizable="YES" documentModal="YES" texturedBackground="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="196" y="240" width="363" height="405"/>
+            <rect key="contentRect" x="196" y="240" width="380" height="412"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1280" height="778"/>
             <view key="contentView" id="EiT-Mj-1SZ">
-                <rect key="frame" x="0.0" y="0.0" width="363" height="405"/>
+                <rect key="frame" x="0.0" y="0.0" width="380" height="412"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <box autoresizesSubviews="NO" boxType="custom" borderType="line" titlePosition="noTitle" id="t8m-ge-6DB">
-                        <rect key="frame" x="-1" y="-1" width="365" height="365"/>
+                        <rect key="frame" x="-1" y="-1" width="382" height="372"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <view key="contentView">
-                            <rect key="frame" x="1" y="1" width="363" height="363"/>
+                            <rect key="frame" x="1" y="1" width="380" height="370"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="NM7-2O-2kt">
-                                    <rect key="frame" x="-2" y="188" width="365" height="29"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <rect key="frame" x="-2" y="192" width="382" height="29"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" enabled="NO" sendsActionOnEndEditing="YES" alignment="center" title="Plugin Disabled" id="eif-IO-BeY">
                                         <font key="font" metaFont="system" size="24"/>
                                         <color key="textColor" name="disabledControlTextColor" catalog="System" colorSpace="catalog"/>
@@ -37,18 +37,18 @@
                                     </connections>
                                 </textField>
                                 <tabView appearanceType="aqua" id="Mdg-2I-czT">
-                                    <rect key="frame" x="5" y="42" width="350" height="316"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <rect key="frame" x="5" y="42" width="367" height="323"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <font key="font" metaFont="system"/>
                                     <tabViewItems>
                                         <tabViewItem label="Basic" identifier="1" id="Hjq-L5-aGW">
                                             <view key="view" id="VOF-N3-ow6">
-                                                <rect key="frame" x="10" y="33" width="330" height="270"/>
+                                                <rect key="frame" x="10" y="33" width="347" height="277"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <button id="dNo-YK-AWZ">
-                                                        <rect key="frame" x="2" y="251" width="327" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="2" y="258" width="344" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <buttonCell key="cell" type="check" title="Sort by Score" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="QOo-eJ-5sX">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
@@ -58,8 +58,8 @@
                                                         </connections>
                                                     </button>
                                                     <button id="GCM-NU-MS7">
-                                                        <rect key="frame" x="2" y="197" width="73" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="2" y="204" width="90" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <buttonCell key="cell" type="check" title="Filter by" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="QWZ-6L-w2T">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
@@ -69,8 +69,8 @@
                                                         </connections>
                                                     </button>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="4lS-QC-TZs">
-                                                        <rect key="frame" x="311" y="193" width="19" height="27"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="328" y="200" width="19" height="27"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <stepperCell key="cell" continuous="YES" alignment="left" increment="0.01" minValue="0.01" maxValue="10" doubleValue="0.01" id="K5t-Kd-7xu"/>
                                                         <connections>
                                                             <binding destination="-2" name="hidden" keyPath="self.filterByScore" id="4xR-bh-BYn">
@@ -82,8 +82,8 @@
                                                         </connections>
                                                     </stepper>
                                                     <textField verticalHuggingPriority="750" id="0lk-JI-g2u">
-                                                        <rect key="frame" x="236" y="196" width="78" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="253" y="203" width="78" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="yZJ-5F-9UT">
                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" id="aeB-3l-AzS">
                                                                 <real key="minimum" value="0.01"/>
@@ -106,18 +106,18 @@
                                                         </connections>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="eTS-OA-VhY">
-                                                        <rect key="frame" x="2" y="228" width="327" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="2" y="227" width="344" height="29"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="71u-FF-2BN">
                                                             <font key="font" metaFont="miniSystem"/>
                                                             <string key="title">If enabled, the completions are sorted by their score (from best to worst), otherwise completions are sorted alphabetically (from a to z).</string>
                                                             <color key="textColor" name="disabledControlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
                                                     <button id="t1d-cf-qrh">
-                                                        <rect key="frame" x="2" y="78" width="159" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="2" y="85" width="176" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <buttonCell key="cell" type="check" title="Show Inline Preview" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="iqp-L1-E6w">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
@@ -126,9 +126,9 @@
                                                             <binding destination="-2" name="value" keyPath="self.showInlinePreview" id="Jx5-Mu-gwy"/>
                                                         </connections>
                                                     </button>
-                                                    <button appearanceType="aqua" id="cLf-PE-ctp">
-                                                        <rect key="frame" x="233" y="77" width="98" height="20"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <button id="cLf-PE-ctp">
+                                                        <rect key="frame" x="250" y="84" width="98" height="20"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <buttonCell key="cell" type="check" title="Hide Cursor" bezelStyle="regularSquare" imagePosition="left" controlSize="small" state="on" inset="2" id="b1n-ld-44y">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="smallSystem"/>
@@ -139,8 +139,8 @@
                                                         </connections>
                                                     </button>
                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="Kdd-yK-MCT">
-                                                        <rect key="frame" x="2" y="55" width="327" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="2" y="54" width="344" height="29"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="t19-cZ-VTC">
                                                             <font key="font" metaFont="miniSystem"/>
                                                             <string key="title">If you find it confusing that the query is not visible before the cursor disable preview, hide the cursor or 'Show List Header' to show the query.</string>
@@ -149,8 +149,8 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <button id="uZJ-jq-pws">
-                                                        <rect key="frame" x="2" y="24" width="159" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="2" y="31" width="176" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <buttonCell key="cell" type="check" title="Show List Header" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Y6j-Wt-NMd">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
@@ -160,8 +160,8 @@
                                                         </connections>
                                                     </button>
                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="6og-2e-IXc">
-                                                        <rect key="frame" x="2" y="1" width="327" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="2" y="-4" width="344" height="33"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="NIz-i7-I7G">
                                                             <font key="font" metaFont="miniSystem"/>
                                                             <string key="title">If enabled, the completion list will have an additional header showing the query, number of matches (all and visible) [and time spent on scoring].</string>
@@ -170,8 +170,8 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="fi6-Ib-T4T">
-                                                        <rect key="frame" x="2" y="163" width="310" height="33"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="2" y="162" width="327" height="40"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="LoR-aI-Ebw">
                                                             <font key="font" metaFont="miniSystem"/>
                                                             <string key="title">The list will only show the completions with score higher than the threshold. Dynamic threshold is multiplied by the best match score.
@@ -181,8 +181,8 @@ NOTE: items can reappear when their score rises above the threshold. </string>
                                                         </textFieldCell>
                                                     </textField>
                                                     <button id="6qS-vq-Yl4">
-                                                        <rect key="frame" x="2" y="132" width="110" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="2" y="139" width="127" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <buttonCell key="cell" type="check" title="Require Prefix" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Xzk-NB-uYL">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
@@ -192,8 +192,8 @@ NOTE: items can reappear when their score rises above the threshold. </string>
                                                         </connections>
                                                     </button>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="3CK-Fi-e3h">
-                                                        <rect key="frame" x="311" y="128" width="19" height="27"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="328" y="135" width="19" height="27"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <stepperCell key="cell" continuous="YES" alignment="left" maxValue="80" id="Y2o-lV-nHt"/>
                                                         <connections>
                                                             <binding destination="-2" name="hidden" keyPath="self.prefixAnchor" id="D4E-Ck-bGm">
@@ -205,8 +205,8 @@ NOTE: items can reappear when their score rises above the threshold. </string>
                                                         </connections>
                                                     </stepper>
                                                     <textField verticalHuggingPriority="750" id="qwN-tT-x8o">
-                                                        <rect key="frame" x="236" y="131" width="78" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="253" y="138" width="78" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="cfs-do-vBJ">
                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" id="JXv-TC-wvJ">
                                                                 <real key="minimum" value="0.0"/>
@@ -229,8 +229,8 @@ NOTE: items can reappear when their score rises above the threshold. </string>
                                                         </connections>
                                                     </textField>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="ZAb-Y0-xju">
-                                                        <rect key="frame" x="152" y="134" width="82" height="14"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="169" y="141" width="82" height="14"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Length" id="4rV-EN-vae">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -245,8 +245,8 @@ NOTE: items can reappear when their score rises above the threshold. </string>
                                                         </connections>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="jux-84-r90">
-                                                        <rect key="frame" x="2" y="109" width="327" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="2" y="108" width="344" height="29"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="c4j-Hc-QyA">
                                                             <font key="font" metaFont="miniSystem"/>
                                                             <string key="title">If enabled, the items will be required have a prefix of [Length] first letters typed, and only subsequent letters will be fuzzily matched.</string>
@@ -255,8 +255,8 @@ NOTE: items can reappear when their score rises above the threshold. </string>
                                                         </textFieldCell>
                                                     </textField>
                                                     <popUpButton verticalHuggingPriority="750" id="SWP-7M-MDF">
-                                                        <rect key="frame" x="76" y="194" width="159" height="26"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="93" y="201" width="159" height="26"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="1Vw-ny-9Ry">
                                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                                             <font key="font" metaFont="menu"/>
@@ -277,12 +277,12 @@ NOTE: items can reappear when their score rises above the threshold. </string>
                                         </tabViewItem>
                                         <tabViewItem label="Advanced" identifier="2" id="jAc-AZ-uYa">
                                             <view key="view" id="Icc-uu-jwd">
-                                                <rect key="frame" x="10" y="33" width="330" height="270"/>
+                                                <rect key="frame" x="10" y="33" width="347" height="277"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <button id="iOt-gk-Y6U">
-                                                        <rect key="frame" x="2" y="197" width="116" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="2" y="204" width="133" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <buttonCell key="cell" type="check" title="Show Scores" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="mBa-vx-NvU">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
@@ -292,16 +292,16 @@ NOTE: items can reappear when their score rises above the threshold. </string>
                                                         </connections>
                                                     </button>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="Cpw-Bj-AS1">
-                                                        <rect key="frame" x="70" y="44" width="19" height="27"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="73.5" y="51" width="19" height="27"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <stepperCell key="cell" continuous="YES" alignment="left" increment="0.10000000000000001" maxValue="10" doubleValue="2" id="7mt-PU-GEV"/>
                                                         <connections>
                                                             <binding destination="-2" name="value" keyPath="self.matchScorePower" id="sDX-F3-Hva"/>
                                                         </connections>
                                                     </stepper>
                                                     <textField verticalHuggingPriority="750" id="0dS-Jv-Udq">
-                                                        <rect key="frame" x="18" y="47" width="55" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="19" y="54" width="55" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="9RB-T0-rCc">
                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" id="pIV-ea-fKY">
                                                                 <real key="minimum" value="0.0"/>
@@ -319,16 +319,16 @@ NOTE: items can reappear when their score rises above the threshold. </string>
                                                         </connections>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="J5w-dI-73n">
-                                                        <rect key="frame" x="146" y="44" width="19" height="27"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="153.5" y="51" width="19" height="27"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <stepperCell key="cell" continuous="YES" alignment="left" increment="0.10000000000000001" maxValue="10" doubleValue="0.5" id="mXD-bh-ocG"/>
                                                         <connections>
                                                             <binding destination="-2" name="value" keyPath="self.priorityPower" id="lZJ-2g-1xN"/>
                                                         </connections>
                                                     </stepper>
                                                     <textField verticalHuggingPriority="750" id="4g9-oG-L26">
-                                                        <rect key="frame" x="94" y="47" width="55" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="99.5" y="54" width="55" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="l61-OF-zgq">
                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" id="jE7-62-j1y">
                                                                 <real key="minimum" value="0.0"/>
@@ -346,16 +346,16 @@ NOTE: items can reappear when their score rises above the threshold. </string>
                                                         </connections>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="zbk-YT-lJ8">
-                                                        <rect key="frame" x="222" y="44" width="19" height="27"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="234" y="51" width="19" height="27"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <stepperCell key="cell" continuous="YES" alignment="left" increment="0.10000000000000001" maxValue="10" doubleValue="0.5" id="PbJ-uB-9K7"/>
                                                         <connections>
                                                             <binding destination="-2" name="value" keyPath="self.priorityFactorPower" id="Rmx-H3-1ge"/>
                                                         </connections>
                                                     </stepper>
                                                     <textField verticalHuggingPriority="750" id="cw1-lt-Wpl">
-                                                        <rect key="frame" x="170" y="47" width="55" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="180.5" y="54" width="55" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="Xge-bb-Pig">
                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" id="2U5-v7-Cl6">
                                                                 <real key="minimum" value="0.0"/>
@@ -373,16 +373,16 @@ NOTE: items can reappear when their score rises above the threshold. </string>
                                                         </connections>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="13B-hp-zez">
-                                                        <rect key="frame" x="298" y="44" width="19" height="27"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="314" y="51" width="19" height="27"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <stepperCell key="cell" continuous="YES" alignment="left" increment="0.10000000000000001" maxValue="10" doubleValue="0.10000000000000001" id="Kaz-CN-0VT"/>
                                                         <connections>
                                                             <binding destination="-2" name="value" keyPath="self.maxPrefixBonus" id="aMU-Gd-nAP"/>
                                                         </connections>
                                                     </stepper>
                                                     <textField verticalHuggingPriority="750" id="VTl-7M-bxv">
-                                                        <rect key="frame" x="246" y="47" width="55" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="261" y="54" width="55" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="Wzh-O8-RAZ">
                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" id="4We-Te-Ee3">
                                                                 <real key="minimum" value="0.0"/>
@@ -400,8 +400,8 @@ NOTE: items can reappear when their score rises above the threshold. </string>
                                                         </connections>
                                                     </textField>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="G8N-pI-Ui0">
-                                                        <rect key="frame" x="152" y="199" width="82" height="14"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="169" y="206" width="82" height="14"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Format" id="qhv-3x-RAI">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -416,8 +416,8 @@ NOTE: items can reappear when their score rises above the threshold. </string>
                                                         </connections>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" id="O4h-rG-RzL">
-                                                        <rect key="frame" x="236" y="196" width="78" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="253" y="203" width="78" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="ylr-Rf-pRz">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -433,8 +433,8 @@ NOTE: items can reappear when their score rises above the threshold. </string>
                                                         </connections>
                                                     </textField>
                                                     <button id="RN5-e7-Ghs">
-                                                        <rect key="frame" x="2" y="251" width="328" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="2" y="258" width="345" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <buttonCell key="cell" type="check" title="Include Timings in Header View" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Mw2-bW-EdP">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
@@ -445,8 +445,8 @@ NOTE: items can reappear when their score rises above the threshold. </string>
                                                         </connections>
                                                     </button>
                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="WIz-RF-jlj">
-                                                        <rect key="frame" x="2" y="174" width="327" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="2" y="173" width="344" height="29"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="Oae-Zk-EHM">
                                                             <font key="font" metaFont="miniSystem"/>
                                                             <string key="title">If enabled, the list shows formatted scores for the completions.
@@ -455,9 +455,9 @@ Especially useful for adjusting the threshold and debugging.</string>
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <textField appearanceType="aqua" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="p9C-uQ-vB1">
-                                                        <rect key="frame" x="2" y="228" width="314" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="p9C-uQ-vB1">
+                                                        <rect key="frame" x="2" y="227" width="331" height="29"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="INi-rI-kyY">
                                                             <font key="font" metaFont="miniSystem"/>
                                                             <string key="title">If enabled, the completion list header will contain time it took to score the completion items. Useful mostly for profiling and debugging.</string>
@@ -466,8 +466,8 @@ Especially useful for adjusting the threshold and debugging.</string>
                                                         </textFieldCell>
                                                     </textField>
                                                     <button id="Hfq-hN-TVc">
-                                                        <rect key="frame" x="2" y="143" width="119" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="2" y="150" width="136" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <buttonCell key="cell" type="check" title="Parallel Scoring" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="jbk-yL-3el">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
@@ -477,8 +477,8 @@ Especially useful for adjusting the threshold and debugging.</string>
                                                         </connections>
                                                     </button>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="AgH-Fw-iBn">
-                                                        <rect key="frame" x="311" y="139" width="19" height="27"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="328" y="146" width="19" height="27"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <stepperCell key="cell" continuous="YES" alignment="left" minValue="1" maxValue="16" doubleValue="2" id="e2v-VB-3HO"/>
                                                         <connections>
                                                             <binding destination="-2" name="value" keyPath="self.maximumWorkers" id="mxT-0p-hMq"/>
@@ -490,8 +490,8 @@ Especially useful for adjusting the threshold and debugging.</string>
                                                         </connections>
                                                     </stepper>
                                                     <textField verticalHuggingPriority="750" id="rVs-ci-2dX">
-                                                        <rect key="frame" x="236" y="142" width="78" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="253" y="149" width="78" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="tyR-zd-ycI">
                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" id="VEb-mQ-rtQ">
                                                                 <real key="minimum" value="1"/>
@@ -514,8 +514,8 @@ Especially useful for adjusting the threshold and debugging.</string>
                                                         </connections>
                                                     </textField>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="R99-7A-qNw">
-                                                        <rect key="frame" x="152" y="145" width="82" height="14"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="169" y="152" width="82" height="14"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Workers" id="YQI-fB-fzm">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -530,8 +530,8 @@ Especially useful for adjusting the threshold and debugging.</string>
                                                         </connections>
                                                     </textField>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="Ico-7s-JoM">
-                                                        <rect key="frame" x="16" y="72" width="72" height="14"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="17" y="79" width="72" height="14"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Match" id="0Cw-q7-bUh">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -539,8 +539,8 @@ Especially useful for adjusting the threshold and debugging.</string>
                                                         </textFieldCell>
                                                     </textField>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="aaQ-GJ-HYv">
-                                                        <rect key="frame" x="92" y="72" width="72" height="14"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="98" y="79" width="72" height="14"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Context" id="s7I-pu-kK8">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -548,8 +548,8 @@ Especially useful for adjusting the threshold and debugging.</string>
                                                         </textFieldCell>
                                                     </textField>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="wo5-hc-PhV">
-                                                        <rect key="frame" x="168" y="72" width="72" height="14"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="179" y="79" width="72" height="14"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Learning" id="kIF-hh-3Ee">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -557,8 +557,8 @@ Especially useful for adjusting the threshold and debugging.</string>
                                                         </textFieldCell>
                                                     </textField>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="fRB-FR-Ne7">
-                                                        <rect key="frame" x="244" y="72" width="72" height="14"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="260" y="79" width="72" height="14"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Prefix" id="ftf-id-ckf">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -566,8 +566,8 @@ Especially useful for adjusting the threshold and debugging.</string>
                                                         </textFieldCell>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="3Bd-Ck-XwQ">
-                                                        <rect key="frame" x="2" y="120" width="327" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="2" y="119" width="344" height="29"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="c2C-29-Pbe">
                                                             <font key="font" metaFont="miniSystem"/>
                                                             <string key="title">If enabled, scoring of the items will be divided over multiple workers for lists consisting of many completion items. Can increase performance.</string>
@@ -575,9 +575,9 @@ Especially useful for adjusting the threshold and debugging.</string>
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <textField appearanceType="aqua" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="7fN-Zq-b5T">
-                                                        <rect key="frame" x="3" y="0.0" width="327" height="44"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="7fN-Zq-b5T">
+                                                        <rect key="frame" x="3" y="-4" width="344" height="54"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="mqh-eP-sJ2">
                                                             <font key="font" metaFont="miniSystem"/>
                                                             <string key="title">Match - exponent applied to fuzzy match score
@@ -589,8 +589,8 @@ Prefix - maximum bonus factor for prefix matches</string>
                                                         </textFieldCell>
                                                     </textField>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="Ib4-6N-s21">
-                                                        <rect key="frame" x="1" y="88" width="328" height="17"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <rect key="frame" x="1" y="95" width="345" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Scoring method parameters" id="thB-9U-jHx">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -602,12 +602,12 @@ Prefix - maximum bonus factor for prefix matches</string>
                                         </tabViewItem>
                                         <tabViewItem label="Experimental" identifier="" id="cLr-kq-bCU">
                                             <view key="view" id="fD4-kl-liU">
-                                                <rect key="frame" x="10" y="33" width="330" height="270"/>
+                                                <rect key="frame" x="10" y="33" width="347" height="277"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <button appearanceType="aqua" id="gI4-JG-kD6">
-                                                        <rect key="frame" x="2" y="251" width="179" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <button id="gI4-JG-kD6">
+                                                        <rect key="frame" x="2" y="258" width="196" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <buttonCell key="cell" type="check" title="Correct Letter Case" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Afd-ED-Riu">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
@@ -616,9 +616,9 @@ Prefix - maximum bonus factor for prefix matches</string>
                                                             <binding destination="-2" name="value" keyPath="self.correctLetterCase" id="jzy-NV-I6A"/>
                                                         </connections>
                                                     </button>
-                                                    <button appearanceType="aqua" id="s9b-en-hhk">
-                                                        <rect key="frame" x="232" y="250" width="97" height="21"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <button id="s9b-en-hhk">
+                                                        <rect key="frame" x="249" y="257" width="97" height="21"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <buttonCell key="cell" type="check" title="Best Match Only" bezelStyle="regularSquare" imagePosition="left" controlSize="mini" state="on" inset="2" id="s0B-gG-nDH">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="miniSystem"/>
@@ -628,9 +628,9 @@ Prefix - maximum bonus factor for prefix matches</string>
                                                             <binding destination="-2" name="value" keyPath="self.correctLetterCaseBestMatchOnly" id="gMN-N5-q00"/>
                                                         </connections>
                                                     </button>
-                                                    <textField appearanceType="aqua" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="dAH-9j-Nr5">
-                                                        <rect key="frame" x="2" y="228" width="321" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="dAH-9j-Nr5">
+                                                        <rect key="frame" x="2" y="227" width="338" height="29"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="hKG-gD-tqS">
                                                             <font key="font" metaFont="miniSystem"/>
                                                             <string key="title">If enabled, when exactly one completion matching typed text is present, the text will be autocorrected to that item upon hiding completions.</string>
@@ -638,9 +638,9 @@ Prefix - maximum bonus factor for prefix matches</string>
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <button appearanceType="aqua" id="oyQ-SM-heA">
-                                                        <rect key="frame" x="2" y="197" width="146" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <button id="oyQ-SM-heA">
+                                                        <rect key="frame" x="2" y="204" width="163" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <buttonCell key="cell" type="check" title="Correct Word Order" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="fib-fy-RKd">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
@@ -649,9 +649,9 @@ Prefix - maximum bonus factor for prefix matches</string>
                                                             <binding destination="-2" name="value" keyPath="self.correctWordOrder" id="vJ4-7X-wK6"/>
                                                         </connections>
                                                     </button>
-                                                    <stepper appearanceType="aqua" horizontalHuggingPriority="750" verticalHuggingPriority="750" id="RIc-hE-LFP">
-                                                        <rect key="frame" x="311" y="193" width="19" height="27"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="RIc-hE-LFP">
+                                                        <rect key="frame" x="328" y="200" width="19" height="27"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <stepperCell key="cell" continuous="YES" alignment="left" maxValue="80" id="QvB-rv-1NT"/>
                                                         <connections>
                                                             <binding destination="-2" name="hidden" keyPath="self.correctWordOrder" id="5vh-71-zMg">
@@ -662,9 +662,9 @@ Prefix - maximum bonus factor for prefix matches</string>
                                                             <binding destination="-2" name="value" keyPath="self.correctWordOrderAfter" id="aiu-xb-99T"/>
                                                         </connections>
                                                     </stepper>
-                                                    <textField appearanceType="aqua" verticalHuggingPriority="750" id="cHX-bH-B0C">
-                                                        <rect key="frame" x="236" y="196" width="78" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textField verticalHuggingPriority="750" id="cHX-bH-B0C">
+                                                        <rect key="frame" x="253" y="203" width="78" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="2f0-iq-bcw">
                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" id="fRA-9A-KgD">
                                                                 <real key="minimum" value="0.0"/>
@@ -686,9 +686,9 @@ Prefix - maximum bonus factor for prefix matches</string>
                                                             <binding destination="-2" name="value" keyPath="self.correctWordOrderAfter" id="bpU-xB-QEI"/>
                                                         </connections>
                                                     </textField>
-                                                    <textField appearanceType="aqua" horizontalHuggingPriority="251" verticalHuggingPriority="750" id="SA5-Ki-1vp">
-                                                        <rect key="frame" x="152" y="199" width="82" height="14"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="SA5-Ki-1vp">
+                                                        <rect key="frame" x="169" y="206" width="82" height="14"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="After Letters" id="ZdI-7e-8kV">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -702,9 +702,9 @@ Prefix - maximum bonus factor for prefix matches</string>
                                                             </binding>
                                                         </connections>
                                                     </textField>
-                                                    <textField appearanceType="aqua" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="cnT-1h-TTf">
-                                                        <rect key="frame" x="2" y="174" width="323" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="cnT-1h-TTf">
+                                                        <rect key="frame" x="2" y="173" width="340" height="29"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="EX2-rQ-gUM">
                                                             <font key="font" metaFont="miniSystem"/>
                                                             <string key="title">If enabled, the fuzzy match will try to account for wrong order of words. Increase [After] how many letters to start to improve performance.</string>
@@ -736,7 +736,7 @@ Prefix - maximum bonus factor for prefix matches</string>
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" id="eah-p2-wnl">
-                                    <rect key="frame" x="280" y="12" width="74" height="32"/>
+                                    <rect key="frame" x="297" y="12" width="74" height="32"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                     <buttonCell key="cell" type="push" title="Close" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="RU4-gh-Hzz">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -746,8 +746,8 @@ Prefix - maximum bonus factor for prefix matches</string>
                                         <action selector="performClose:" target="QvC-M9-y7g" id="mdx-Bh-Qs0"/>
                                     </connections>
                                 </button>
-                                <button appearanceType="aqua" id="YRw-rp-yGK">
-                                    <rect key="frame" x="163" y="21" width="112" height="18"/>
+                                <button id="YRw-rp-yGK">
+                                    <rect key="frame" x="174" y="21" width="112" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <buttonCell key="cell" type="check" title="Enable Plugin" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="wHj-pr-yyH">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -763,7 +763,7 @@ Prefix - maximum bonus factor for prefix matches</string>
                         <color key="fillColor" name="controlHighlightColor" catalog="System" colorSpace="catalog"/>
                     </box>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" tag="42" id="Mcz-xR-D2a">
-                        <rect key="frame" x="-2" y="367" width="367" height="35"/>
+                        <rect key="frame" x="-2" y="374" width="384" height="35"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" lineBreakMode="truncatingTail" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="center" title="FuzzyAutocomplete 2.0.0" id="XuV-Sg-0aq">
                             <font key="font" size="24" name="Menlo-Regular"/>
@@ -776,6 +776,7 @@ Prefix - maximum bonus factor for prefix matches</string>
             <connections>
                 <outlet property="delegate" destination="-2" id="xIx-cc-iYE"/>
             </connections>
+            <point key="canvasLocation" x="434" y="397"/>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="kdC-bz-A1O"/>
     </objects>
