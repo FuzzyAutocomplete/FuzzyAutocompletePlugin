@@ -257,10 +257,18 @@
 }
 
 // We replace the search string by a prefix to the last matched letter.
+// And the array with a subarray that contains only items with this prefix.
 - (NSString *) _fa_usefulPartialCompletionPrefixForItems: (NSArray *) items
                                            selectedIndex: (NSInteger) index
                                          filteringPrefix: (NSString *) prefix
 {
+    FAFilteringResults * results = [self _fa_lastFilteringResults];
+    // Further code ignores items array, so make sure we catually can...
+    if (items != results.filteredItems) {
+        return [self _fa_usefulPartialCompletionPrefixForItems: items
+                                                 selectedIndex: index
+                                               filteringPrefix: prefix];
+    }
     if (!items.count || index == NSNotFound || index > items.count) {
         return nil;
     }
@@ -270,7 +278,22 @@
     for (NSValue * val in ranges) {
         range = NSUnionRange(range, [val rangeValue]);
     }
-    return [self _fa_usefulPartialCompletionPrefixForItems:items selectedIndex:index filteringPrefix:[item.name substringWithRange: range]];
+    
+    NSString * overridePrefix = [item.name substringWithRange: range];
+    
+    NSArray * allItems = results.allItems;
+    NSRange allItemsRange = NSMakeRange(0, allItems.count);
+    NSRange arrayRange = [self _fa_rangeOfItemsWithPrefix: overridePrefix
+                                            inSortedRange: allItemsRange
+                                                  inArray: allItems];
+    NSArray * overrideItems = [results.allItems subarrayWithRange: arrayRange];
+    NSInteger overrideIndex = [self _fa_indexOfElement: item
+                                         inSortedArray: overrideItems
+                                       usingComparator: [self _fa_itemComparatorByName]];
+        
+    return [self _fa_usefulPartialCompletionPrefixForItems: overrideItems
+                                             selectedIndex: overrideIndex
+                                           filteringPrefix: overridePrefix];
 }
 
 // We override here to add autocorrection of letter case
@@ -772,6 +795,7 @@
                          inSortedRange: (NSRange) range
                                inArray: (NSArray *) array
 {
+    prefix = prefix.lowercaseString;
     NSUInteger lowerBound = [self _fa_indexOfFirstElementInSortedRange: range inArray: array passingTest: ^BOOL(id<DVTTextCompletionItem> item) {
         return [item.name caseInsensitiveCompare: prefix] != NSOrderedAscending;
     }];
