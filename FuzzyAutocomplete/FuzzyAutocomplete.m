@@ -102,6 +102,10 @@
             [editorMenuItem.submenu insertItem: fuzzyItem atIndex: menuIndex];
         }
         
+        [[NSNotificationCenter defaultCenter] addObserver: self
+                                                 selector: @selector(menuDidChange:)
+                                                     name: NSMenuDidChangeItemNotification
+                                                   object: nil];
     }
 }
 
