@@ -71,6 +71,10 @@
     NSMenuItem * editorMenuItem = [[NSApp mainMenu] itemWithTitle: @"Editor"];
 
     if (editorMenuItem && ![editorMenuItem.submenu itemWithTitle: name]) {
+        [[NSNotificationCenter defaultCenter] removeObserver: self
+                                                        name: NSMenuDidChangeItemNotification
+                                                      object: nil];
+        
         NSMenuItem * fuzzyItem = [[NSMenuItem alloc] initWithTitle: name
                                                             action: NULL
                                                      keyEquivalent: @""];
