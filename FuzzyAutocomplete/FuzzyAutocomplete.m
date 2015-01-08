@@ -62,7 +62,16 @@
 }
 
 + (void) menuDidChange: (NSNotification *) notification {
+    [[NSNotificationCenter defaultCenter] removeObserver: self
+                                                    name: NSMenuDidChangeItemNotification
+                                                  object: nil];
+
     [self createMenuItem];
+    
+    [[NSNotificationCenter defaultCenter] addObserver: self
+                                             selector: @selector(menuDidChange:)
+                                                 name: NSMenuDidChangeItemNotification
+                                               object: nil];
 }
 
 + (void)createMenuItem {
@@ -71,6 +80,7 @@
     NSMenuItem * editorMenuItem = [[NSApp mainMenu] itemWithTitle: @"Editor"];
 
     if (editorMenuItem && ![editorMenuItem.submenu itemWithTitle: name]) {
+        
         NSMenuItem * fuzzyItem = [[NSMenuItem alloc] initWithTitle: name
                                                             action: NULL
                                                      keyEquivalent: @""];
@@ -97,7 +107,6 @@
         } else {
             [editorMenuItem.submenu insertItem: fuzzyItem atIndex: menuIndex];
         }
-        
     }
 }
 
