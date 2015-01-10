@@ -22,6 +22,8 @@
 #import "FAItemScoringMethod.h"
 #import <objc/runtime.h>
 
+#define dispatch_on_main($block) (dispatch_get_current_queue() == dispatch_get_main_queue() ? $block() : dispatch_sync(dispatch_get_main_queue(), $block))
+
 #define MIN_CHUNK_LENGTH 100
 /// A simple helper class to avoid using a dictionary in resultsStack
 @interface FAFilteringResults : NSObject
@@ -337,55 +339,74 @@
     [self _fa_hideCompletionsWithReason: reason];
 }
 
-// Sets the current filtering prefix and calculates completion list.
-// We override here to use fuzzy matching.
-- (void)_fa_setFilteringPrefix: (NSString *) prefix forceFilter: (BOOL) forceFilter {
-    DLog(@"filteringPrefix = @\"%@\"", prefix);
-
-    // remove all cached results which are not case-insensitive prefixes of the new prefix
-    // only if case-sensitive exact match happens the whole cached result is used
-    // when case-insensitive prefix match happens we can still use allItems as a start point
-    NSMutableArray * resultsStack = self._fa_resultsStack;
-    while (resultsStack.count && ![prefix.lowercaseString hasPrefix: [[resultsStack lastObject] query].lowercaseString]) {
-        [resultsStack removeLastObject];
-    }
-
-    self.fa_filteringTime = 0;
-
-    // Let the original handler deal with the zero letter case
-    if (prefix.length == 0) {
-        [self._fa_resultsStack removeAllObjects];
-
-        NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
-        [self _fa_setFilteringPrefix:prefix forceFilter:forceFilter];
-        if (![FASettings currentSettings].showInlinePreview) {
-            [self._inlinePreviewController hideInlinePreviewWithReason: 0x0];
+- (void)_fa_kickFilterTimer
+{
+    static NSOperationQueue *filterQueue;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        filterQueue = [[NSOperationQueue alloc] init];
+        filterQueue.maxConcurrentOperationCount = 1;
+    });
+    
+    [filterQueue cancelAllOperations];
+    NSString *queuedPrefix = [self valueForKey:@"_filteringPrefix"];
+    // TODO: Make the delay configurable
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSString *currentPrefix = [self valueForKey:@"_filteringPrefix"];
+        if ([currentPrefix isEqualToString:queuedPrefix]) {
+            [filterQueue addOperationWithBlock: ^{
+                [self _fa_performFuzzyFiltering];
+            }];
         }
-        self.fa_filteringTime = [NSDate timeIntervalSinceReferenceDate] - start;
+    });
+}
 
-        if ([FASettings currentSettings].showTiming) {
-            [self._listWindowController _updateCurrentDisplayState];
-        }
-        return;
-    }
-
-    // do not filter if we are inserting a completion
-    // checking for _insertingFullCompletion is not sufficient
-    if (self.fa_insertingCompletion) {
-        return;
-    }
-
+- (void)_fa_performFuzzyFiltering
+{
     @try {
+        NSString *prefix = [self valueForKey:@"_filteringPrefix"];
+        // Let the original handler deal with the zero letter case
+        if (!prefix || prefix.length == 0) {
+            [self._fa_resultsStack removeAllObjects];
+            
+            NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
+            [self _fa_setFilteringPrefix:prefix forceFilter:self._fa_forceFilter];
+            if (![FASettings currentSettings].showInlinePreview) {
+                [self._inlinePreviewController hideInlinePreviewWithReason: 0x0];
+            }
+            self.fa_filteringTime = [NSDate timeIntervalSinceReferenceDate] - start;
+            
+            if ([FASettings currentSettings].showTiming) {
+                [self._listWindowController _updateCurrentDisplayState];
+            }
+            return;
+        }
+        
+        // remove all cached results which are not case-insensitive prefixes of the new prefix
+        // only if case-sensitive exact match happens the whole cached result is used
+        // when case-insensitive prefix match happens we can still use allItems as a start point
+        NSMutableArray * resultsStack = self._fa_resultsStack;
+        while (resultsStack.count && ![prefix.lowercaseString hasPrefix: [[resultsStack lastObject] query].lowercaseString]) {
+            [resultsStack removeLastObject];
+        }
+        
+        self.fa_filteringTime = 0;
+
+        
+        // do not filter if we are inserting a completion
+        // checking for _insertingFullCompletion is not sufficient
+        if (self.fa_insertingCompletion) {
+            return;
+        }
+
         NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
-
-        [self setValue: prefix forKey: @"_filteringPrefix"];
-
+        
         id<DVTTextCompletionItem> previousSelection = nil;
         NSArray * previousSelectionRanges = nil;
         BOOL wasBest = YES;
-
+        
         FAFilteringResults * results;
-
+        
         if (resultsStack.count && [prefix isEqualToString: [[resultsStack lastObject] query]]) {
             results = [resultsStack lastObject];
         } else {
@@ -397,41 +418,57 @@
             results = [self _fa_calculateResultsForQuery: prefix];
             [resultsStack addObject: results];
         }
-
+        
         NSUInteger selection = [self _fa_getSelectionForFilteringResults: results
                                                        previousSelection: previousSelection
                                                                   ranges: previousSelectionRanges
                                                             wasBestMatch: wasBest];
-
+        
         NSString * partial = [self _usefulPartialCompletionPrefixForItems: results.filteredItems
                                                             selectedIndex: selection
                                                           filteringPrefix: prefix];
 
-        self.fa_filteringTime = [NSDate timeIntervalSinceReferenceDate] - start;
-
-        NAMED_TIMER_START(SendNotifications);
-        // send the notifications in the same way the original does
-        [self willChangeValueForKey:@"filteredCompletionsAlpha"];
-        [self willChangeValueForKey:@"usefulPrefix"];
-        [self willChangeValueForKey:@"selectedCompletionIndex"];
+        dispatch_on_main(^{
+             // Pointer comparison is okay here because if filteringPrefix changed, another one will be executed
+            if (prefix != [self valueForKey:@"_filteringPrefix"]) {
+                return;
+            }
+            self.fa_filteringTime = [NSDate timeIntervalSinceReferenceDate] - start;
+            
+            NAMED_TIMER_START(SendNotifications);
+            // send the notifications in the same way the original does
+            [self willChangeValueForKey:@"filteredCompletionsAlpha"];
+            [self willChangeValueForKey:@"usefulPrefix"];
+            [self willChangeValueForKey:@"selectedCompletionIndex"];
+            
+            [self setValue: results.filteredItems forKey: @"_filteredCompletionsAlpha"];
+            [self setValue: partial forKey: @"_usefulPrefix"];
+            [self setValue: @(selection) forKey: @"_selectedCompletionIndex"];
+            [self setValue: nil forKey: @"_filteredCompletionsPriority"];
+            
+            [self didChangeValueForKey:@"filteredCompletionsAlpha"];
+            [self didChangeValueForKey:@"usefulPrefix"];
+            [self didChangeValueForKey:@"selectedCompletionIndex"];
+            NAMED_TIMER_STOP(SendNotifications);
+            
+            if (![FASettings currentSettings].showInlinePreview) {
+                [self._inlinePreviewController hideInlinePreviewWithReason: 0x0];
+            }
+        });
         
-        [self setValue: results.filteredItems forKey: @"_filteredCompletionsAlpha"];
-        [self setValue: partial forKey: @"_usefulPrefix"];
-        [self setValue: @(selection) forKey: @"_selectedCompletionIndex"];
-        [self setValue: nil forKey: @"_filteredCompletionsPriority"];
-
-        [self didChangeValueForKey:@"filteredCompletionsAlpha"];
-        [self didChangeValueForKey:@"usefulPrefix"];
-        [self didChangeValueForKey:@"selectedCompletionIndex"];
-        NAMED_TIMER_STOP(SendNotifications);
-
-        if (![FASettings currentSettings].showInlinePreview) {
-            [self._inlinePreviewController hideInlinePreviewWithReason: 0x0];
-        }
-
     } @catch (NSException *exception) {
         RLog(@"Caught an Exception %@", exception);
     }
+}
+
+// Sets the current filtering prefix and calculates completion list.
+// We override here to use fuzzy matching.
+- (void)_fa_setFilteringPrefix: (NSString *) prefix forceFilter: (BOOL) forceFilter {
+    DLog(@"filteringPrefix = @\"%@\"", prefix);
+
+    [self setValue: prefix forKey: @"_filteringPrefix"];
+    self._fa_forceFilter = forceFilter;
+    [self _fa_kickFilterTimer];
 }
 
 // We nullify the caches when completions change.
@@ -499,7 +536,9 @@
 
 // Calculate all the results needed by setFilteringPrefix
 - (FAFilteringResults *)_fa_calculateResultsForQuery: (NSString *) query {
-
+    if (![query isEqualToString:[self fa_filteringQuery]]) {
+        return nil;
+    }
     NSArray * searchSet = [self _fa_obtainSearchSetForQuery: query];
 
     FAFilteringResults * results = [[FAFilteringResults alloc] init];
@@ -960,5 +999,15 @@ static char kResultsStackKey;
 - (FAFilteringResults *) _fa_lastFilteringResults {
     return self._fa_resultsStack.lastObject;
 }
+
+static char kForceFilterKey;
+- (BOOL) _fa_forceFilter {
+    return [objc_getAssociatedObject(self, &kForceFilterKey) boolValue];
+}
+
+- (void) set_fa_forceFilter: (BOOL) value {
+    objc_setAssociatedObject(self, &kForceFilterKey, @(value), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
 
 @end
