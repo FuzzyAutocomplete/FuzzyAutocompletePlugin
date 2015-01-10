@@ -536,7 +536,7 @@
 
 // Calculate all the results needed by setFilteringPrefix
 - (FAFilteringResults *)_fa_calculateResultsForQuery: (NSString *) query {
-    if (![query isEqualToString:[self fa_filteringQuery]]) {
+    if (![query isEqualToString:[self fa_filteringQuery]] || self.fa_insertingCompletion) {
         return nil;
     }
     NSArray * searchSet = [self _fa_obtainSearchSetForQuery: query];
@@ -569,7 +569,7 @@
         for (NSInteger i = 0; i < workerCount; ++i) {
             [sortedItemArrays addObject: @[]];
         }
-    
+        
         for (NSInteger i = 0; i < workerCount; ++i) {
             dispatch_group_async(group, processingQueue, ^{
                 NSMutableArray *list;
@@ -583,6 +583,10 @@
                                                                         rangesMap: &rangesMap
                                                                            scores: &scoresMap
                                                                  secondPassRanges: &secondMap];
+                if (!goodMatch) {
+                    // Search aborted
+                    return;
+                }
                 NAMED_TIMER_STOP(Processing);
                 dispatch_async(reduceQueue, ^{
                     NAMED_TIMER_START(Reduce);
@@ -692,6 +696,11 @@
     DLog(@"Process elements %lu %lu (%lu)", lower_bound, upper_bound, array.count);
     
     NSCharacterSet * identStartSet = [self.textView.class identifierChars];
+    
+    if (!identStartSet) {
+        // No idea why this can be nil. Executing on main thread doesn't make a difference
+        return nil;
+    }
     
     MULTI_TIMER_INIT(Matching); MULTI_TIMER_INIT(Scoring); MULTI_TIMER_INIT(Writing);
 
