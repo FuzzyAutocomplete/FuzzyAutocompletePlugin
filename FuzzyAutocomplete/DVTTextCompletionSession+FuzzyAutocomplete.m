@@ -367,18 +367,21 @@
         NSString *prefix = [self valueForKey:@"_filteringPrefix"];
         // Let the original handler deal with the zero letter case
         if (!prefix || prefix.length == 0) {
-            [self._fa_resultsStack removeAllObjects];
-            
-            NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
-            [self _fa_setFilteringPrefix:prefix forceFilter:self._fa_forceFilter];
-            if (![FASettings currentSettings].showInlinePreview) {
-                [self._inlinePreviewController hideInlinePreviewWithReason: 0x0];
-            }
-            self.fa_filteringTime = [NSDate timeIntervalSinceReferenceDate] - start;
-            
-            if ([FASettings currentSettings].showTiming) {
-                [self._listWindowController _updateCurrentDisplayState];
-            }
+            dispatch_on_main(^{
+                [self._fa_resultsStack removeAllObjects];
+                
+                NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
+                [self _fa_setFilteringPrefix:prefix forceFilter:self._fa_forceFilter];
+                if (![FASettings currentSettings].showInlinePreview) {
+                    [self._inlinePreviewController hideInlinePreviewWithReason: 0x0];
+                }
+                self.fa_filteringTime = [NSDate timeIntervalSinceReferenceDate] - start;
+                
+                if ([FASettings currentSettings].showTiming) {
+                    [self._listWindowController _updateCurrentDisplayState];
+                }
+
+            });
             return;
         }
         
