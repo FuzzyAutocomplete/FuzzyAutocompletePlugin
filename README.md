@@ -1,8 +1,8 @@
 # ![Fz](https://avatars3.githubusercontent.com/u/7301270?s=25) Fuzzy Autocomplete for Xcode
 
-### Crashes on OS X 10.10.2
+### Issues with OS X 10.10.2
 
-Due to a change in how notifications are sent in OS X 10.10.2 the plugin would fall into infinite recursion and crash Xcode on launch. The issue [has been fixed](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/pull/57) (thanks, luosheng). If you are experiencing this problem [reinstall](#instalation) the newest version.
+Due to a change in how notifications are sent in OS X 10.10.2 the plugin would fall into infinite recursion and crash Xcode on launch. The issue [has been fixed](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/pull/57) (thanks, luosheng). If you are experiencing this problem [reinstall](#installation) the newest version.
 
 ## `FuzzyAutocomplete 2.1` 
  
