@@ -1,5 +1,9 @@
 # ![Fz](https://avatars3.githubusercontent.com/u/7301270?s=25) Fuzzy Autocomplete for Xcode
 
+### Crashes on OS X 10.10.2
+
+Due to a change in how notifications are sent in OS X 10.10.2 the plugin would fall into infinite recursion and crash Xcode on launch. The issue [has been fixed](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/pull/57) (thanks, luosheng). If you are experiencing this problem [reinstall](#instalation) the newest version.
+
 ## `FuzzyAutocomplete 2.1` 
  
 This is a Xcode 5+ plugin that patches the autocomplete filter to work the same way the **Open Quickly** works. It performs very well, and the fuzzy matching actually uses Xcode's own `IDEOpenQuicklyPattern`.
@@ -48,10 +52,12 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 * Either:
   * Install with [Alcatraz](http://alcatraz.io/)
   * Clone and build the project
-  * Download and unzip a release to  
+  * Download and unzip a [release](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/releases) to  
   `~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/`
 * Restart Xcode and enjoy!  
   * You should now see a `FuzzyAutocomplete` menu item in `Editor` menu
+* If for some reason you want to remove the plugin it should be located at  
+  `~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/`
 
 ## Changelog
 
