@@ -409,6 +409,16 @@
 
         self.fa_filteringTime = [NSDate timeIntervalSinceReferenceDate] - start;
 
+        if (![self _gotUsefulCompletionsToShowInList: results.allItems]) {
+            BOOL shownExplicitly = [[self valueForKey:@"_shownExplicitly"] boolValue];
+            if ([self.listWindowController showingWindow] && !shownExplicitly) {
+                [self.listWindowController hideWindowWithReason: 8];
+            }
+            if ([self._inlinePreviewController isShowingInlinePreview]) {
+                [self._inlinePreviewController hideInlinePreviewWithReason: 8];
+            }
+        }
+        
         NAMED_TIMER_START(SendNotifications);
         // send the notifications in the same way the original does
         [self willChangeValueForKey:@"filteredCompletionsAlpha"];
