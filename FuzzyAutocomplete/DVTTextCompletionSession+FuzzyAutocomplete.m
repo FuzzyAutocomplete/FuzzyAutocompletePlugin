@@ -418,7 +418,7 @@
                 [self._inlinePreviewController hideInlinePreviewWithReason: 8];
             }
         }
-        
+
         NAMED_TIMER_START(SendNotifications);
         // send the notifications in the same way the original does
         [self willChangeValueForKey:@"filteredCompletionsAlpha"];
@@ -434,6 +434,14 @@
         [self didChangeValueForKey:@"usefulPrefix"];
         [self didChangeValueForKey:@"selectedCompletionIndex"];
         NAMED_TIMER_STOP(SendNotifications);
+
+        if ([[NSCharacterSet decimalDigitCharacterSet] characterIsMember: [prefix characterAtIndex:0]]) {
+            BOOL shownExplicitly = [[self valueForKey:@"_shownExplicitly"] boolValue];
+            if (!shownExplicitly) {
+                [self._inlinePreviewController hideInlinePreviewWithReason: 2];
+                [self.listWindowController hideWindowWithReason: 2];
+            }
+        }
 
         if (![FASettings currentSettings].showInlinePreview) {
             [self._inlinePreviewController hideInlinePreviewWithReason: 0x0];
