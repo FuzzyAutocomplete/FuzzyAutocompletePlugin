@@ -409,7 +409,7 @@
 
         self.fa_filteringTime = [NSDate timeIntervalSinceReferenceDate] - start;
 
-        if (![self _gotUsefulCompletionsToShowInList: results.allItems]) {
+        if (![self _gotUsefulCompletionsToShowInList: results.filteredItems]) {
             BOOL shownExplicitly = [[self valueForKey:@"_shownExplicitly"] boolValue];
             if ([self.listWindowController showingWindow] && !shownExplicitly) {
                 [self.listWindowController hideWindowWithReason: 8];
