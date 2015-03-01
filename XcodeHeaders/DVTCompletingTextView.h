@@ -121,7 +121,7 @@
 - (id)accessibilityAttributeValue:(id)arg1;
 
 // Remaining properties
-@property(retain) id <DVTCompletingTextViewDelegate> delegate; // @dynamic delegate;
+@property(assign) id <DVTCompletingTextViewDelegate> delegate; // @dynamic delegate;
 
 @end
 
