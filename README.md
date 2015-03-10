@@ -1,9 +1,5 @@
 # ![Fz](https://avatars3.githubusercontent.com/u/7301270?s=25) Fuzzy Autocomplete for Xcode
 
-### Issues with OS X 10.10.2
-
-Due to a change in how notifications are sent in OS X 10.10.2 the plugin would fall into infinite recursion and crash Xcode on launch. The issue [has been fixed](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/pull/57) (thanks, luosheng). If you are experiencing this problem [reinstall](#installation) the newest version.
-
 ## `FuzzyAutocomplete 2.1` 
  
 This is a Xcode 5+ plugin that patches the autocomplete filter to work the same way the **Open Quickly** works. It performs very well, and the fuzzy matching actually uses Xcode's own `IDEOpenQuicklyPattern`.
@@ -13,8 +9,8 @@ This is a Xcode 5+ plugin that patches the autocomplete filter to work the same 
 ## Authors
 FuzzyAutocomplete is brought to you by:
 
-* [Leszek Ślażyński (slazyk)](http://github.com/slazyk) - author of the 2.x version
-* [Jack Chen (chendo)](http://github.com/chendo) - original creator of the 1.x version
+* [Leszek Ślażyński](http://github.com/slazyk) ([@slazyk](http://twitter.com/slazyk)) - author of the 2.x version
+* [Jack Chen](http://github.com/chendo) ([@chendo](http://twitter.com/chendo)) - original creator of the 1.x version
 
 See @chendo's original blog post about how he figured out what to patch: [Reverse engineering Xcode with dtrace](http://chen.do/blog/2013/10/22/reverse-engineering-xcode-with-dtrace/?utm_source=github&utm_campaign=fuzzyautocomplete)
 
@@ -59,12 +55,16 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 * If for some reason you want to remove the plugin it should be located at  
   `~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/`
 
+## Issues with new versions of OS X and/or Xcode
+
+Updated OS or Developer Tools and the plugin does not work? The issue might have already been fixed. Always check whether [reinstalling](#installation) the newest version helps. If not, please file an [issue](issues/) if there is none related. Or, even better, submit a pull request with a fix.
+
 ## Changelog
 
 #### 2.1.0 - 2014/06/04
 **An update with new features, improvements and bugfixes, including:**
 
-* Preliminary support for Xcode 6 and Swift
+* Support for Xcode 6 and Swift
 * Correct Word Order by two-pass matching, useful when:  
   you don't remember the order (eg rangemake)  
   want to narrow down without backspacing (eg nsexceptioninvalid)
