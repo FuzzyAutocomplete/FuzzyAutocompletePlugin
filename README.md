@@ -57,7 +57,7 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 
 ## Issues with new versions of OS X and/or Xcode
 
-Updated OS or Developer Tools and the plugin does not work? The issue might have already been fixed. Always check whether [reinstalling](#installation) the newest version helps. If not, please file an [issue](issues/) if there is none related. Or, even better, submit a pull request with a fix.
+Updated OS or Developer Tools and the plugin does not work? The issue might have already been fixed. Always check whether [reinstalling](#installation) the newest version helps. If not, please file an [issue]((https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/issues) if there is none related. Or, even better, submit a pull request with a fix.
 
 ## Changelog
 
