@@ -8,7 +8,7 @@
 
 - Xcode6.2\(6C131e\) not work! [\#68](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/issues/68)
 
-## [v2.1.0-4](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v2.1.0-4) (2015-03-10)
+## [v2.1.0-4](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v2.1.0-4) (2015/03/10)
 
 [Full Changelog](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/compare/v2.1.0-3...v2.1.0-4)
 
@@ -18,7 +18,7 @@
 
 - Add support for Xcode 6.2 Release [\#66](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/pull/66) ([zenangst](https://github.com/zenangst))
 
-## [v2.1.0-3](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v2.1.0-3) (2015-03-01)
+## [v2.1.0-3](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v2.1.0-3) (2015/03/01)
 
 [Full Changelog](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/compare/v2.1.0-2...v2.1.0-3)
 
@@ -38,7 +38,7 @@
 
 - Xcode 6.3 compatibility [\#65](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/pull/65) ([jtbandes](https://github.com/jtbandes))
 
-## [v2.1.0-2](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v2.1.0-2) (2015-01-08)
+## [v2.1.0-2](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v2.1.0-2) (2015/01/08)
 
 [Full Changelog](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/compare/v2.1.0...v2.1.0-2)
 
@@ -70,7 +70,7 @@
 
 - Updated UUID list for Xcode 6 GM [\#49](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/pull/49) ([nickskull](https://github.com/nickskull))
 
-## [v2.1.0](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v2.1.0) (2014-06-04)
+## [v2.1.0](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v2.1.0) (2014/06/04)
 
 [Full Changelog](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/compare/v2.0.1...v2.1.0)
 
@@ -92,7 +92,7 @@
 
 - loses search ability after ,NSLocalizedString\(@"", nil\) [\#21](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/issues/21)
 
-## [v2.0.1](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v2.0.1) (2014-04-24)
+## [v2.0.1](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v2.0.1) (2014/04/24)
 
 [Full Changelog](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/compare/v2.0...v2.0.1)
 
@@ -118,7 +118,7 @@
 
 - Won't find local variable [\#13](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/issues/13)
 
-## [v2.0](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v2.0) (2014-04-16)
+## [v2.0](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v2.0) (2014/04/16)
 
 [Full Changelog](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/compare/v1.6...v2.0)
 
@@ -136,7 +136,7 @@
 
 - Removed unused variable warning. [\#22](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/pull/22) ([lancep](https://github.com/lancep))
 
-## [v1.6](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v1.6) (2014-03-22)
+## [v1.6](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v1.6) (2014/03/22)
 
 [Full Changelog](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/compare/v1.5...v1.6)
 
@@ -166,7 +166,7 @@
 
 - xcode 5.1 support [\#15](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/pull/15) ([orta](https://github.com/orta))
 
-## [v1.5](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v1.5) (2013-11-05)
+## [v1.5](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v1.5) (2013/11/05)
 
 [Full Changelog](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/compare/v1.4...v1.5)
 
@@ -178,7 +178,7 @@
 
 - Uninstalling? [\#6](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/issues/6)
 
-## [v1.4](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v1.4) (2013-10-26)
+## [v1.4](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v1.4) (2013/10/26)
 
 [Full Changelog](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/compare/v1.3.1...v1.4)
 
@@ -192,7 +192,7 @@
 
 - Add unbounded matching [\#9](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/pull/9) ([chendo](https://github.com/chendo))
 
-## [v1.3.1](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v1.3.1) (2013-10-24)
+## [v1.3.1](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v1.3.1) (2013/10/24)
 
 [Full Changelog](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/compare/v1.3...v1.3.1)
 
@@ -202,7 +202,7 @@
 
 - Allow for special keywords [\#2](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/issues/2)
 
-## [v1.3](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v1.3) (2013-10-23)
+## [v1.3](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v1.3) (2013/10/23)
 
 [Full Changelog](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/compare/v1.2...v1.3)
 
@@ -210,15 +210,15 @@
 
 - Autocompletion for \#import [\#1](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/issues/1)
 
-## [v1.2](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v1.2) (2013-10-22)
+## [v1.2](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v1.2) (2013/10/22)
 
 [Full Changelog](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/compare/v1.1...v1.2)
 
-## [v1.1](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v1.1) (2013-10-21)
+## [v1.1](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v1.1) (2013/10/21)
 
 [Full Changelog](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/compare/v1.0...v1.1)
 
-## [v1.0](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v1.0) (2013-10-20)
+## [v1.0](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/tree/v1.0) (2013/10/20)
 
 
 
