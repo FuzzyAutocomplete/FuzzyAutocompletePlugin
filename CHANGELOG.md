@@ -3,7 +3,7 @@
 #### 2.1.0 - 2014/06/04
 **An update with new features, improvements and bugfixes, including:**
 
-* Preliminary support for Xcode 6 and Swift
+* Support for Xcode 6 and Swift
 * Correct Word Order by two-pass matching, useful when:  
   you don't remember the order (eg rangemake)  
   want to narrow down without backspacing (eg nsexceptioninvalid)
