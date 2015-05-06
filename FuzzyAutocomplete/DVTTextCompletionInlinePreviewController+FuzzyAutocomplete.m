@@ -145,9 +145,39 @@ static char matchedRangesKey;
 + (instancetype)previewItemForItem:(id<DVTTextCompletionItem>)item {
     FAPreviewItem * ret = [FAPreviewItem new];
     ret->_item = item;
+    
     NSString * completionText = item.completionText;
-    completionText = [completionText stringByReplacingOccurrencesOfString:@"<#" withString:@""];
-    completionText = [completionText stringByReplacingOccurrencesOfString:@"#>" withString:@""];
+    NSUInteger length = completionText.length;
+    
+    NSRange searchRange = NSMakeRange(0, length);
+    NSUInteger closeToken, middleToken, openToken = [completionText rangeOfString: @"<#" options: 0 range: searchRange].location;
+    
+    if (openToken != NSNotFound) {
+        NSMutableString * newCompletionText = [NSMutableString stringWithCapacity: length];
+        while (openToken != NSNotFound) {
+            searchRange.length = openToken - searchRange.location;
+            [newCompletionText appendString: [completionText substringWithRange: searchRange]];
+            searchRange.location = openToken + 2;
+            searchRange.length = length - openToken - 2;
+            closeToken = [completionText rangeOfString: @"#>" options: 0 range: searchRange].location;
+            if (closeToken != NSNotFound) {
+                searchRange.length = closeToken - openToken - 2;
+                middleToken = [completionText rangeOfString: @"##" options: 0 range: searchRange].location;
+                if (middleToken != NSNotFound) {
+                    searchRange.length = middleToken - openToken - 2;
+                }
+                [newCompletionText appendString: [completionText substringWithRange: searchRange]];
+                searchRange.location = closeToken + 2;
+                searchRange.length = length - closeToken - 2;
+            }
+            openToken = [completionText rangeOfString: @"<#" options: 0 range: searchRange].location;
+        }
+        if (searchRange.location < length) {
+            [newCompletionText appendString: [completionText substringWithRange: searchRange]];
+        }
+        completionText = newCompletionText;
+    }
+
     ret->_completionText = completionText;
     return ret;
 }
