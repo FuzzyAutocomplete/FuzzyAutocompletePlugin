@@ -40,6 +40,10 @@
 
 @end
 
+static NSString * _fa_IDESwiftCompletionItem_name(id self, SEL _cmd);
+
+static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_name;
+
 @implementation DVTTextCompletionSession (FuzzyAutocomplete)
 
 + (void) fa_swizzleMethods {
@@ -78,6 +82,13 @@
     [self jr_swizzleMethod: @selector(hideCompletionsWithReason:)
                 withMethod: @selector(_fa_hideCompletionsWithReason:)
                      error: nil];
+    
+    Class swiftCompletionClass = NSClassFromString(@"IDESwiftCompletionItem");
+    if (swiftCompletionClass) {
+        Method m = class_getInstanceMethod(swiftCompletionClass, NSSelectorFromString(@"name"));
+        __fa_IDESwiftCompletionItem_name = method_setImplementation(m, __fa_IDESwiftCompletionItem_name);
+    }
+    
 }
 
 #pragma mark - public methods
@@ -980,3 +991,40 @@ static char kResultsStackKey;
 }
 
 @end
+
+static NSString * _fa_IDESwiftCompletionItem_name(id self, SEL _cmd) {
+    NSString * name = objc_getAssociatedObject(self, _fa_IDESwiftCompletionItem_name);
+    if (name) {
+        return name;
+    }
+    
+    id <DVTTextCompletionItem> item = self;
+    name = [item completionText];
+    NSUInteger length = name.length;
+    
+    NSRange searchRange = NSMakeRange(0, length);
+    NSUInteger tokenLocation = [name rangeOfString: @"<#" options: 0 range: searchRange].location;
+    
+    if (tokenLocation != NSNotFound) {
+        NSMutableString * newName = [NSMutableString stringWithCapacity: length];
+        while (tokenLocation != NSNotFound) {
+            searchRange.length = tokenLocation - searchRange.location;
+            [newName appendString: [name substringWithRange: searchRange]];
+            searchRange.location = tokenLocation + 2;
+            searchRange.length = length - tokenLocation - 2;
+            tokenLocation = [name rangeOfString: @"#>" options: 0 range: searchRange].location;
+            if (tokenLocation != NSNotFound) {
+                searchRange.location = tokenLocation + 2;
+                searchRange.length = length - tokenLocation - 2;
+                tokenLocation = [name rangeOfString: @"<#" options: 0 range: searchRange].location;
+            }
+        }
+        if (searchRange.location < length) {
+            [newName appendString: [name substringWithRange: searchRange]];
+        }
+        name = newName;
+    }
+    
+    objc_setAssociatedObject(self, _fa_IDESwiftCompletionItem_name, name, OBJC_ASSOCIATION_RETAIN);
+    return name;
+}
