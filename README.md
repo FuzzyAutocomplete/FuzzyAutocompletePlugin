@@ -9,8 +9,8 @@ This is a Xcode 5+ plugin that patches the autocomplete filter to work the same 
 ## Authors
 FuzzyAutocomplete is brought to you by:
 
-* [Leszek Ślażyński (slazyk)](http://github.com/slazyk) - author of the 2.x version
-* [Jack Chen (chendo)](http://github.com/chendo) - original creator of the 1.x version
+* [Leszek Ślażyński](http://github.com/slazyk) ([@slazyk](http://twitter.com/slazyk)) - author of the 2.x version
+* [Jack Chen](http://github.com/chendo) ([@chendo](http://twitter.com/chendo)) - original creator of the 1.x version
 
 See @chendo's original blog post about how he figured out what to patch: [Reverse engineering Xcode with dtrace](http://chen.do/blog/2013/10/22/reverse-engineering-xcode-with-dtrace/?utm_source=github&utm_campaign=fuzzyautocomplete)
 
@@ -48,17 +48,23 @@ Like nifty tools like this plugin? Check out [Shortcat](https://shortcatapp.com/
 * Either:
   * Install with [Alcatraz](http://alcatraz.io/)
   * Clone and build the project
-  * Download and unzip a release to  
+  * Download and unzip a [release](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/releases) to  
   `~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/`
 * Restart Xcode and enjoy!  
   * You should now see a `FuzzyAutocomplete` menu item in `Editor` menu
+* If for some reason you want to remove the plugin it should be located at  
+  `~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/`
+
+## Issues with new versions of OS X and/or Xcode
+
+Updated OS or Developer Tools and the plugin does not work? The issue might have already been fixed. Always check whether [reinstalling](#installation) the newest version helps. If not, please file an [issue](https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/issues) if there is none related. Or, even better, submit a pull request with a fix.
 
 ## Changelog
 
 #### 2.1.0 - 2014/06/04
 **An update with new features, improvements and bugfixes, including:**
 
-* Preliminary support for Xcode 6 and Swift
+* Support for Xcode 6 and Swift
 * Correct Word Order by two-pass matching, useful when:  
   you don't remember the order (eg rangemake)  
   want to narrow down without backspacing (eg nsexceptioninvalid)
