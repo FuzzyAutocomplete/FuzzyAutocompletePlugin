@@ -9,8 +9,11 @@
 //  Copyright (c) 2014 United Lines of Code. All rights reserved.
 //
 
+#import <objc/runtime.h>
+
 #import "FuzzyAutocomplete.h"
 #import "FASettings.h"
+#import "FAMatchPattern.h"
 
 #import "DVTTextCompletionSession+FuzzyAutocomplete.h"
 #import "DVTTextCompletionListWindowController+FuzzyAutocomplete.h"
@@ -24,6 +27,7 @@
 
     if ([currentApplicationName isEqual:@"Xcode"]) {
         dispatch_once(&onceToken, ^{
+            [self swapClasses];
             [self createMenuItem];
             [[NSNotificationCenter defaultCenter] addObserver: self
                                                      selector: @selector(applicationDidFinishLaunching:)
@@ -40,6 +44,19 @@
             }
             
         });
+    }
+}
+
++ (void) swapClasses {
+    Class class = NSClassFromString(@"DVTOpenQuicklyPattern");
+    if (!class) {
+        class = NSClassFromString(@"IDEOpenQuicklyPattern");
+    }
+    if (class) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        class_setSuperclass([FAMatchPattern class], class);
+#pragma clang diagnostic pop
     }
 }
 
