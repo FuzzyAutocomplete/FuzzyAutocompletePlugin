@@ -35,6 +35,7 @@
 		<string>9F75337B-21B4-4ADC-B558-F9CADF7073A7</string> <!-- 6.3      -->
 		<string>E969541F-E6F9-4D25-8158-72DC3545A6C6</string> <!-- 6.3.2    -->
         <string>8DC44374-2B35-4C57-A6FE-2AD66A36AAD9</string> <!-- 6.4 Beta -->
+        <string>5EDAC44F-8E0B-42C9-9BEF-E9C12EEC4949</string> <!-- 6.4 B4   -->
         <string>AABB7188-E14E-4433-AD3B-5CD791EAD9A3</string> <!-- 7.0 Beta -->
 	</array>
 	<key>FAReportIssueURL</key>
