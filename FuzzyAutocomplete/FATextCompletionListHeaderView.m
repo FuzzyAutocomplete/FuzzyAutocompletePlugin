@@ -81,7 +81,12 @@
 }
 
 static inline void drawRectHelper(NSView * view, NSRect dirtyRect) {
-    CGFloat radius = [[view.window valueForKey: @"cornerRadius"] doubleValue];
+    CGFloat radius;
+    @try {
+        radius = [[view.window valueForKey: @"cornerRadius"] doubleValue];
+    } @catch (NSException * e) {
+        radius = 8.0;
+    }
     NSRect rect = [view.window.contentView convertRect: [view.window.contentView bounds] toView: view];
 
     [[NSColor controlBackgroundColor] setFill];
