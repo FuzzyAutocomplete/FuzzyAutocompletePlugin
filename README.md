@@ -1,5 +1,11 @@
 # ![Fz](https://avatars3.githubusercontent.com/u/7301270?s=25) Fuzzy Autocomplete for Xcode
 
+## Xcode 7 support
+
+Most things seem to work. To try out the plugin in Xcode 7, clone the `xcode7` branch and build the plugin. And please do file any encountered issues on github.
+
+Install via Alcatraz and/or binary release coming soon.
+
 ## `FuzzyAutocomplete 2.1` 
  
 This is a Xcode 5+ plugin that patches the autocomplete filter to work the same way the **Open Quickly** works. It performs very well, and the fuzzy matching actually uses Xcode's own `IDEOpenQuicklyPattern`.
