@@ -224,10 +224,10 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
         NSArray * sorted = nil;
         NSDictionary * filteredScores = self.fa_scoresForFilteredCompletions;
         if ([FASettings currentSettings].sortByScore) {
-            sorted = self.filteredCompletionsAlpha.reverseObjectEnumerator.allObjects;
+            sorted = self.filteredCompletionsAlpha;
         } else if (filteredScores) {
             sorted = [self.filteredCompletionsAlpha sortedArrayWithOptions: NSSortConcurrent
-                                                           usingComparator: [self _fa_itemComparatorByScores: filteredScores reverse: NO]];
+                                                           usingComparator: [self _fa_itemComparatorByScores: filteredScores]];
         }
         [self setValue: sorted forKey: @"_filteredCompletionsPriority"];
     }
@@ -485,7 +485,7 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
         if (lastRange.location == lastRangePrev.location && lastRange.length >= lastRangePrev.length) {
             NSComparator comparator = nil;
             if ([FASettings currentSettings].sortByScore) {
-                comparator = [self _fa_itemComparatorByScores: results.scores reverse: YES];
+                comparator = [self _fa_itemComparatorByScores: results.scores];
             } else {
                 comparator = [self _fa_itemComparatorByName];
             }
@@ -615,7 +615,7 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
 
     NAMED_TIMER_START(SortByScore);
     if ([FASettings currentSettings].sortByScore) {
-        [filteredList sortWithOptions: NSSortConcurrent usingComparator: [self _fa_itemComparatorByScores: filteredScores reverse: YES]];
+        [filteredList sortWithOptions: NSSortConcurrent usingComparator: [self _fa_itemComparatorByScores: filteredScores]];
     }
     NAMED_TIMER_STOP(SortByScore);
 
@@ -886,18 +886,11 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
 }
 
 // gets a comparator for given scores dictionary
-- (NSComparator) _fa_itemComparatorByScores: (NSDictionary *) filteredScores reverse: (BOOL) reverse {
-    if (!reverse) {
-        return ^(id<DVTTextCompletionItem> obj1, id<DVTTextCompletionItem> obj2) {
-            NSComparisonResult result = [filteredScores[obj1.name] compare: filteredScores[obj2.name]];
-            return result == NSOrderedSame ? [obj2.name caseInsensitiveCompare: obj1.name] : result;
-        };
-    } else {
-        return ^(id<DVTTextCompletionItem> obj1, id<DVTTextCompletionItem> obj2) {
-            NSComparisonResult result = [filteredScores[obj2.name] compare: filteredScores[obj1.name]];
-            return result == NSOrderedSame ? [obj1.name caseInsensitiveCompare: obj2.name] : result;
-        };
-    }
+- (NSComparator) _fa_itemComparatorByScores: (NSDictionary *) filteredScores {
+    return ^(id<DVTTextCompletionItem> obj1, id<DVTTextCompletionItem> obj2) {
+        NSComparisonResult result = [filteredScores[obj2.name] compare: filteredScores[obj1.name]];
+        return result == NSOrderedSame ? [obj1.name caseInsensitiveCompare: obj2.name] : result;
+    };
 }
 
 - (void)_fa_debugCompletionsByScore:(NSArray *)completions withQuery:(NSString *)query {
