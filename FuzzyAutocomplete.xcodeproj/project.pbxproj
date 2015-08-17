@@ -45,7 +45,7 @@
 		58C3C24918110DB70031D9CD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		58C3C24A18110DB70031D9CD /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		58C3C24B18110DB70031D9CD /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
-		58C3C24E18110DB70031D9CD /* FuzzyAutocomplete-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FuzzyAutocomplete-Info.plist"; sourceTree = "<group>"; };
+		58C3C24E18110DB70031D9CD /* FuzzyAutocomplete-Info.plist */ = {isa = PBXFileReference; explicitFileType = text.xml; path = "FuzzyAutocomplete-Info.plist"; sourceTree = "<group>"; usesTabs = 1; };
 		58C3C25018110DB70031D9CD /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		58C3C25218110DB70031D9CD /* FuzzyAutocomplete-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = "FuzzyAutocomplete-Prefix.pch"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		58C3C258181128140031D9CD /* FuzzyAutocomplete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FuzzyAutocomplete.h; sourceTree = "<group>"; };
