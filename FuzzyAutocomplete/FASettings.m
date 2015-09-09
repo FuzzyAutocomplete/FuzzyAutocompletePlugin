@@ -50,7 +50,7 @@ static const NSUInteger kSettingsVersion = 3;
     @catch (NSException *exception) {
         RLog(@"Exception while opening Settings Window: %@", exception);
     }
-    
+
     if (window) {
         window.minSize = window.frame.size;
         window.maxSize = window.frame.size;
