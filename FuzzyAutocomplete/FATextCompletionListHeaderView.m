@@ -86,7 +86,7 @@ static inline void drawRectHelper(NSView * view, NSRect dirtyRect) {
 
     [[NSColor controlBackgroundColor] setFill];
     NSRectFill(dirtyRect);
-    
+
     NSBezierPath * path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:radius yRadius:radius];
 
     NSBezierPath *clipPath = [NSBezierPath bezierPathWithRect:CGRectInfinite];

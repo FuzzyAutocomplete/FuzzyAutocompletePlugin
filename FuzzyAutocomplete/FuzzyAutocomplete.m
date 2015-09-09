@@ -33,12 +33,12 @@
                                                      selector: @selector(menuDidChange:)
                                                          name: NSMenuDidChangeItemNotification
                                                        object: nil];
-            
+
             // when installing through Alcatraz the application has already launched
             if ([NSApplication sharedApplication].currentEvent) {
                 [self applicationDidFinishLaunching: nil];
             }
-            
+
         });
     }
 }
@@ -67,7 +67,7 @@
                                                   object: nil];
 
     [self createMenuItem];
-    
+
     [[NSNotificationCenter defaultCenter] addObserver: self
                                              selector: @selector(menuDidChange:)
                                                  name: NSMenuDidChangeItemNotification
@@ -80,7 +80,7 @@
     NSMenuItem * editorMenuItem = [[NSApp mainMenu] itemWithTitle: @"Editor"];
 
     if (editorMenuItem && ![editorMenuItem.submenu itemWithTitle: name]) {
-        
+
         NSMenuItem * fuzzyItem = [[NSMenuItem alloc] initWithTitle: name
                                                             action: NULL
                                                      keyEquivalent: @""];
