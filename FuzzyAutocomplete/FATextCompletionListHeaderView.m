@@ -49,6 +49,10 @@
     return self;
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
+}
+
 - (BOOL)acceptsFirstMouse:(NSEvent *)theEvent {
     return NO;
 }
