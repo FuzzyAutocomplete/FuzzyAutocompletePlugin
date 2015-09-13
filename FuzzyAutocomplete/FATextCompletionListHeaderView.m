@@ -68,7 +68,11 @@
 - (void)onColumnsResized:(NSNotification *) notification {
     NSInteger titleColumn = [self.tableView columnWithIdentifier: @"title"];
     if (titleColumn != -1) {
-        [_label setFrame: [self headerRectOfColumn: titleColumn]];
+        NSRect labelFrame = [self.tableView rectOfColumn: titleColumn];
+        labelFrame.origin.y = 0;
+        labelFrame.size.height = self.bounds.size.height;
+        labelFrame.size.width = self.bounds.size.width - labelFrame.origin.x;
+        [_label setFrame: labelFrame];
     } else {
         RLog(@"Could not find title column.");
     }
