@@ -144,7 +144,7 @@
                                                             <font key="font" metaFont="smallSystem"/>
                                                         </buttonCell>
                                                         <connections>
-                                                            <binding destination="-2" name="enabled" keyPath="self.showInlinePreview" id="RFP-4A-buO"/>
+                                                            <binding destination="-2" name="enabled" keyPath="self.showListHeader" id="LEl-uS-PMI"/>
                                                             <binding destination="-2" name="value" keyPath="self.showNumMatches" id="e1E-g1-lVK"/>
                                                         </connections>
                                                     </button>
