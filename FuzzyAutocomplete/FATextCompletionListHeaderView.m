@@ -15,6 +15,7 @@
     NSBox * _divider;
     NSTextField * _label;
     NSFont * _boldFont;
+    BOOL _showCount;
     BOOL _showFilteredCount;
     BOOL _showTiming;
 }
@@ -29,6 +30,7 @@
         _label.drawsBackground = NO;
         _label.bordered = NO;
         _label.bezeled = NO;
+        _label.textColor = [NSColor disabledControlTextColor];
         DVTFontAndColorTheme * theme = [DVTFontAndColorTheme currentTheme];
         _label.font = theme.sourcePlainTextFont;
         _boldFont = [[NSFontManager sharedFontManager] convertFont: _label.font toHaveTrait: NSFontBoldTrait];
@@ -40,7 +42,8 @@
         _divider.borderWidth = 0.5;
         _divider.autoresizingMask = NSViewWidthSizable | NSViewMinYMargin;
         [self addSubview: _divider];
-        _showFilteredCount = [FASettings currentSettings].filterByScore;
+        _showCount = [FASettings currentSettings].showNumMatches;
+        _showFilteredCount = _showCount && [FASettings currentSettings].filterByScore;
         _showTiming = [FASettings currentSettings].showTiming;
     }
     return self;
@@ -58,6 +61,29 @@
 
 }
 
+- (void)onColumnsResized:(NSNotification *) notification {
+    NSInteger titleColumn = [self.tableView columnWithIdentifier: @"title"];
+    if (titleColumn != -1) {
+        [_label setFrame: [self headerRectOfColumn: titleColumn]];
+    } else {
+        RLog(@"Could not find title column.");
+    }
+}
+
+-(void)setTableView:(NSTableView *)tableView {
+    [[NSNotificationCenter defaultCenter] removeObserver: self
+                                                    name: NSTableViewColumnDidResizeNotification
+                                                  object: self.tableView];
+    [super setTableView: tableView];
+    if (!tableView) {
+        return;
+    }
+    [[NSNotificationCenter defaultCenter] addObserver: self
+                                             selector: @selector(onColumnsResized:)
+                                                 name: NSTableViewColumnDidResizeNotification
+                                               object: tableView];
+}
+
 - (void)updateWithDataFromSession:(DVTTextCompletionSession *)session {
     NSString * status;
 
@@ -67,8 +93,10 @@
 
     if (_showFilteredCount && shownMatches != allMatches) {
         status = [NSString stringWithFormat: @"%@ - %ld match%s (%ld shown)", prefix, allMatches, allMatches == 1 ? "" : "es", shownMatches];
-    } else {
+    } else if (_showCount) {
         status = [NSString stringWithFormat: @"%@ - %ld match%s", prefix, shownMatches, shownMatches == 1 ? "" : "es"];
+    } else {
+        status = prefix;
     }
     if (_showTiming) {
         status = [status stringByAppendingFormat: @" - %.2f ms", 1000 * session.fa_lastFilteringTime];
@@ -76,6 +104,7 @@
 
     NSMutableAttributedString * attributed = [[NSMutableAttributedString alloc] initWithString: status];
     [attributed addAttribute: NSFontAttributeName value: _boldFont range: NSMakeRange(0, session.fa_filteringQuery.length)];
+    [attributed addAttribute: NSForegroundColorAttributeName value: [NSColor controlTextColor] range: NSMakeRange(0, session.fa_filteringQuery.length)];
 
     [_label setAttributedStringValue: attributed];
 }

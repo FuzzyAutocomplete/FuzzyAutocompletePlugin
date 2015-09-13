@@ -13,7 +13,7 @@
 NSString * FASettingsPluginEnabledDidChangeNotification = @"io.github.FuzzyAutocomplete.PluginEnabledDidChange";
 
 // increment to show settings screen to the user
-static const NSUInteger kSettingsVersion = 3;
+static const NSUInteger kSettingsVersion = 4;
 
 @interface FASettings () <NSWindowDelegate>
 
@@ -107,7 +107,8 @@ static const BOOL kDefaultFilterByScore = YES;
 static const BOOL kDefaultShowScores = NO;
 static const BOOL kDefaultShowInlinePreview = YES;
 static const BOOL kDefaultHideCursorInNonPrefixPreview = NO;
-static const BOOL kDefaultShowListHeader = NO;
+static const BOOL kDefaultShowListHeader = YES;
+static const BOOL kDefaultShowNumMatches = NO;
 static const BOOL kDefaultNormalizeScores = NO;
 static const BOOL kDefaultShowTiming = NO;
 static NSString * const kDefaultScoreFormat = @"* #0.00";
@@ -134,6 +135,7 @@ static const NSInteger kDefaultCorrectWordOrderAfter = 2;
     self.scoreFormat = kDefaultScoreFormat;
     self.normalizeScores = kDefaultNormalizeScores;
     self.showListHeader = kDefaultShowListHeader;
+    self.showNumMatches = kDefaultShowNumMatches;
     self.showInlinePreview = kDefaultShowInlinePreview;
     self.hideCursorInNonPrefixPreview = kDefaultHideCursorInNonPrefixPreview;
     self.showTiming = kDefaultShowTiming;
@@ -178,6 +180,7 @@ static const NSInteger kDefaultCorrectWordOrderAfter = 2;
     loadNumber(showInlinePreview, ShowInlinePreview);
     loadNumber(hideCursorInNonPrefixPreview, HideCursorInNonPrefixPreview);
     loadNumber(showListHeader, ShowListHeader);
+    loadNumber(showNumMatches, ShowNumMatches);
     loadNumber(showTiming, ShowTiming);
     loadNumber(prefixAnchor, PrefixAnchor);
 
@@ -223,7 +226,8 @@ static const NSInteger kDefaultCorrectWordOrderAfter = 2;
             break;
         case 1: // dont break, fall through to higher cases
         case 2:
-            ;
+        case 3:
+            self.showListHeader = YES;
     }
 }
 
@@ -258,6 +262,7 @@ BOOL_SETTINGS_SETTER(normalizeScores, NormalizeScores)
 BOOL_SETTINGS_SETTER(showInlinePreview, ShowInlinePreview)
 BOOL_SETTINGS_SETTER(hideCursorInNonPrefixPreview, HideCursorInNonPrefixPreview)
 BOOL_SETTINGS_SETTER(showListHeader, ShowListHeader)
+BOOL_SETTINGS_SETTER(showNumMatches, ShowNumMatches)
 BOOL_SETTINGS_SETTER(showTiming, ShowTiming)
 BOOL_SETTINGS_SETTER(correctLetterCase, CorrectLetterCase);
 BOOL_SETTINGS_SETTER(correctLetterCaseBestMatchOnly, CorrectLetterCaseBestMatchOnly);
