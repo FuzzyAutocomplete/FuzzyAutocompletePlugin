@@ -69,6 +69,7 @@
     NSInteger titleColumn = [self.tableView columnWithIdentifier: @"title"];
     if (titleColumn != -1) {
         NSRect labelFrame = [self.tableView rectOfColumn: titleColumn];
+        labelFrame.origin.x += 1;
         labelFrame.origin.y = 0;
         labelFrame.size.height = self.bounds.size.height;
         labelFrame.size.width = self.bounds.size.width - labelFrame.origin.x;
