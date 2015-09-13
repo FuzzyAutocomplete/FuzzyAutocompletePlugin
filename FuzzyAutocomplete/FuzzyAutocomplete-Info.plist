@@ -38,7 +38,8 @@
 		<string>5EDAC44F-8E0B-42C9-9BEF-E9C12EEC4949</string> <!-- 6.4 B4   -->
 		<string>7FDF5C7A-131F-4ABB-9EDC-8C5F8F0B8A90</string> <!-- 6.4      -->
 		<string>AABB7188-E14E-4433-AD3B-5CD791EAD9A3</string> <!-- 7.0 Beta -->
-		<string>0420B86A-AA43-4792-9ED0-6FE0F2B16A13</string> <!-- 7.0 GM -->
+		<string>0420B86A-AA43-4792-9ED0-6FE0F2B16A13</string> <!-- 7.0 GM   -->
+		<string>CC0D0F4F-05B3-431A-8F33-F84AFCB2C651</string> <!-- 7.1 Beta -->
 	</array>
 	<key>FAReportIssueURL</key>
 	<string>https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/issues</string>
