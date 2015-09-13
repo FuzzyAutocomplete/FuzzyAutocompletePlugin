@@ -902,8 +902,8 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
         double matchScore = [pattern scoreCandidate: item.name matchedRanges: &ranges];
         double factor = [self _priorityFactorForItem: item];
         [completionsWithScore addObject:@{
-            @"item"       : item.name,
-            @"ranges"     : ranges ? ranges : @[],
+            @"item"       : item.name ?: @"",
+            @"ranges"     : ranges ?: @[],
             @"factor"     : @(factor),
             @"priority"   : @(item.priority),
             @"matchScore" : @(matchScore),

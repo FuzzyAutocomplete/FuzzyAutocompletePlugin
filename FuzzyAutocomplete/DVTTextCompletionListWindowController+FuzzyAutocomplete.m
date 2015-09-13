@@ -226,10 +226,10 @@ const char kRowHeightKey;
 - (CGFloat) _fa_widthForScoreColumn {
     NSTableView * tableView = [self valueForKey: @"_completionsTableView"];
     NSTableColumn * scoreColumn = [tableView tableColumnWithIdentifier: @"score"];
-    if (scoreColumn && self.session.fa_nonZeroScores) {
+    DVTFontAndColorTheme * theme = [DVTFontAndColorTheme currentTheme];
+    if (scoreColumn && self.session.fa_nonZeroScores && theme.sourcePlainTextFont) {
         NSNumberFormatter * formatter = ((NSCell *)scoreColumn.dataCell).formatter;
         NSString * sampleValue = [formatter stringFromNumber: @0];
-        DVTFontAndColorTheme * theme = [DVTFontAndColorTheme currentTheme];
         NSDictionary * attributes = @{ NSFontAttributeName : theme.sourcePlainTextFont };
         return [[NSAttributedString alloc] initWithString: sampleValue attributes: attributes].size.width + 6;
     } else {
