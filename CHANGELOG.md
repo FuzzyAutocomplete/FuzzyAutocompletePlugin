@@ -1,5 +1,13 @@
 ## Changelog
 
+#### 2.1.1 - 2015/09/13
+**A minor update with improvements and bugfixes, including:**
+
+* Support for Xcode 7
+* Nicer list header, now on by default
+* Improved Swift support
+* Misc bugfixes
+
 #### 2.1.0 - 2014/06/04
 **An update with new features, improvements and bugfixes, including:**
 

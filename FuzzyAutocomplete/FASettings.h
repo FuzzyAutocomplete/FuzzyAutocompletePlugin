@@ -63,6 +63,9 @@ extern NSString * FASettingsPluginEnabledDidChangeNotification;
 /// Should the list header be visible.
 @property (nonatomic, readonly) BOOL showListHeader;
 
+/// Should the list header contain number of matches.
+@property (nonatomic, readonly) BOOL showNumMatches;
+
 /// Should the timing in the list header be visible.
 @property (nonatomic, readonly) BOOL showTiming;
 

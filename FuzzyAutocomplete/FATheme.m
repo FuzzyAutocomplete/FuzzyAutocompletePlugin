@@ -49,7 +49,7 @@
 
 - (void) loadPreviewAttributesFromTheme: (DVTFontAndColorTheme *) theme {
     self.previewTextAttributesForNotMatchedRanges = @{
-        NSForegroundColorAttributeName  : theme.sourceTextCompletionPreviewColor,
+        NSForegroundColorAttributeName  : theme.sourceTextCompletionPreviewColor ?: [NSColor disabledControlTextColor],
     };
 }
 

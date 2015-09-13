@@ -40,6 +40,10 @@
 
 @end
 
+static NSString * _fa_IDESwiftCompletionItem_name(id self, SEL _cmd);
+
+static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_name;
+
 @implementation DVTTextCompletionSession (FuzzyAutocomplete)
 
 + (void) fa_swizzleMethods {
@@ -78,6 +82,13 @@
     [self jr_swizzleMethod: @selector(hideCompletionsWithReason:)
                 withMethod: @selector(_fa_hideCompletionsWithReason:)
                      error: nil];
+    
+    Class swiftCompletionClass = NSClassFromString(@"IDESwiftCompletionItem");
+    if (swiftCompletionClass) {
+        Method m = class_getInstanceMethod(swiftCompletionClass, NSSelectorFromString(@"name"));
+        __fa_IDESwiftCompletionItem_name = method_setImplementation(m, __fa_IDESwiftCompletionItem_name);
+    }
+    
 }
 
 #pragma mark - public methods
@@ -213,10 +224,10 @@
         NSArray * sorted = nil;
         NSDictionary * filteredScores = self.fa_scoresForFilteredCompletions;
         if ([FASettings currentSettings].sortByScore) {
-            sorted = self.filteredCompletionsAlpha.reverseObjectEnumerator.allObjects;
+            sorted = self.filteredCompletionsAlpha;
         } else if (filteredScores) {
             sorted = [self.filteredCompletionsAlpha sortedArrayWithOptions: NSSortConcurrent
-                                                           usingComparator: [self _fa_itemComparatorByScores: filteredScores reverse: NO]];
+                                                           usingComparator: [self _fa_itemComparatorByScores: filteredScores]];
         }
         [self setValue: sorted forKey: @"_filteredCompletionsPriority"];
     }
@@ -409,6 +420,16 @@
 
         self.fa_filteringTime = [NSDate timeIntervalSinceReferenceDate] - start;
 
+        if (![self _gotUsefulCompletionsToShowInList: results.filteredItems]) {
+            BOOL shownExplicitly = [[self valueForKey:@"_shownExplicitly"] boolValue];
+            if ([self.listWindowController showingWindow] && !shownExplicitly) {
+                [self.listWindowController hideWindowWithReason: 8];
+            }
+            if ([self._inlinePreviewController isShowingInlinePreview]) {
+                [self._inlinePreviewController hideInlinePreviewWithReason: 8];
+            }
+        }
+
         NAMED_TIMER_START(SendNotifications);
         // send the notifications in the same way the original does
         [self willChangeValueForKey:@"filteredCompletionsAlpha"];
@@ -424,6 +445,14 @@
         [self didChangeValueForKey:@"usefulPrefix"];
         [self didChangeValueForKey:@"selectedCompletionIndex"];
         NAMED_TIMER_STOP(SendNotifications);
+
+        if ([[NSCharacterSet decimalDigitCharacterSet] characterIsMember: [prefix characterAtIndex:0]]) {
+            BOOL shownExplicitly = [[self valueForKey:@"_shownExplicitly"] boolValue];
+            if (!shownExplicitly) {
+                [self._inlinePreviewController hideInlinePreviewWithReason: 2];
+                [self.listWindowController hideWindowWithReason: 2];
+            }
+        }
 
         if (![FASettings currentSettings].showInlinePreview) {
             [self._inlinePreviewController hideInlinePreviewWithReason: 0x0];
@@ -456,7 +485,7 @@
         if (lastRange.location == lastRangePrev.location && lastRange.length >= lastRangePrev.length) {
             NSComparator comparator = nil;
             if ([FASettings currentSettings].sortByScore) {
-                comparator = [self _fa_itemComparatorByScores: results.scores reverse: YES];
+                comparator = [self _fa_itemComparatorByScores: results.scores];
             } else {
                 comparator = [self _fa_itemComparatorByName];
             }
@@ -586,7 +615,7 @@
 
     NAMED_TIMER_START(SortByScore);
     if ([FASettings currentSettings].sortByScore) {
-        [filteredList sortWithOptions: NSSortConcurrent usingComparator: [self _fa_itemComparatorByScores: filteredScores reverse: YES]];
+        [filteredList sortWithOptions: NSSortConcurrent usingComparator: [self _fa_itemComparatorByScores: filteredScores]];
     }
     NAMED_TIMER_STOP(SortByScore);
 
@@ -857,18 +886,11 @@
 }
 
 // gets a comparator for given scores dictionary
-- (NSComparator) _fa_itemComparatorByScores: (NSDictionary *) filteredScores reverse: (BOOL) reverse {
-    if (!reverse) {
-        return ^(id<DVTTextCompletionItem> obj1, id<DVTTextCompletionItem> obj2) {
-            NSComparisonResult result = [filteredScores[obj1.name] compare: filteredScores[obj2.name]];
-            return result == NSOrderedSame ? [obj2.name caseInsensitiveCompare: obj1.name] : result;
-        };
-    } else {
-        return ^(id<DVTTextCompletionItem> obj1, id<DVTTextCompletionItem> obj2) {
-            NSComparisonResult result = [filteredScores[obj2.name] compare: filteredScores[obj1.name]];
-            return result == NSOrderedSame ? [obj1.name caseInsensitiveCompare: obj2.name] : result;
-        };
-    }
+- (NSComparator) _fa_itemComparatorByScores: (NSDictionary *) filteredScores {
+    return ^(id<DVTTextCompletionItem> obj1, id<DVTTextCompletionItem> obj2) {
+        NSComparisonResult result = [filteredScores[obj2.name] compare: filteredScores[obj1.name]];
+        return result == NSOrderedSame ? [obj1.name caseInsensitiveCompare: obj2.name] : result;
+    };
 }
 
 - (void)_fa_debugCompletionsByScore:(NSArray *)completions withQuery:(NSString *)query {
@@ -880,8 +902,8 @@
         double matchScore = [pattern scoreCandidate: item.name matchedRanges: &ranges];
         double factor = [self _priorityFactorForItem: item];
         [completionsWithScore addObject:@{
-            @"item"       : item.name,
-            @"ranges"     : ranges ? ranges : @[],
+            @"item"       : item.name ?: @"",
+            @"ranges"     : ranges ?: @[],
             @"factor"     : @(factor),
             @"priority"   : @(item.priority),
             @"matchScore" : @(matchScore),
@@ -962,3 +984,40 @@ static char kResultsStackKey;
 }
 
 @end
+
+static NSString * _fa_IDESwiftCompletionItem_name(id self, SEL _cmd) {
+    NSString * name = objc_getAssociatedObject(self, _fa_IDESwiftCompletionItem_name);
+    if (name) {
+        return name;
+    }
+    
+    id <DVTTextCompletionItem> item = self;
+    name = [item completionText];
+    NSUInteger length = name.length;
+    
+    NSRange searchRange = NSMakeRange(0, length);
+    NSUInteger tokenLocation = [name rangeOfString: @"<#" options: 0 range: searchRange].location;
+    
+    if (tokenLocation != NSNotFound) {
+        NSMutableString * newName = [NSMutableString stringWithCapacity: length];
+        while (tokenLocation != NSNotFound) {
+            searchRange.length = tokenLocation - searchRange.location;
+            [newName appendString: [name substringWithRange: searchRange]];
+            searchRange.location = tokenLocation + 2;
+            searchRange.length = length - tokenLocation - 2;
+            tokenLocation = [name rangeOfString: @"#>" options: 0 range: searchRange].location;
+            if (tokenLocation != NSNotFound) {
+                searchRange.location = tokenLocation + 2;
+                searchRange.length = length - tokenLocation - 2;
+                tokenLocation = [name rangeOfString: @"<#" options: 0 range: searchRange].location;
+            }
+        }
+        if (searchRange.location < length) {
+            [newName appendString: [name substringWithRange: searchRange]];
+        }
+        name = newName;
+    }
+    
+    objc_setAssociatedObject(self, _fa_IDESwiftCompletionItem_name, name, OBJC_ASSOCIATION_RETAIN);
+    return name;
+}

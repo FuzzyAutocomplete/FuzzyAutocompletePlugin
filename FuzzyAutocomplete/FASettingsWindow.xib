@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6751" systemVersion="13F1066" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9046" systemVersion="14E46" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
         <development version="5100" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6751"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9046"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="FASettings"/>
@@ -89,9 +89,6 @@
                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" id="aeB-3l-AzS">
                                                                 <real key="minimum" value="0.01"/>
                                                                 <real key="maximum" value="10"/>
-                                                                <metadata>
-                                                                    <real key="inspectorSampleValue" value="1"/>
-                                                                </metadata>
                                                             </numberFormatter>
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -139,6 +136,18 @@
                                                             <binding destination="-2" name="enabled" keyPath="self.showInlinePreview" id="kcV-Ng-jRb"/>
                                                         </connections>
                                                     </button>
+                                                    <button id="gVP-M8-VJF">
+                                                        <rect key="frame" x="250" y="30" width="98" height="20"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Show Count" bezelStyle="regularSquare" imagePosition="left" controlSize="small" state="on" inset="2" id="om9-CD-91B">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="smallSystem"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <binding destination="-2" name="enabled" keyPath="self.showListHeader" id="LEl-uS-PMI"/>
+                                                            <binding destination="-2" name="value" keyPath="self.showNumMatches" id="e1E-g1-lVK"/>
+                                                        </connections>
+                                                    </button>
                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="Kdd-yK-MCT">
                                                         <rect key="frame" x="2" y="54" width="344" height="29"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
@@ -165,7 +174,7 @@
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="NIz-i7-I7G">
                                                             <font key="font" metaFont="miniSystem"/>
-                                                            <string key="title">If enabled, the completion list will have an additional header showing the query, number of matches (all and visible) [and time spent on scoring].</string>
+                                                            <string key="title">If enabled, the completion list will have a header showing the query, optionally it can also show number of matches [and time spent on scoring].</string>
                                                             <color key="textColor" name="disabledControlTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
@@ -212,9 +221,6 @@ NOTE: items can reappear when their score rises above the threshold. </string>
                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" id="JXv-TC-wvJ">
                                                                 <real key="minimum" value="0.0"/>
                                                                 <real key="maximum" value="80"/>
-                                                                <metadata>
-                                                                    <real key="inspectorSampleValue" value="1"/>
-                                                                </metadata>
                                                             </numberFormatter>
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -307,9 +313,6 @@ NOTE: items can reappear when their score rises above the threshold. </string>
                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" id="pIV-ea-fKY">
                                                                 <real key="minimum" value="0.0"/>
                                                                 <real key="maximum" value="10"/>
-                                                                <metadata>
-                                                                    <real key="inspectorSampleValue" value="1"/>
-                                                                </metadata>
                                                             </numberFormatter>
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -334,9 +337,6 @@ NOTE: items can reappear when their score rises above the threshold. </string>
                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" id="jE7-62-j1y">
                                                                 <real key="minimum" value="0.0"/>
                                                                 <real key="maximum" value="10"/>
-                                                                <metadata>
-                                                                    <real key="inspectorSampleValue" value="1"/>
-                                                                </metadata>
                                                             </numberFormatter>
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -361,9 +361,6 @@ NOTE: items can reappear when their score rises above the threshold. </string>
                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" id="2U5-v7-Cl6">
                                                                 <real key="minimum" value="0.0"/>
                                                                 <real key="maximum" value="10"/>
-                                                                <metadata>
-                                                                    <real key="inspectorSampleValue" value="1"/>
-                                                                </metadata>
                                                             </numberFormatter>
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -388,9 +385,6 @@ NOTE: items can reappear when their score rises above the threshold. </string>
                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" id="4We-Te-Ee3">
                                                                 <real key="minimum" value="0.0"/>
                                                                 <real key="maximum" value="10"/>
-                                                                <metadata>
-                                                                    <real key="inspectorSampleValue" value="1"/>
-                                                                </metadata>
                                                             </numberFormatter>
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -497,9 +491,6 @@ Especially useful for adjusting the threshold and debugging.</string>
                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" id="VEb-mQ-rtQ">
                                                                 <real key="minimum" value="1"/>
                                                                 <real key="maximum" value="16"/>
-                                                                <metadata>
-                                                                    <real key="inspectorSampleValue" value="1"/>
-                                                                </metadata>
                                                             </numberFormatter>
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -670,9 +661,6 @@ Prefix - maximum bonus factor for prefix matches</string>
                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" id="fRA-9A-KgD">
                                                                 <real key="minimum" value="0.0"/>
                                                                 <real key="maximum" value="80"/>
-                                                                <metadata>
-                                                                    <real key="inspectorSampleValue" value="1"/>
-                                                                </metadata>
                                                             </numberFormatter>
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>

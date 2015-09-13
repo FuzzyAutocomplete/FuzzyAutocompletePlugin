@@ -6,10 +6,10 @@
 //
 //
 
-#import "IDEOpenQuicklyPattern.h"
+#import "FAOpenQuicklyPattern.h"
 
 /// Fuzzy Autocomplete Match Pattern
-@interface FAMatchPattern : IDEOpenQuicklyPattern
+@interface FAMatchPattern : FAOpenQuicklyPattern
 
 - (instancetype) initWithPattern: (NSString *) patternString;
 
