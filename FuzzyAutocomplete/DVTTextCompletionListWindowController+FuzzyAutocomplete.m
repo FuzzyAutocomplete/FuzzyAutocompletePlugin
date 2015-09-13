@@ -145,7 +145,9 @@ const char kRowHeightKey;
 // We modify titleColumnX with score column's width, so that title column is aligned with typed text
 - (CGRect) _fa_preferredWindowFrameForTextFrame: (CGRect) textFrame columnsWidth: (double *) widths titleColumnX: (double) titleX {
     NSTableView * tableView = [self valueForKey: @"_completionsTableView"];
-    return [self _fa_preferredWindowFrameForTextFrame: textFrame columnsWidth: widths titleColumnX: titleX + [self _fa_widthForScoreColumn] + tableView.intercellSpacing.width];
+    NSTableColumn * scoreColumn = [tableView tableColumnWithIdentifier: @"score"];
+    CGFloat additionalWidth = scoreColumn ? [self _fa_widthForScoreColumn] + tableView.intercellSpacing.width : 0;
+    return [self _fa_preferredWindowFrameForTextFrame: textFrame columnsWidth: widths titleColumnX: titleX + additionalWidth];
 }
 
 
