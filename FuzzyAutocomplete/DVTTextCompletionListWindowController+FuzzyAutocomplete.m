@@ -195,7 +195,7 @@ const char kRowHeightKey;
 
 
         NSString * prefix = self.session.usefulPrefix;
-        if ([item.name hasPrefix: prefix] && ![item.displayText hasPrefix: prefix]) {
+        if (prefix && [item.name hasPrefix: prefix] && ![item.displayText hasPrefix: prefix]) {
             NSRange prefixRange = NSMakeRange(0, prefix.length);
             NSArray * prefixRanges = [self.session fa_convertRanges: @[ [NSValue valueWithRange: prefixRange] ]
                                                          fromString: item.name
