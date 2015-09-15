@@ -150,7 +150,6 @@ const char kRowHeightKey;
     return [self _fa_preferredWindowFrameForTextFrame: textFrame columnsWidth: widths titleColumnX: titleX + additionalWidth];
 }
 
-
 // We add visual feedback for the matched ranges. Also format the score column.
 - (void) _fa_tableView: (NSTableView *) aTableView
        willDisplayCell: (NSCell *) aCell
@@ -163,13 +162,24 @@ const char kRowHeightKey;
         NSTextFieldCell * textFieldCell = (NSTextFieldCell *) aCell;
         textFieldCell.textColor = textFieldCell.isHighlighted ? [FATheme cuurrentTheme].listTextColorForSelectedScore : [FATheme cuurrentTheme].listTextColorForScore;
     } else if ([aTableColumn.identifier isEqualToString:@"title"]) {
-        id<DVTTextCompletionItem> item = self.session.filteredCompletionsAlpha[rowIndex];
-        NSArray * ranges = [self.session fa_matchedRangesForItem: item];
-        NSArray * second = [self.session fa_secondPassMatchedRangesForItem: item];
-
-        if (!ranges.count) {
+        if (rowIndex >= self.session.filteredCompletionsAlpha.count) {
+            RLog(@"Warning: Row out of bounds, skipping.");
             return;
         }
+    
+        id<DVTTextCompletionItem> item = self.session.filteredCompletionsAlpha[rowIndex];
+        if (![item.displayText isEqualToString: aCell.stringValue]) {
+            RLog(@"Warning: Item displayText different from cell stringValue, skipping.");
+            return;
+        }
+
+        NSArray * ranges = [self.session fa_matchedRangesForItem: item];
+        if (!ranges.count) {
+            RLog("Warning: No ranges matched for item, skipping");
+            return;
+        }
+
+        NSArray * second = [self.session fa_secondPassMatchedRangesForItem: item];
 
         NSMutableAttributedString * attributed = [aCell.attributedStringValue mutableCopy];
 
