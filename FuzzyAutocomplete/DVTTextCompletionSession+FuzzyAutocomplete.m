@@ -83,6 +83,10 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
                 withMethod: @selector(_fa_hideCompletionsWithReason:)
                      error: nil];
     
+    [self jr_swizzleMethod: @selector(_priorityFactorForItem:)
+                withMethod: @selector(_fa_priorityFactorForItem:)
+                     error: nil];
+    
     Class swiftCompletionClass = NSClassFromString(@"IDESwiftCompletionItem");
     if (swiftCompletionClass) {
         Method m = class_getInstanceMethod(swiftCompletionClass, NSSelectorFromString(@"name"));
@@ -213,6 +217,7 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
         session._fa_currentScoringMethod = method;
 
         session._fa_resultsStack = [NSMutableArray array];
+        session._fa_cachedPriorities = [NSMutableDictionary dictionary];
     }
     return session;
 }
@@ -466,7 +471,18 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
 // We nullify the caches when completions change.
 - (void) _fa_setAllCompletions: (NSArray *) allCompletions {
     [self _fa_setAllCompletions:allCompletions];
+    [self._fa_cachedPriorities removeAllObjects];
     [self._fa_resultsStack removeAllObjects];
+}
+
+// We cache the results, parallel access to this is terribly slow
+- (double) _fa_priorityFactorForItem: (id<DVTTextCompletionItem>) item {
+    NSNumber * number = self._fa_cachedPriorities[item.name];
+    if (!number) {
+        number = @([self _fa_priorityFactorForItem: item]);
+        self._fa_cachedPriorities[item.name] = number;
+    }
+    return [number doubleValue];
 }
 
 #pragma mark - helpers
@@ -543,6 +559,14 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
     workerCount = MIN(MAX(searchSet.count / MIN_CHUNK_LENGTH, 1), workerCount);
 
     NAMED_TIMER_START(CalculateScores);
+    
+    // If there are no results on the stack, rebuild the priority cache using one thread
+    // TODO: decouple initial filtering from scoring to parallelize this as well
+    if (!self._fa_lastFilteringResults) {
+        [self._fa_cachedPriorities removeAllObjects];
+        workerCount = 1;
+    }
+    
     if (workerCount < 2) {
         bestMatch = [self _fa_bestMatchForQuery: query
                                         inArray: searchSet
@@ -981,6 +1005,15 @@ static char kResultsStackKey;
 
 - (FAFilteringResults *) _fa_lastFilteringResults {
     return self._fa_resultsStack.lastObject;
+}
+
+static char kPrioritiesKey;
+- (NSMutableDictionary *) _fa_cachedPriorities {
+    return objc_getAssociatedObject(self, &kPrioritiesKey);
+}
+
+- (void) set_fa_cachedPriorities: (NSMutableDictionary *) cache {
+    objc_setAssociatedObject(self, &kPrioritiesKey, cache, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 @end
