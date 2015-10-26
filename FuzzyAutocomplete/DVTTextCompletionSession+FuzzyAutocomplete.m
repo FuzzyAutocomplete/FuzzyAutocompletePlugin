@@ -464,6 +464,11 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
 
         dispatch_on_main(^{
             @try {
+                // This sometimes happens, not sure why.
+                if (self.textView == nil) {
+                    return;
+                }
+                
                 self.fa_filteringTime = [NSDate timeIntervalSinceReferenceDate] - start;
                 
                 if (![self _gotUsefulCompletionsToShowInList: results.filteredItems]) {
