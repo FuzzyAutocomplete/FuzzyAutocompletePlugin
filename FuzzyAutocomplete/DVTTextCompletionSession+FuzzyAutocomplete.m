@@ -332,7 +332,7 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
 
                 NSUInteger start_location = [[self valueForKey: @"_wordStartLocation"] unsignedIntegerValue];
                 NSUInteger end_location = [[self valueForKey: @"_cursorLocation"] unsignedIntegerValue];
-
+                
                 DVTCompletingTextView * textView = self.textView;
                 DVTTextStorage * storage = (DVTTextStorage *) textView.textStorage;
 
@@ -463,44 +463,49 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
                                                           filteringPrefix: prefix];
 
         dispatch_on_main(^{
-            self.fa_filteringTime = [NSDate timeIntervalSinceReferenceDate] - start;
-            
-            if (![self _gotUsefulCompletionsToShowInList: results.filteredItems]) {
-                BOOL shownExplicitly = [[self valueForKey:@"_shownExplicitly"] boolValue];
-                if ([self.listWindowController showingWindow] && !shownExplicitly) {
-                    [self.listWindowController hideWindowWithReason: 8];
+            @try {
+                self.fa_filteringTime = [NSDate timeIntervalSinceReferenceDate] - start;
+                
+                if (![self _gotUsefulCompletionsToShowInList: results.filteredItems]) {
+                    BOOL shownExplicitly = [[self valueForKey:@"_shownExplicitly"] boolValue];
+                    if ([self.listWindowController showingWindow] && !shownExplicitly) {
+                        [self.listWindowController hideWindowWithReason: 8];
+                    }
+                    if ([self._inlinePreviewController isShowingInlinePreview]) {
+                        [self._inlinePreviewController hideInlinePreviewWithReason: 8];
+                    }
                 }
-                if ([self._inlinePreviewController isShowingInlinePreview]) {
-                    [self._inlinePreviewController hideInlinePreviewWithReason: 8];
+                
+                NAMED_TIMER_START(SendNotifications);
+                // send the notifications in the same way the original does
+                [self willChangeValueForKey:@"filteredCompletionsAlpha"];
+                [self willChangeValueForKey:@"usefulPrefix"];
+                [self willChangeValueForKey:@"selectedCompletionIndex"];
+                
+                [self setValue: results.filteredItems forKey: @"_filteredCompletionsAlpha"];
+                [self setValue: partial forKey: @"_usefulPrefix"];
+                [self setValue: @(selection) forKey: @"_selectedCompletionIndex"];
+                [self setValue: nil forKey: @"_filteredCompletionsPriority"];
+                
+                [self didChangeValueForKey:@"filteredCompletionsAlpha"];
+                [self didChangeValueForKey:@"usefulPrefix"];
+                [self didChangeValueForKey:@"selectedCompletionIndex"];
+                NAMED_TIMER_STOP(SendNotifications);
+                
+                
+                if ([[NSCharacterSet decimalDigitCharacterSet] characterIsMember: [prefix characterAtIndex:0]]) {
+                    BOOL shownExplicitly = [[self valueForKey:@"_shownExplicitly"] boolValue];
+                    if (!shownExplicitly) {
+                        [self._inlinePreviewController hideInlinePreviewWithReason: 2];
+                        [self.listWindowController hideWindowWithReason: 2];
+                    }
                 }
-            }
-            
-            NAMED_TIMER_START(SendNotifications);
-            // send the notifications in the same way the original does
-            [self willChangeValueForKey:@"filteredCompletionsAlpha"];
-            [self willChangeValueForKey:@"usefulPrefix"];
-            [self willChangeValueForKey:@"selectedCompletionIndex"];
-            
-            [self setValue: results.filteredItems forKey: @"_filteredCompletionsAlpha"];
-            [self setValue: partial forKey: @"_usefulPrefix"];
-            [self setValue: @(selection) forKey: @"_selectedCompletionIndex"];
-            [self setValue: nil forKey: @"_filteredCompletionsPriority"];
-            
-            [self didChangeValueForKey:@"filteredCompletionsAlpha"];
-            [self didChangeValueForKey:@"usefulPrefix"];
-            [self didChangeValueForKey:@"selectedCompletionIndex"];
-            NAMED_TIMER_STOP(SendNotifications);
-            
-            if ([[NSCharacterSet decimalDigitCharacterSet] characterIsMember: [prefix characterAtIndex:0]]) {
-                BOOL shownExplicitly = [[self valueForKey:@"_shownExplicitly"] boolValue];
-                if (!shownExplicitly) {
-                    [self._inlinePreviewController hideInlinePreviewWithReason: 2];
-                    [self.listWindowController hideWindowWithReason: 2];
+                
+                if (![FASettings currentSettings].showInlinePreview) {
+                    [self._inlinePreviewController hideInlinePreviewWithReason: 0x0];
                 }
-            }
-            
-            if (![FASettings currentSettings].showInlinePreview) {
-                [self._inlinePreviewController hideInlinePreviewWithReason: 0x0];
+            } @catch (NSException *exception) {
+                RLog(@"Caught an Exception when showing completions: %@", exception);
             }
         });
 
