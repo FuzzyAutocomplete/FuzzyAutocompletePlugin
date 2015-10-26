@@ -125,7 +125,7 @@ static const BOOL kDefaultCorrectLetterCaseBestMatchOnly = NO;
 static const BOOL kDefaultCorrectWordOrder = NO;
 static const NSInteger kDefaultCorrectWordOrderAfter = 2;
 static const BOOL kDefaultNonblockingMode = NO;
-static const double kDefaultFilterDelay = 0.2;
+static const double kDefaultFilterDelay = 0.1;
 
 - (IBAction)resetDefaults:(id)sender {
     self.pluginEnabled = kDefaultPluginEnabled;

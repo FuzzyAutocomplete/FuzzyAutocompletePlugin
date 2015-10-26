@@ -447,7 +447,7 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
             results = [self _fa_calculateResultsForQuery: prefix];
             [resultsStack addObject: results];
         }
-        nsaccesswind
+        
         // If the query changes, bail out. Can be optimised
         if (![prefix isEqualToString:[self fa_filteringQuery]]) {
             return;
