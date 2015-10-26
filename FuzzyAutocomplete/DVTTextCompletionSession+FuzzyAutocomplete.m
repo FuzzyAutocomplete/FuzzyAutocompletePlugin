@@ -22,6 +22,8 @@
 #import "FAItemScoringMethod.h"
 #import <objc/runtime.h>
 
+#define dispatch_on_main($block) (dispatch_get_current_queue() == dispatch_get_main_queue() ? $block() : dispatch_sync(dispatch_get_main_queue(), $block))
+
 #define MIN_CHUNK_LENGTH 100
 /// A simple helper class to avoid using a dictionary in resultsStack
 @interface FAFilteringResults : NSObject
@@ -363,7 +365,7 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
         dispatch_source_cancel(timer);
     }
     
-    timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
+    timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0));
     dispatch_source_set_timer(timer, dispatch_time(DISPATCH_TIME_NOW, [FASettings currentSettings].filterDelay * NSEC_PER_SEC), DISPATCH_TIME_FOREVER, 0.05 * NSEC_PER_SEC);
     
     __weak typeof(self) weakSelf = self;
@@ -445,7 +447,12 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
             results = [self _fa_calculateResultsForQuery: prefix];
             [resultsStack addObject: results];
         }
-
+        nsaccesswind
+        // If the query changes, bail out. Can be optimised
+        if (![prefix isEqualToString:[self fa_filteringQuery]]) {
+            return;
+        }
+        
         NSUInteger selection = [self _fa_getSelectionForFilteringResults: results
                                                        previousSelection: previousSelection
                                                                   ranges: previousSelectionRanges
@@ -455,45 +462,47 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
                                                             selectedIndex: selection
                                                           filteringPrefix: prefix];
 
-        self.fa_filteringTime = [NSDate timeIntervalSinceReferenceDate] - start;
-
-        if (![self _gotUsefulCompletionsToShowInList: results.filteredItems]) {
-            BOOL shownExplicitly = [[self valueForKey:@"_shownExplicitly"] boolValue];
-            if ([self.listWindowController showingWindow] && !shownExplicitly) {
-                [self.listWindowController hideWindowWithReason: 8];
+        dispatch_on_main(^{
+            self.fa_filteringTime = [NSDate timeIntervalSinceReferenceDate] - start;
+            
+            if (![self _gotUsefulCompletionsToShowInList: results.filteredItems]) {
+                BOOL shownExplicitly = [[self valueForKey:@"_shownExplicitly"] boolValue];
+                if ([self.listWindowController showingWindow] && !shownExplicitly) {
+                    [self.listWindowController hideWindowWithReason: 8];
+                }
+                if ([self._inlinePreviewController isShowingInlinePreview]) {
+                    [self._inlinePreviewController hideInlinePreviewWithReason: 8];
+                }
             }
-            if ([self._inlinePreviewController isShowingInlinePreview]) {
-                [self._inlinePreviewController hideInlinePreviewWithReason: 8];
+            
+            NAMED_TIMER_START(SendNotifications);
+            // send the notifications in the same way the original does
+            [self willChangeValueForKey:@"filteredCompletionsAlpha"];
+            [self willChangeValueForKey:@"usefulPrefix"];
+            [self willChangeValueForKey:@"selectedCompletionIndex"];
+            
+            [self setValue: results.filteredItems forKey: @"_filteredCompletionsAlpha"];
+            [self setValue: partial forKey: @"_usefulPrefix"];
+            [self setValue: @(selection) forKey: @"_selectedCompletionIndex"];
+            [self setValue: nil forKey: @"_filteredCompletionsPriority"];
+            
+            [self didChangeValueForKey:@"filteredCompletionsAlpha"];
+            [self didChangeValueForKey:@"usefulPrefix"];
+            [self didChangeValueForKey:@"selectedCompletionIndex"];
+            NAMED_TIMER_STOP(SendNotifications);
+            
+            if ([[NSCharacterSet decimalDigitCharacterSet] characterIsMember: [prefix characterAtIndex:0]]) {
+                BOOL shownExplicitly = [[self valueForKey:@"_shownExplicitly"] boolValue];
+                if (!shownExplicitly) {
+                    [self._inlinePreviewController hideInlinePreviewWithReason: 2];
+                    [self.listWindowController hideWindowWithReason: 2];
+                }
             }
-        }
-
-        NAMED_TIMER_START(SendNotifications);
-        // send the notifications in the same way the original does
-        [self willChangeValueForKey:@"filteredCompletionsAlpha"];
-        [self willChangeValueForKey:@"usefulPrefix"];
-        [self willChangeValueForKey:@"selectedCompletionIndex"];
-        
-        [self setValue: results.filteredItems forKey: @"_filteredCompletionsAlpha"];
-        [self setValue: partial forKey: @"_usefulPrefix"];
-        [self setValue: @(selection) forKey: @"_selectedCompletionIndex"];
-        [self setValue: nil forKey: @"_filteredCompletionsPriority"];
-
-        [self didChangeValueForKey:@"filteredCompletionsAlpha"];
-        [self didChangeValueForKey:@"usefulPrefix"];
-        [self didChangeValueForKey:@"selectedCompletionIndex"];
-        NAMED_TIMER_STOP(SendNotifications);
-
-        if ([[NSCharacterSet decimalDigitCharacterSet] characterIsMember: [prefix characterAtIndex:0]]) {
-            BOOL shownExplicitly = [[self valueForKey:@"_shownExplicitly"] boolValue];
-            if (!shownExplicitly) {
-                [self._inlinePreviewController hideInlinePreviewWithReason: 2];
-                [self.listWindowController hideWindowWithReason: 2];
+            
+            if (![FASettings currentSettings].showInlinePreview) {
+                [self._inlinePreviewController hideInlinePreviewWithReason: 0x0];
             }
-        }
-
-        if (![FASettings currentSettings].showInlinePreview) {
-            [self._inlinePreviewController hideInlinePreviewWithReason: 0x0];
-        }
+        });
 
     } @catch (NSException *exception) {
         RLog(@"Caught an Exception %@", exception);
