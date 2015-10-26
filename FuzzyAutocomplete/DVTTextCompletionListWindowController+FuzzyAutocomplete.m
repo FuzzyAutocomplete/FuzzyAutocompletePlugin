@@ -90,7 +90,10 @@ const char kRowHeightKey;
       valueForColumn: (NSTableColumn *) aTableColumn
                  row: (NSInteger) rowIndex
 {
-    if ([aTableColumn.identifier isEqualToString:@"score"]) {
+    // This can happen if the user backspaces as the table is being redrawn
+    if ((rowIndex + 1) > [self.session.filteredCompletionsAlpha count]) {
+        return nil;
+    } else if ([aTableColumn.identifier isEqualToString:@"score"]) {
         id<DVTTextCompletionItem> item = self.session.filteredCompletionsAlpha[rowIndex];
         return [self.session fa_scoreForItem: item];
     } else {
