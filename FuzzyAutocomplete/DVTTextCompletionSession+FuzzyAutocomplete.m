@@ -353,18 +353,31 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
     [self _fa_hideCompletionsWithReason: reason];
 }
 
+// Start the delay timer
+- (void)_fa_kickFilterTimer:(NSString *)prefix forceFilter: (BOOL) forceFilter
+{
+    // Ideally, this would be an associated object on self, but I can't seem to do it with NSValue
+    static dispatch_source_t timer = NULL;
+    
+    if (timer != NULL) {
+        dispatch_source_cancel(timer);
+    }
+    
+    timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
+    dispatch_source_set_timer(timer, dispatch_time(DISPATCH_TIME_NOW, [FASettings currentSettings].filterDelay * NSEC_PER_SEC), DISPATCH_TIME_FOREVER, 0.05 * NSEC_PER_SEC);
+    
+    __weak typeof(self) weakSelf = self;
+    dispatch_source_set_event_handler(timer, ^{
+        [weakSelf _fa_performFuzzyFiltering: prefix forceFilter: forceFilter];
+    });
+    dispatch_resume(timer);
+}
+
 // Sets the current filtering prefix and calculates completion list.
 // We override here to use fuzzy matching.
-- (void)_fa_setFilteringPrefix: (NSString *) prefix forceFilter: (BOOL) forceFilter {
+- (void)_fa_setFilteringPrefix: (NSString *) prefix forceFilter: (BOOL) forceFilter
+{
     DLog(@"filteringPrefix = @\"%@\"", prefix);
-
-    // remove all cached results which are not case-insensitive prefixes of the new prefix
-    // only if case-sensitive exact match happens the whole cached result is used
-    // when case-insensitive prefix match happens we can still use allItems as a start point
-    NSMutableArray * resultsStack = self._fa_resultsStack;
-    while (resultsStack.count && ![prefix.lowercaseString hasPrefix: [[resultsStack lastObject] query].lowercaseString]) {
-        [resultsStack removeLastObject];
-    }
 
     self.fa_filteringTime = 0;
 
@@ -390,7 +403,26 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
     if (self.fa_insertingCompletion) {
         return;
     }
+    
+    if ([FASettings currentSettings].nonblockingMode) {
+        [self _fa_kickFilterTimer:prefix forceFilter:forceFilter];
+    } else {
+        [self _fa_performFuzzyFiltering:prefix forceFilter:forceFilter];
+    }
+}
 
+- (void)_fa_performFuzzyFiltering:(NSString *) prefix forceFilter: (BOOL) forceFilter
+{
+    
+    // NOTE: Maybe need to move this section into the actual performFilter part
+    // remove all cached results which are not case-insensitive prefixes of the new prefix
+    // only if case-sensitive exact match happens the whole cached result is used
+    // when case-insensitive prefix match happens we can still use allItems as a start point
+    NSMutableArray * resultsStack = self._fa_resultsStack;
+    while (resultsStack.count && ![prefix.lowercaseString hasPrefix: [[resultsStack lastObject] query].lowercaseString]) {
+        [resultsStack removeLastObject];
+    }
+    
     @try {
         NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
 
