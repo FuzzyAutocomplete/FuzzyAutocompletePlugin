@@ -124,6 +124,8 @@ static const BOOL kDefaultCorrectLetterCase = NO;
 static const BOOL kDefaultCorrectLetterCaseBestMatchOnly = NO;
 static const BOOL kDefaultCorrectWordOrder = NO;
 static const NSInteger kDefaultCorrectWordOrderAfter = 2;
+static const BOOL kDefaultNonblockingMode = NO;
+static const double kDefaultFilterDelay = 0.2;
 
 - (IBAction)resetDefaults:(id)sender {
     self.pluginEnabled = kDefaultPluginEnabled;
@@ -150,6 +152,8 @@ static const NSInteger kDefaultCorrectWordOrderAfter = 2;
     self.correctLetterCaseBestMatchOnly = kDefaultCorrectLetterCaseBestMatchOnly;
     self.correctWordOrder = kDefaultCorrectWordOrder;
     self.correctWordOrderAfter = kDefaultCorrectWordOrderAfter;
+    self.nonblockingMode = kDefaultNonblockingMode;
+    self.filterDelay = kDefaultFilterDelay;
 
     NSUInteger processors = [[NSProcessInfo processInfo] activeProcessorCount];
     self.parallelScoring = processors > 1;
@@ -193,6 +197,8 @@ static const NSInteger kDefaultCorrectWordOrderAfter = 2;
     loadNumber(correctLetterCaseBestMatchOnly, CorrectLetterCaseBestMatchOnly);
     loadNumber(correctWordOrder, CorrectWordOrder);
     loadNumber(correctWordOrderAfter, CorrectWordOrderAfter);
+    loadNumber(nonblockingMode, NonblockingMode);
+    loadNumber(filterDelay, FilterDelay);
 
 #undef loadNumber
 
@@ -267,6 +273,7 @@ BOOL_SETTINGS_SETTER(showTiming, ShowTiming)
 BOOL_SETTINGS_SETTER(correctLetterCase, CorrectLetterCase);
 BOOL_SETTINGS_SETTER(correctLetterCaseBestMatchOnly, CorrectLetterCaseBestMatchOnly);
 BOOL_SETTINGS_SETTER(correctWordOrder, CorrectWordOrder);
+BOOL_SETTINGS_SETTER(nonblockingMode, NonblockingMode)
 
 INTEGER_SETTINGS_SETTER(maximumWorkers, MaximumWorkers)
 INTEGER_SETTINGS_SETTER(prefixAnchor, PrefixAnchor)
@@ -277,6 +284,7 @@ DOUBLE_SETTINGS_SETTER(matchScorePower, MatchScorePower)
 DOUBLE_SETTINGS_SETTER(priorityPower, PriorityPower)
 DOUBLE_SETTINGS_SETTER(priorityFactorPower, PriorityFactorPower)
 DOUBLE_SETTINGS_SETTER(maxPrefixBonus, MaxPrefixBonus)
+DOUBLE_SETTINGS_SETTER(filterDelay, FilterDelay)
 
 STRING_SETTINGS_SETTER(scoreFormat, ScoreFormat)
 
