@@ -728,7 +728,7 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
     id<DVTTextCompletionItem> bestMatch;
 
     FAItemScoringMethod * method = self._fa_currentScoringMethod;
-
+    
     double normalization = [method normalizationFactorForSearchString: query];
 
     id<DVTTextCompletionItem> item;
@@ -742,6 +742,10 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
     MULTI_TIMER_INIT(Matching); MULTI_TIMER_INIT(Scoring); MULTI_TIMER_INIT(Writing);
 
     for (NSUInteger i = lower_bound; i < upper_bound; ++i) {
+        // If the query changes, bail out. Can be optimised
+        if ( (i % 50 == 0) && ![query isEqualToString:[self fa_filteringQuery]]) {
+            break;
+        }
         item = array[i];
         NSArray * rangesArray;
         NSArray * secondPassArray;
