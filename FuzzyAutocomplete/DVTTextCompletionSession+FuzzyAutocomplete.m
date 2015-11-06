@@ -364,7 +364,7 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
     if (timer != NULL) {
         dispatch_source_cancel(timer);
     }
-        
+    
     static dispatch_once_t onceToken;
     static dispatch_queue_t timerQueue;
     dispatch_once(&onceToken, ^{
@@ -405,14 +405,17 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
         }
         return;
     }
+    
 
     // do not filter if we are inserting a completion
     // checking for _insertingFullCompletion is not sufficient
     if (self.fa_insertingCompletion) {
         return;
     }
-    
+
     if ([FASettings currentSettings].nonblockingMode) {
+        // inline preview does weird things to input when nonblocking is on
+        [self._inlinePreviewController hideInlinePreviewWithReason: 0x0];
         [self _fa_kickFilterTimer:prefix forceFilter:forceFilter];
     } else {
         [self _fa_performFuzzyFiltering:prefix forceFilter:forceFilter];
