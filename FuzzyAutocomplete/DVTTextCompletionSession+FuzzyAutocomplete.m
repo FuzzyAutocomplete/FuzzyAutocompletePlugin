@@ -737,108 +737,112 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
                                              scores: (NSMutableDictionary **) scores
                                    secondPassRanges: (NSMutableDictionary **) second
 {
-    FAMatchPattern *pattern = [[FAMatchPattern alloc] initWithPattern:query];
-    NSMutableArray *filteredList = filtered ? [NSMutableArray arrayWithCapacity: array.count / total] : nil;
-    NSMutableDictionary *filteredRanges = ranges ? [NSMutableDictionary dictionaryWithCapacity: array.count / total] : nil;
-    NSMutableDictionary *filteredSecond = second ? [NSMutableDictionary dictionaryWithCapacity: array.count / total] : nil;
-    NSMutableDictionary *filteredScores = scores ? [NSMutableDictionary dictionaryWithCapacity: array.count / total] : nil;
-
-    double highScore = 0.0f;
-    id<DVTTextCompletionItem> bestMatch;
-
-    FAItemScoringMethod * method = self._fa_currentScoringMethod;
-    
-    double normalization = [method normalizationFactorForSearchString: query];
-
-    id<DVTTextCompletionItem> item;
-    NSUInteger lower_bound = offset * (array.count / total);
-    NSUInteger upper_bound = offset == total - 1 ? array.count : (offset + 1) * (array.count / total);
-
-    DLog(@"Process elements %lu %lu (%lu)", lower_bound, upper_bound, array.count);
-    
-    NSCharacterSet * identStartSet = [self.textView.class identifierChars];
-    
-    MULTI_TIMER_INIT(Matching); MULTI_TIMER_INIT(Scoring); MULTI_TIMER_INIT(Writing);
-
-    for (NSUInteger i = lower_bound; i < upper_bound; ++i) {
-        // If the query changes, bail out. Can be optimised
-        if ( (i % 50 == 0) && ![query isEqualToString:[self fa_filteringQuery]]) {
-            break;
-        }
-        item = array[i];
-        NSArray * rangesArray;
-        NSArray * secondPassArray;
-        double matchScore;
-
-        NSInteger nameOffset = [item.name rangeOfCharacterFromSet: identStartSet].location;
-        if (nameOffset == NSNotFound) {
-            nameOffset = 0;
-        }
-        NSString * nameToMatch = !nameOffset ? item.name : [item.name substringFromIndex: nameOffset];
+    @try {
+        FAMatchPattern *pattern = [[FAMatchPattern alloc] initWithPattern:query];
+        NSMutableArray *filteredList = filtered ? [NSMutableArray arrayWithCapacity: array.count / total] : nil;
+        NSMutableDictionary *filteredRanges = ranges ? [NSMutableDictionary dictionaryWithCapacity: array.count / total] : nil;
+        NSMutableDictionary *filteredSecond = second ? [NSMutableDictionary dictionaryWithCapacity: array.count / total] : nil;
+        NSMutableDictionary *filteredScores = scores ? [NSMutableDictionary dictionaryWithCapacity: array.count / total] : nil;
         
-        MULTI_TIMER_START(Matching);
-        if (query.length == 1) {
-            NSRange range = [nameToMatch rangeOfString: query options: NSCaseInsensitiveSearch];
-            if (range.location != NSNotFound) {
-                rangesArray = @[ [NSValue valueWithRange:range] ];
-                matchScore = MAX(0.001, [pattern scoreCandidate:nameToMatch matchedRanges:&rangesArray]);
-            } else {
-                matchScore = 0;
+        double highScore = 0.0f;
+        id<DVTTextCompletionItem> bestMatch;
+        
+        FAItemScoringMethod * method = self._fa_currentScoringMethod;
+        
+        double normalization = [method normalizationFactorForSearchString: query];
+        
+        id<DVTTextCompletionItem> item;
+        NSUInteger lower_bound = offset * (array.count / total);
+        NSUInteger upper_bound = offset == total - 1 ? array.count : (offset + 1) * (array.count / total);
+        
+        DLog(@"Process elements %lu %lu (%lu)", lower_bound, upper_bound, array.count);
+        
+        NSCharacterSet * identStartSet = [self.textView.class identifierChars];
+        
+        MULTI_TIMER_INIT(Matching); MULTI_TIMER_INIT(Scoring); MULTI_TIMER_INIT(Writing);
+        
+        for (NSUInteger i = lower_bound; i < upper_bound; ++i) {
+            // If the query changes, bail out. Can be optimised
+            if ( (i % 50 == 0) && ![query isEqualToString:[self fa_filteringQuery]]) {
+                break;
             }
-        } else {
-            matchScore = [pattern scoreCandidate:nameToMatch matchedRanges:&rangesArray secondPassRanges: &secondPassArray];
-        }
-        MULTI_TIMER_STOP(Matching);
-
-        if (matchScore > 0) {
-            MULTI_TIMER_START(Scoring);
-            double factor = [self _priorityFactorForItem:item];
-            double score = normalization * [method scoreItem: item
-                                                searchString: query
-                                                 matchedName: nameToMatch
-                                                  matchScore: matchScore
-                                               matchedRanges: rangesArray
-                                              priorityFactor: factor];
-            MULTI_TIMER_STOP(Scoring);
-            MULTI_TIMER_START(Writing);
-            if (score > 0) {
-                if (nameOffset) {
-                    NSMutableArray * realRanges = [NSMutableArray array];
-                    for (NSValue * v in rangesArray) {
-                        NSRange r = v.rangeValue;
-                        r.location += nameOffset;
-                        [realRanges addObject: [NSValue valueWithRange: r]];
-                    }
-                    rangesArray = realRanges;
+            item = array[i];
+            NSArray * rangesArray;
+            NSArray * secondPassArray;
+            double matchScore;
+            
+            NSInteger nameOffset = [item.name rangeOfCharacterFromSet: identStartSet].location;
+            if (nameOffset == NSNotFound) {
+                nameOffset = 0;
+            }
+            NSString * nameToMatch = !nameOffset ? item.name : [item.name substringFromIndex: nameOffset];
+            
+            MULTI_TIMER_START(Matching);
+            if (query.length == 1) {
+                NSRange range = [nameToMatch rangeOfString: query options: NSCaseInsensitiveSearch];
+                if (range.location != NSNotFound) {
+                    rangesArray = @[ [NSValue valueWithRange:range] ];
+                    matchScore = MAX(0.001, [pattern scoreCandidate:nameToMatch matchedRanges:&rangesArray]);
+                } else {
+                    matchScore = 0;
                 }
-                [filteredList addObject:item];
-                filteredRanges[item.name] = rangesArray ?: @[];
-                filteredSecond[item.name] = secondPassArray ?: @[];
-                filteredScores[item.name] = @(score);
+            } else {
+                matchScore = [pattern scoreCandidate:nameToMatch matchedRanges:&rangesArray secondPassRanges: &secondPassArray];
             }
-            if (score > highScore) {
-                bestMatch = item;
-                highScore = score;
+            MULTI_TIMER_STOP(Matching);
+            
+            if (matchScore > 0) {
+                MULTI_TIMER_START(Scoring);
+                double factor = [self _priorityFactorForItem:item];
+                double score = normalization * [method scoreItem: item
+                                                    searchString: query
+                                                     matchedName: nameToMatch
+                                                      matchScore: matchScore
+                                                   matchedRanges: rangesArray
+                                                  priorityFactor: factor];
+                MULTI_TIMER_STOP(Scoring);
+                MULTI_TIMER_START(Writing);
+                if (score > 0) {
+                    if (nameOffset) {
+                        NSMutableArray * realRanges = [NSMutableArray array];
+                        for (NSValue * v in rangesArray) {
+                            NSRange r = v.rangeValue;
+                            r.location += nameOffset;
+                            [realRanges addObject: [NSValue valueWithRange: r]];
+                        }
+                        rangesArray = realRanges;
+                    }
+                    [filteredList addObject:item];
+                    filteredRanges[item.name] = rangesArray ?: @[];
+                    filteredSecond[item.name] = secondPassArray ?: @[];
+                    filteredScores[item.name] = @(score);
+                }
+                if (score > highScore) {
+                    bestMatch = item;
+                    highScore = score;
+                }
+                MULTI_TIMER_STOP(Writing);
             }
-            MULTI_TIMER_STOP(Writing);
         }
+        
+        DLog(@"Matching %f | Scoring %f | Writing %f", MULTI_TIMER_GET(Matching), MULTI_TIMER_GET(Scoring), MULTI_TIMER_GET(Writing));
+        
+        if (filtered) {
+            *filtered = filteredList;
+        }
+        if (ranges) {
+            *ranges = filteredRanges;
+        }
+        if (second) {
+            *second = filteredSecond;
+        }
+        if (scores) {
+            *scores = filteredScores;
+        }
+        return bestMatch;
+    } @catch (NSException *exception) {
+        RLog(@"Caught an Exception when filtering: %@", exception);
     }
-
-    DLog(@"Matching %f | Scoring %f | Writing %f", MULTI_TIMER_GET(Matching), MULTI_TIMER_GET(Scoring), MULTI_TIMER_GET(Writing));
-
-    if (filtered) {
-        *filtered = filteredList;
-    }
-    if (ranges) {
-        *ranges = filteredRanges;
-    }
-    if (second) {
-        *second = filteredSecond;
-    }
-    if (scores) {
-        *scores = filteredScores;
-    }
-    return bestMatch;
 }
 
 - (NSMutableArray *) _fa_filterResults: (NSMutableArray *) filteredList
