@@ -364,8 +364,14 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
     if (timer != NULL) {
         dispatch_source_cancel(timer);
     }
+        
+    static dispatch_once_t onceToken;
+    static dispatch_queue_t timerQueue;
+    dispatch_once(&onceToken, ^{
+        timerQueue = dispatch_queue_create("io.github.FuzzyAutocomplete.processing-queue", DISPATCH_QUEUE_SERIAL);
+    });
     
-    timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0));
+    timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, timerQueue);
     dispatch_source_set_timer(timer, dispatch_time(DISPATCH_TIME_NOW, [FASettings currentSettings].filterDelay * NSEC_PER_SEC), DISPATCH_TIME_FOREVER, 0.05 * NSEC_PER_SEC);
     
     __weak typeof(self) weakSelf = self;
