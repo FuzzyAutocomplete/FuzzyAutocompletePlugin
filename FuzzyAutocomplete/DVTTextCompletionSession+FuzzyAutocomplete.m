@@ -659,10 +659,6 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
                                                                  secondPassRanges: &secondMap];
                 NAMED_TIMER_STOP(Processing);
                 
-                // If above method fails, then any of the returned structures could be nil
-                if (list == nil || rangesMap == nil || scoresMap == nil || secondMap == nil) {
-                    return;
-                }
                 dispatch_async(reduceQueue, ^{
                     NAMED_TIMER_START(Reduce);
                     sortedItemArrays[i] = list;
@@ -751,16 +747,16 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
                                              scores: (NSMutableDictionary **) scores
                                    secondPassRanges: (NSMutableDictionary **) second
 {
+    FAMatchPattern *pattern = [[FAMatchPattern alloc] initWithPattern:query];
+    NSMutableArray *filteredList = filtered ? [NSMutableArray arrayWithCapacity: array.count / total] : nil;
+    NSMutableDictionary *filteredRanges = ranges ? [NSMutableDictionary dictionaryWithCapacity: array.count / total] : nil;
+    NSMutableDictionary *filteredSecond = second ? [NSMutableDictionary dictionaryWithCapacity: array.count / total] : nil;
+    NSMutableDictionary *filteredScores = scores ? [NSMutableDictionary dictionaryWithCapacity: array.count / total] : nil;
+    
+    double highScore = 0.0f;
+    id<DVTTextCompletionItem> bestMatch;
+
     @try {
-        FAMatchPattern *pattern = [[FAMatchPattern alloc] initWithPattern:query];
-        NSMutableArray *filteredList = filtered ? [NSMutableArray arrayWithCapacity: array.count / total] : nil;
-        NSMutableDictionary *filteredRanges = ranges ? [NSMutableDictionary dictionaryWithCapacity: array.count / total] : nil;
-        NSMutableDictionary *filteredSecond = second ? [NSMutableDictionary dictionaryWithCapacity: array.count / total] : nil;
-        NSMutableDictionary *filteredScores = scores ? [NSMutableDictionary dictionaryWithCapacity: array.count / total] : nil;
-        
-        double highScore = 0.0f;
-        id<DVTTextCompletionItem> bestMatch;
-        
         FAItemScoringMethod * method = self._fa_currentScoringMethod;
         
         double normalization = [method normalizationFactorForSearchString: query];
@@ -840,7 +836,10 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
         }
         
         DLog(@"Matching %f | Scoring %f | Writing %f", MULTI_TIMER_GET(Matching), MULTI_TIMER_GET(Scoring), MULTI_TIMER_GET(Writing));
-        
+
+    } @catch (NSException *exception) {
+        RLog(@"Caught an Exception when filtering: %@", exception);
+    } @finally {
         if (filtered) {
             *filtered = filteredList;
         }
@@ -854,8 +853,6 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
             *scores = filteredScores;
         }
         return bestMatch;
-    } @catch (NSException *exception) {
-        RLog(@"Caught an Exception when filtering: %@", exception);
     }
 }
 
