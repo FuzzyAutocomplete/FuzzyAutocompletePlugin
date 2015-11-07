@@ -658,6 +658,11 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
                                                                            scores: &scoresMap
                                                                  secondPassRanges: &secondMap];
                 NAMED_TIMER_STOP(Processing);
+                
+                // If above method fails, then any of the returned structures could be nil
+                if (list == nil || rangesMap == nil || scoresMap == nil || secondMap == nil) {
+                    return;
+                }
                 dispatch_async(reduceQueue, ^{
                     NAMED_TIMER_START(Reduce);
                     sortedItemArrays[i] = list;
