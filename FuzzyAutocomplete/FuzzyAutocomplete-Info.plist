@@ -42,6 +42,7 @@
 		<string>CC0D0F4F-05B3-431A-8F33-F84AFCB2C651</string> <!-- 7.1 Beta -->
 		<string>7265231C-39B4-402C-89E1-16167C4CC990</string> <!-- 7.1      -->
 		<string>9AFF134A-08DC-4096-8CEE-62A4BB123046</string> <!-- 7.2 Beta -->
+		<string>F41BD31E-2683-44B8-AE7F-5F09E919790E</string> <!-- 7.2 -->
 	</array>
 	<key>FAReportIssueURL</key>
 	<string>https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin/issues</string>
