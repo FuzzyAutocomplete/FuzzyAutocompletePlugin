@@ -8,9 +8,9 @@
 // SDK Root: /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk.sdk
 //
 
-@class DVTTextCompletionDataSource;
+@class DVTTextDocumentLocation;
 
-@protocol DVTTextCompletionDataSourceDelegate
-- (void)completionsChangedForDataSource:(DVTTextCompletionDataSource *)arg1;
+@protocol DVTTextDocumentLocationEncodingConverter
+- (DVTTextDocumentLocation *)compatibleLocationFromLocation:(DVTTextDocumentLocation *)arg1;
 @end
 

@@ -17,7 +17,9 @@
 
 #import "DVTTextCompletionSession+FuzzyAutocomplete.h"
 #import "DVTTextCompletionListWindowController+FuzzyAutocomplete.h"
+#if Xcode73ToDo
 #import "DVTTextCompletionInlinePreviewController+FuzzyAutocomplete.h"
+#endif
 
 @implementation FuzzyAutocomplete
 
@@ -130,7 +132,9 @@
 + (void) swizzleMethods {
     [DVTTextCompletionSession fa_swizzleMethods];
     [DVTTextCompletionListWindowController fa_swizzleMethods];
+#if Xcode73ToDo
     [DVTTextCompletionInlinePreviewController fa_swizzleMethods];
+#endif
 }
 
 @end

@@ -8,9 +8,11 @@
 // SDK Root: /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk.sdk
 //
 
-@class DVTTextCompletionDataSource;
 
-@protocol DVTTextCompletionDataSourceDelegate
-- (void)completionsChangedForDataSource:(DVTTextCompletionDataSource *)arg1;
+@class NSMutableArray;
+
+@protocol DVTEditor <NSObject>
+- (void)discardEditing;
+- (BOOL)commitEditingForAction:(int)arg1 errors:(NSMutableArray *)arg2;
 @end
 
