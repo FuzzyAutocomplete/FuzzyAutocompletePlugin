@@ -9,8 +9,13 @@
 //
 
 #import "DVTTextCompletionSession+FuzzyAutocomplete.h"
+
+#if Xcode73ToDo
 #import "DVTTextCompletionInlinePreviewController.h"
 #import "DVTTextCompletionInlinePreviewController+FuzzyAutocomplete.h"
+#endif
+
+#import "DVTTextCompletionItem-Protocol.h"
 #import "DVTTextCompletionListWindowController.h"
 #import "DVTCompletingTextView.h"
 #import "DVTTextStorage.h"
@@ -82,10 +87,11 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
     [self jr_swizzleMethod: @selector(hideCompletionsWithReason:)
                 withMethod: @selector(_fa_hideCompletionsWithReason:)
                      error: nil];
-    
+#if Xcode73ToDo
     [self jr_swizzleMethod: @selector(_priorityFactorForItem:)
                 withMethod: @selector(_fa_priorityFactorForItem:)
                      error: nil];
+#endif
     
     Class swiftCompletionClass = NSClassFromString(@"IDESwiftCompletionItem");
     if (swiftCompletionClass) {
@@ -192,9 +198,11 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
 // We override here to hide inline preview if disabled
 - (void) _fa_showCompletionsExplicitly: (BOOL) explicitly {
     [self _fa_showCompletionsExplicitly: explicitly];
+#if Xcode73ToDo
     if (![FASettings currentSettings].showInlinePreview) {
         [self._inlinePreviewController hideInlinePreviewWithReason: 0x0];
     }
+#endif
 }
 
 // We additionally load the settings and refresh the theme upon session creation.
@@ -247,6 +255,7 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
 {
     NSDictionary * ret = [self _fa_attributesForCompletionAtCharacterIndex:index effectiveRange:effectiveRange];
 
+#if Xcode73ToDo
     if ([self._inlinePreviewController isShowingInlinePreview]) {
         if (NSLocationInRange(index, [self._inlinePreviewController previewRange])) {
             *effectiveRange = ret ? NSIntersectionRange(*effectiveRange, [self._inlinePreviewController previewRange]) : [self._inlinePreviewController previewRange];
@@ -269,6 +278,7 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
             }
         }
     }
+#endif
     return ret;
 }
 
@@ -374,9 +384,11 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
 
         NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
         [self _fa_setFilteringPrefix:prefix forceFilter:forceFilter];
+#if Xcode73ToDo
         if (![FASettings currentSettings].showInlinePreview) {
             [self._inlinePreviewController hideInlinePreviewWithReason: 0x0];
         }
+#endif
         self.fa_filteringTime = [NSDate timeIntervalSinceReferenceDate] - start;
 
         if ([FASettings currentSettings].showTiming) {
@@ -430,9 +442,11 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
             if ([self.listWindowController showingWindow] && !shownExplicitly) {
                 [self.listWindowController hideWindowWithReason: 8];
             }
+#if Xcode73ToDo
             if ([self._inlinePreviewController isShowingInlinePreview]) {
                 [self._inlinePreviewController hideInlinePreviewWithReason: 8];
             }
+#endif
         }
 
         NAMED_TIMER_START(SendNotifications);
@@ -454,14 +468,17 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
         if ([[NSCharacterSet decimalDigitCharacterSet] characterIsMember: [prefix characterAtIndex:0]]) {
             BOOL shownExplicitly = [[self valueForKey:@"_shownExplicitly"] boolValue];
             if (!shownExplicitly) {
+#if Xcode73ToDo
                 [self._inlinePreviewController hideInlinePreviewWithReason: 2];
+#endif
                 [self.listWindowController hideWindowWithReason: 2];
             }
         }
-
+#if Xcode73ToDo
         if (![FASettings currentSettings].showInlinePreview) {
             [self._inlinePreviewController hideInlinePreviewWithReason: 0x0];
         }
+#endif
 
     } @catch (NSException *exception) {
         RLog(@"Caught an Exception %@", exception);
@@ -737,7 +754,11 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
 
         if (matchScore > 0) {
             MULTI_TIMER_START(Scoring);
+#if Xcode73ToDo
             double factor = [self _priorityFactorForItem:item];
+#else
+            double factor = 1.0;
+#endif
             double score = normalization * [method scoreItem: item
                                                 searchString: query
                                                  matchedName: nameToMatch
@@ -924,7 +945,11 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
     [completions enumerateObjectsUsingBlock:^(id<DVTTextCompletionItem> item, NSUInteger idx, BOOL *stop) {
         NSArray * ranges = nil;
         double matchScore = [pattern scoreCandidate: item.name matchedRanges: &ranges];
+#if Xcode73ToDo
         double factor = [self _priorityFactorForItem: item];
+#else
+		double factor = 1.0;
+#endif
         [completionsWithScore addObject:@{
             @"item"       : item.name ?: @"",
             @"ranges"     : ranges ?: @[],

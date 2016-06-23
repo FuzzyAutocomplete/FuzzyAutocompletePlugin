@@ -215,7 +215,9 @@ const char kRowHeightKey;
             for (NSValue * val in prefixRanges) {
                 prefixRange = NSUnionRange(prefixRange, [val rangeValue]);
             }
+#if Xcode73ToDo
             [attributed addAttributes: self._usefulPrefixAttributes range: prefixRange];
+#endif
         }
 
         [aCell setAttributedStringValue: attributed];

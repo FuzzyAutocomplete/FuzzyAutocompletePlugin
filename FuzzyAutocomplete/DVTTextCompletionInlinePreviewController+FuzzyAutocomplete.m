@@ -6,7 +6,9 @@
 //  Copyright (c) 2014 United Lines of Code. All rights reserved.
 //
 
+#if Xcode73ToDo
 #import "DVTTextCompletionInlinePreviewController+FuzzyAutocomplete.h"
+#import "DVTTextCompletionItem-Protocol.h"
 #import "DVTTextCompletionSession.h"
 #import "DVTTextCompletionSession+FuzzyAutocomplete.h"
 #import "DVTFontAndColorTheme.h"
@@ -192,3 +194,4 @@ static char matchedRangesKey;
 
 @end
 
+#endif
