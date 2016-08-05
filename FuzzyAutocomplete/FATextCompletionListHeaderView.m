@@ -111,7 +111,7 @@
         status = [status stringByAppendingFormat: @" - %.2f ms", 1000 * session.fa_lastFilteringTime];
     }
 
-    NSMutableAttributedString * attributed = [[NSMutableAttributedString alloc] initWithString: status];
+    NSMutableAttributedString * attributed = [[NSMutableAttributedString alloc] initWithString: status ?: @""];
     [attributed addAttribute: NSFontAttributeName value: _boldFont range: NSMakeRange(0, session.fa_filteringQuery.length)];
     [attributed addAttribute: NSForegroundColorAttributeName value: [NSColor controlTextColor] range: NSMakeRange(0, session.fa_filteringQuery.length)];
 
