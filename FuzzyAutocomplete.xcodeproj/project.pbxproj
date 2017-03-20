@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1C56EBE11B2646310001979E /* FAOpenQuicklyPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C56EBE01B2646310001979E /* FAOpenQuicklyPattern.m */; };
+		4D9653741B3B366E000BE299 /* FAMatchPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D9653731B3B366E000BE299 /* FAMatchPattern.m */; };
 		580BC1EC181243D600D53F1F /* DVTFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 580BC1EA181243D600D53F1F /* DVTFoundation.framework */; };
 		580BC1ED181243D600D53F1F /* DVTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 580BC1EB181243D600D53F1F /* DVTKit.framework */; };
 		58501C0618165B0600AA3179 /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 58501C0518165B0600AA3179 /* JRSwizzle.m */; };
@@ -15,7 +15,6 @@
 		58C3C25118110DB70031D9CD /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 58C3C24F18110DB70031D9CD /* InfoPlist.strings */; };
 		58C3C25A181128140031D9CD /* FuzzyAutocomplete.m in Sources */ = {isa = PBXBuildFile; fileRef = 58C3C259181128140031D9CD /* FuzzyAutocomplete.m */; };
 		58E9F98F1813A0FE000928AF /* IDEKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58E9F98E1813A0FE000928AF /* IDEKit.framework */; };
-		650C2FA6190B31600021BCD8 /* FAMatchPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = 650C2FA5190B31600021BCD8 /* FAMatchPattern.m */; };
 		650D4F5F18E5FCFF00F5DBEE /* FASettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 650D4F5E18E5FCFF00F5DBEE /* FASettings.m */; };
 		65346CC7189D885C004EB7BE /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58C3C24B18110DB70031D9CD /* AppKit.framework */; };
 		6540232C18F9F79700D580B3 /* FAItemScoringMethod.m in Sources */ = {isa = PBXBuildFile; fileRef = 6540232B18F9F79700D580B3 /* FAItemScoringMethod.m */; };
@@ -29,8 +28,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1C56EBE01B2646310001979E /* FAOpenQuicklyPattern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FAOpenQuicklyPattern.m; sourceTree = "<group>"; };
 		1C5CF4601918DB6200AF581C /* NSArray+FirstObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+FirstObject.h"; sourceTree = "<group>"; };
+		4D9653711B3B3648000BE299 /* DVTOpenQuicklyPattern.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DVTOpenQuicklyPattern.h; sourceTree = "<group>"; };
+		4D9653721B3B366E000BE299 /* FAMatchPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FAMatchPattern.h; sourceTree = "<group>"; };
+		4D9653731B3B366E000BE299 /* FAMatchPattern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FAMatchPattern.m; sourceTree = "<group>"; };
 		580BC1EA181243D600D53F1F /* DVTFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DVTFoundation.framework; path = ../../../../Applications/Xcode.app/Contents/SharedFrameworks/DVTFoundation.framework; sourceTree = "<group>"; };
 		580BC1EB181243D600D53F1F /* DVTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DVTKit.framework; path = ../../../../Applications/Xcode.app/Contents/SharedFrameworks/DVTKit.framework; sourceTree = "<group>"; };
 		58501C0418165B0600AA3179 /* JRSwizzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRSwizzle.h; sourceTree = "<group>"; };
@@ -53,12 +54,9 @@
 		58DA96F21813D38A00D0082B /* DVTTextCompletionInlinePreviewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DVTTextCompletionInlinePreviewController.h; sourceTree = "<group>"; };
 		58DA96F31813D48D00D0082B /* DVTTextCompletionItem-Protocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DVTTextCompletionItem-Protocol.h"; sourceTree = "<group>"; };
 		58E391E7181289A100C18DBF /* IDEIndexCompletionItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IDEIndexCompletionItem.h; sourceTree = "<group>"; };
-		58E9F98D18139EC5000928AF /* FAOpenQuicklyPattern.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FAOpenQuicklyPattern.h; sourceTree = "<group>"; };
 		58E9F98E1813A0FE000928AF /* IDEKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IDEKit.framework; path = ../../../../Applications/Xcode.app/Contents/Frameworks/IDEKit.framework; sourceTree = "<group>"; };
 		6503E741190AB08D00017267 /* DVTTextStorage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DVTTextStorage.h; sourceTree = "<group>"; };
 		6503E742190AB08D00017267 /* DVTTextStorageDelegate-Protocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DVTTextStorageDelegate-Protocol.h"; sourceTree = "<group>"; };
-		650C2FA4190B31600021BCD8 /* FAMatchPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FAMatchPattern.h; sourceTree = "<group>"; };
-		650C2FA5190B31600021BCD8 /* FAMatchPattern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FAMatchPattern.m; sourceTree = "<group>"; };
 		650D4F5D18E5FCFF00F5DBEE /* FASettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FASettings.h; sourceTree = "<group>"; };
 		650D4F5E18E5FCFF00F5DBEE /* FASettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FASettings.m; sourceTree = "<group>"; };
 		6540232A18F9F79700D580B3 /* FAItemScoringMethod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FAItemScoringMethod.h; sourceTree = "<group>"; };
@@ -116,6 +114,7 @@
 				58E391E7181289A100C18DBF /* IDEIndexCompletionItem.h */,
 				658A7C8218A13279007655E0 /* DVTPreferenceSet-Protocol.h */,
 				65DB740C18A12FBF001CDD83 /* DVTFontAndColorTheme.h */,
+				4D9653711B3B3648000BE299 /* DVTOpenQuicklyPattern.h */,
 			);
 			name = "Xcode Headers";
 			path = ../XcodeHeaders;
@@ -183,10 +182,8 @@
 				65599234189FFFD600C44208 /* DVTTextCompletionInlinePreviewController+FuzzyAutocomplete.m */,
 				655738C618F47F1E003FD40A /* FATextCompletionListHeaderView.h */,
 				655738C718F47F1E003FD40A /* FATextCompletionListHeaderView.m */,
-				58E9F98D18139EC5000928AF /* FAOpenQuicklyPattern.h */,
-				1C56EBE01B2646310001979E /* FAOpenQuicklyPattern.m */,
-				650C2FA4190B31600021BCD8 /* FAMatchPattern.h */,
-				650C2FA5190B31600021BCD8 /* FAMatchPattern.m */,
+				4D9653721B3B366E000BE299 /* FAMatchPattern.h */,
+				4D9653731B3B366E000BE299 /* FAMatchPattern.m */,
 			);
 			path = FuzzyAutocomplete;
 			sourceTree = "<group>";
@@ -302,8 +299,7 @@
 				6540232C18F9F79700D580B3 /* FAItemScoringMethod.m in Sources */,
 				58501C0618165B0600AA3179 /* JRSwizzle.m in Sources */,
 				58C3C25A181128140031D9CD /* FuzzyAutocomplete.m in Sources */,
-				1C56EBE11B2646310001979E /* FAOpenQuicklyPattern.m in Sources */,
-				650C2FA6190B31600021BCD8 /* FAMatchPattern.m in Sources */,
+				4D9653741B3B366E000BE299 /* FAMatchPattern.m in Sources */,
 				650D4F5F18E5FCFF00F5DBEE /* FASettings.m in Sources */,
 				65EAE5DE18ECADF900F0974C /* FATheme.m in Sources */,
 				657EB240189D76DC00B04AC0 /* DVTTextCompletionListWindowController+FuzzyAutocomplete.m in Sources */,
