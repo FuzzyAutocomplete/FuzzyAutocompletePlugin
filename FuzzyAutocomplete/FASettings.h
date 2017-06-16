@@ -87,5 +87,10 @@ extern NSString * FASettingsPluginEnabledDidChangeNotification;
 /// After how many letters should attempt to correct word order.
 @property (nonatomic, readonly) NSInteger correctWordOrderAfter;
 
+/// Should the plugin use non-blocking mode.
+@property (nonatomic, readonly) BOOL nonblockingMode;
+
+/// Autocompleting delay after stopping typing in non-blocking mode
+@property (nonatomic, readonly) double filterDelay;
 
 @end

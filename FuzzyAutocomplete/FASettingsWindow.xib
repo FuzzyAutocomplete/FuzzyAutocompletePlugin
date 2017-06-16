@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9046" systemVersion="14E46" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
         <development version="5100" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9046"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8191"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="FASettings"/>
@@ -641,6 +641,17 @@ Prefix - maximum bonus factor for prefix matches</string>
                                                             <binding destination="-2" name="value" keyPath="self.correctWordOrder" id="vJ4-7X-wK6"/>
                                                         </connections>
                                                     </button>
+                                                    <button id="Zr1-f7-6Bu">
+                                                        <rect key="frame" x="2" y="149" width="163" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Non-blocking Mode" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="NIs-nl-Dzg">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <binding destination="-2" name="value" keyPath="self.nonblockingMode" id="Txw-tl-qqd"/>
+                                                        </connections>
+                                                    </button>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="RIc-hE-LFP">
                                                         <rect key="frame" x="328" y="200" width="19" height="27"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
@@ -691,6 +702,43 @@ Prefix - maximum bonus factor for prefix matches</string>
                                                             </binding>
                                                         </connections>
                                                     </textField>
+                                                    <textField verticalHuggingPriority="750" id="ncG-Sf-4Q9">
+                                                        <rect key="frame" x="253" y="151" width="78" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="5Xi-Ui-VPT">
+                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" id="NzO-qk-3Mm">
+                                                                <real key="minimum" value="0.0"/>
+                                                                <real key="maximum" value="80"/>
+                                                            </numberFormatter>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <connections>
+                                                            <binding destination="-2" name="value" keyPath="self.filterDelay" id="J6K-y9-Mul"/>
+                                                            <binding destination="-2" name="hidden" keyPath="self.nonblockingMode" id="iIt-ke-t5A">
+                                                                <dictionary key="options">
+                                                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                                                </dictionary>
+                                                            </binding>
+                                                        </connections>
+                                                    </textField>
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="3d6-Nh-33Y">
+                                                        <rect key="frame" x="163" y="154" width="88" height="14"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Delay (seconds)" id="xSg-b9-T22">
+                                                            <font key="font" metaFont="smallSystem"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <connections>
+                                                            <binding destination="-2" name="hidden" keyPath="self.nonblockingMode" id="03e-fT-zHp">
+                                                                <dictionary key="options">
+                                                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                                                </dictionary>
+                                                            </binding>
+                                                        </connections>
+                                                    </textField>
                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="cnT-1h-TTf">
                                                         <rect key="frame" x="2" y="173" width="340" height="29"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
@@ -701,6 +749,28 @@ Prefix - maximum bonus factor for prefix matches</string>
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
+                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="HNq-mF-zgg">
+                                                        <rect key="frame" x="2" y="114" width="340" height="29"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="If enabled, autocompletion won't block when typing. Instead, it will wait some time before displaying options." id="Doc-ez-N9C">
+                                                            <font key="font" metaFont="miniSystem"/>
+                                                            <color key="textColor" name="disabledControlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="HsY-d2-Bam">
+                                                        <rect key="frame" x="328" y="148" width="19" height="27"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                                        <stepperCell key="cell" continuous="YES" alignment="left" increment="0.050000000000000003" maxValue="5" id="NKM-8u-LNO"/>
+                                                        <connections>
+                                                            <binding destination="-2" name="value" keyPath="self.filterDelay" id="mAA-c3-JPN"/>
+                                                            <binding destination="-2" name="hidden" keyPath="self.nonblockingMode" id="y2N-M7-ZWB">
+                                                                <dictionary key="options">
+                                                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                                                </dictionary>
+                                                            </binding>
+                                                        </connections>
+                                                    </stepper>
                                                 </subviews>
                                             </view>
                                         </tabViewItem>

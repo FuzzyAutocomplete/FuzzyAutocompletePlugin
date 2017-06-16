@@ -22,6 +22,8 @@
 #import "FAItemScoringMethod.h"
 #import <objc/runtime.h>
 
+#define dispatch_on_main($block) (dispatch_get_current_queue() == dispatch_get_main_queue() ? $block() : dispatch_sync(dispatch_get_main_queue(), $block))
+
 #define MIN_CHUNK_LENGTH 100
 /// A simple helper class to avoid using a dictionary in resultsStack
 @interface FAFilteringResults : NSObject
@@ -330,7 +332,7 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
 
                 NSUInteger start_location = [[self valueForKey: @"_wordStartLocation"] unsignedIntegerValue];
                 NSUInteger end_location = [[self valueForKey: @"_cursorLocation"] unsignedIntegerValue];
-
+                
                 DVTCompletingTextView * textView = self.textView;
                 DVTTextStorage * storage = (DVTTextStorage *) textView.textStorage;
 
@@ -353,18 +355,37 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
     [self _fa_hideCompletionsWithReason: reason];
 }
 
+// Start the delay timer
+- (void)_fa_kickFilterTimer:(NSString *)prefix forceFilter: (BOOL) forceFilter
+{
+    // Ideally, this would be an associated object on self, but I can't seem to do it with NSValue
+    static dispatch_source_t timer = NULL;
+    
+    if (timer != NULL) {
+        dispatch_source_cancel(timer);
+    }
+    
+    static dispatch_once_t onceToken;
+    static dispatch_queue_t timerQueue;
+    dispatch_once(&onceToken, ^{
+        timerQueue = dispatch_queue_create("io.github.FuzzyAutocomplete.processing-queue", DISPATCH_QUEUE_SERIAL);
+    });
+    
+    timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, timerQueue);
+    dispatch_source_set_timer(timer, dispatch_time(DISPATCH_TIME_NOW, [FASettings currentSettings].filterDelay * NSEC_PER_SEC), DISPATCH_TIME_FOREVER, 0.05 * NSEC_PER_SEC);
+    
+    __weak typeof(self) weakSelf = self;
+    dispatch_source_set_event_handler(timer, ^{
+        [weakSelf _fa_performFuzzyFiltering: prefix forceFilter: forceFilter];
+    });
+    dispatch_resume(timer);
+}
+
 // Sets the current filtering prefix and calculates completion list.
 // We override here to use fuzzy matching.
-- (void)_fa_setFilteringPrefix: (NSString *) prefix forceFilter: (BOOL) forceFilter {
+- (void)_fa_setFilteringPrefix: (NSString *) prefix forceFilter: (BOOL) forceFilter
+{
     DLog(@"filteringPrefix = @\"%@\"", prefix);
-
-    // remove all cached results which are not case-insensitive prefixes of the new prefix
-    // only if case-sensitive exact match happens the whole cached result is used
-    // when case-insensitive prefix match happens we can still use allItems as a start point
-    NSMutableArray * resultsStack = self._fa_resultsStack;
-    while (resultsStack.count && ![prefix.lowercaseString hasPrefix: [[resultsStack lastObject] query].lowercaseString]) {
-        [resultsStack removeLastObject];
-    }
 
     self.fa_filteringTime = 0;
 
@@ -384,6 +405,7 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
         }
         return;
     }
+    
 
     // do not filter if we are inserting a completion
     // checking for _insertingFullCompletion is not sufficient
@@ -391,6 +413,27 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
         return;
     }
 
+    if ([FASettings currentSettings].nonblockingMode) {
+        // inline preview does weird things to input when nonblocking is on
+        [self._inlinePreviewController hideInlinePreviewWithReason: 0x0];
+        [self _fa_kickFilterTimer:prefix forceFilter:forceFilter];
+    } else {
+        [self _fa_performFuzzyFiltering:prefix forceFilter:forceFilter];
+    }
+}
+
+- (void)_fa_performFuzzyFiltering:(NSString *) prefix forceFilter: (BOOL) forceFilter
+{
+    
+    // NOTE: Maybe need to move this section into the actual performFilter part
+    // remove all cached results which are not case-insensitive prefixes of the new prefix
+    // only if case-sensitive exact match happens the whole cached result is used
+    // when case-insensitive prefix match happens we can still use allItems as a start point
+    NSMutableArray * resultsStack = self._fa_resultsStack;
+    while (resultsStack.count && ![prefix.lowercaseString hasPrefix: [[resultsStack lastObject] query].lowercaseString]) {
+        [resultsStack removeLastObject];
+    }
+    
     @try {
         NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
 
@@ -413,7 +456,12 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
             results = [self _fa_calculateResultsForQuery: prefix];
             [resultsStack addObject: results];
         }
-
+        
+        // If the query changes, bail out. Can be optimised
+        if (![prefix isEqualToString:[self fa_filteringQuery]]) {
+            return;
+        }
+        
         NSUInteger selection = [self _fa_getSelectionForFilteringResults: results
                                                        previousSelection: previousSelection
                                                                   ranges: previousSelectionRanges
@@ -423,45 +471,57 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
                                                             selectedIndex: selection
                                                           filteringPrefix: prefix];
 
-        self.fa_filteringTime = [NSDate timeIntervalSinceReferenceDate] - start;
-
-        if (![self _gotUsefulCompletionsToShowInList: results.filteredItems]) {
-            BOOL shownExplicitly = [[self valueForKey:@"_shownExplicitly"] boolValue];
-            if ([self.listWindowController showingWindow] && !shownExplicitly) {
-                [self.listWindowController hideWindowWithReason: 8];
+        dispatch_on_main(^{
+            @try {
+                // This sometimes happens, not sure why.
+                if (self.textView == nil) {
+                    return;
+                }
+                
+                self.fa_filteringTime = [NSDate timeIntervalSinceReferenceDate] - start;
+                
+                if (![self _gotUsefulCompletionsToShowInList: results.filteredItems]) {
+                    BOOL shownExplicitly = [[self valueForKey:@"_shownExplicitly"] boolValue];
+                    if ([self.listWindowController showingWindow] && !shownExplicitly) {
+                        [self.listWindowController hideWindowWithReason: 8];
+                    }
+                    if ([self._inlinePreviewController isShowingInlinePreview]) {
+                        [self._inlinePreviewController hideInlinePreviewWithReason: 8];
+                    }
+                }
+                
+                NAMED_TIMER_START(SendNotifications);
+                // send the notifications in the same way the original does
+                [self willChangeValueForKey:@"filteredCompletionsAlpha"];
+                [self willChangeValueForKey:@"usefulPrefix"];
+                [self willChangeValueForKey:@"selectedCompletionIndex"];
+                
+                [self setValue: results.filteredItems forKey: @"_filteredCompletionsAlpha"];
+                [self setValue: partial forKey: @"_usefulPrefix"];
+                [self setValue: @(selection) forKey: @"_selectedCompletionIndex"];
+                [self setValue: nil forKey: @"_filteredCompletionsPriority"];
+                
+                [self didChangeValueForKey:@"filteredCompletionsAlpha"];
+                [self didChangeValueForKey:@"usefulPrefix"];
+                [self didChangeValueForKey:@"selectedCompletionIndex"];
+                NAMED_TIMER_STOP(SendNotifications);
+                
+                
+                if ([[NSCharacterSet decimalDigitCharacterSet] characterIsMember: [prefix characterAtIndex:0]]) {
+                    BOOL shownExplicitly = [[self valueForKey:@"_shownExplicitly"] boolValue];
+                    if (!shownExplicitly) {
+                        [self._inlinePreviewController hideInlinePreviewWithReason: 2];
+                        [self.listWindowController hideWindowWithReason: 2];
+                    }
+                }
+                
+                if (![FASettings currentSettings].showInlinePreview) {
+                    [self._inlinePreviewController hideInlinePreviewWithReason: 0x0];
+                }
+            } @catch (NSException *exception) {
+                RLog(@"Caught an Exception when showing completions: %@", exception);
             }
-            if ([self._inlinePreviewController isShowingInlinePreview]) {
-                [self._inlinePreviewController hideInlinePreviewWithReason: 8];
-            }
-        }
-
-        NAMED_TIMER_START(SendNotifications);
-        // send the notifications in the same way the original does
-        [self willChangeValueForKey:@"filteredCompletionsAlpha"];
-        [self willChangeValueForKey:@"usefulPrefix"];
-        [self willChangeValueForKey:@"selectedCompletionIndex"];
-        
-        [self setValue: results.filteredItems forKey: @"_filteredCompletionsAlpha"];
-        [self setValue: partial forKey: @"_usefulPrefix"];
-        [self setValue: @(selection) forKey: @"_selectedCompletionIndex"];
-        [self setValue: nil forKey: @"_filteredCompletionsPriority"];
-
-        [self didChangeValueForKey:@"filteredCompletionsAlpha"];
-        [self didChangeValueForKey:@"usefulPrefix"];
-        [self didChangeValueForKey:@"selectedCompletionIndex"];
-        NAMED_TIMER_STOP(SendNotifications);
-
-        if ([[NSCharacterSet decimalDigitCharacterSet] characterIsMember: [prefix characterAtIndex:0]]) {
-            BOOL shownExplicitly = [[self valueForKey:@"_shownExplicitly"] boolValue];
-            if (!shownExplicitly) {
-                [self._inlinePreviewController hideInlinePreviewWithReason: 2];
-                [self.listWindowController hideWindowWithReason: 2];
-            }
-        }
-
-        if (![FASettings currentSettings].showInlinePreview) {
-            [self._inlinePreviewController hideInlinePreviewWithReason: 0x0];
-        }
+        });
 
     } @catch (NSException *exception) {
         RLog(@"Caught an Exception %@", exception);
@@ -598,6 +658,7 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
                                                                            scores: &scoresMap
                                                                  secondPassRanges: &secondMap];
                 NAMED_TIMER_STOP(Processing);
+                
                 dispatch_async(reduceQueue, ^{
                     NAMED_TIMER_START(Reduce);
                     sortedItemArrays[i] = list;
@@ -691,99 +752,108 @@ static IMP __fa_IDESwiftCompletionItem_name = (IMP) _fa_IDESwiftCompletionItem_n
     NSMutableDictionary *filteredRanges = ranges ? [NSMutableDictionary dictionaryWithCapacity: array.count / total] : nil;
     NSMutableDictionary *filteredSecond = second ? [NSMutableDictionary dictionaryWithCapacity: array.count / total] : nil;
     NSMutableDictionary *filteredScores = scores ? [NSMutableDictionary dictionaryWithCapacity: array.count / total] : nil;
-
+    
     double highScore = 0.0f;
     id<DVTTextCompletionItem> bestMatch;
 
-    FAItemScoringMethod * method = self._fa_currentScoringMethod;
-
-    double normalization = [method normalizationFactorForSearchString: query];
-
-    id<DVTTextCompletionItem> item;
-    NSUInteger lower_bound = offset * (array.count / total);
-    NSUInteger upper_bound = offset == total - 1 ? array.count : (offset + 1) * (array.count / total);
-
-    DLog(@"Process elements %lu %lu (%lu)", lower_bound, upper_bound, array.count);
-    
-    NSCharacterSet * identStartSet = [self.textView.class identifierChars];
-    
-    MULTI_TIMER_INIT(Matching); MULTI_TIMER_INIT(Scoring); MULTI_TIMER_INIT(Writing);
-
-    for (NSUInteger i = lower_bound; i < upper_bound; ++i) {
-        item = array[i];
-        NSArray * rangesArray;
-        NSArray * secondPassArray;
-        double matchScore;
-
-        NSInteger nameOffset = [item.name rangeOfCharacterFromSet: identStartSet].location;
-        if (nameOffset == NSNotFound) {
-            nameOffset = 0;
-        }
-        NSString * nameToMatch = !nameOffset ? item.name : [item.name substringFromIndex: nameOffset];
+    @try {
+        FAItemScoringMethod * method = self._fa_currentScoringMethod;
         
-        MULTI_TIMER_START(Matching);
-        if (query.length == 1) {
-            NSRange range = [nameToMatch rangeOfString: query options: NSCaseInsensitiveSearch];
-            if (range.location != NSNotFound) {
-                rangesArray = @[ [NSValue valueWithRange:range] ];
-                matchScore = MAX(0.001, [pattern scoreCandidate:nameToMatch matchedRanges:&rangesArray]);
-            } else {
-                matchScore = 0;
+        double normalization = [method normalizationFactorForSearchString: query];
+        
+        id<DVTTextCompletionItem> item;
+        NSUInteger lower_bound = offset * (array.count / total);
+        NSUInteger upper_bound = offset == total - 1 ? array.count : (offset + 1) * (array.count / total);
+        
+        DLog(@"Process elements %lu %lu (%lu)", lower_bound, upper_bound, array.count);
+        
+        NSCharacterSet * identStartSet = [self.textView.class identifierChars];
+        
+        MULTI_TIMER_INIT(Matching); MULTI_TIMER_INIT(Scoring); MULTI_TIMER_INIT(Writing);
+        
+        for (NSUInteger i = lower_bound; i < upper_bound; ++i) {
+            // If the query changes, bail out. Can be optimised
+            if ( (i % 50 == 0) && ![query isEqualToString:[self fa_filteringQuery]]) {
+                break;
             }
-        } else {
-            matchScore = [pattern scoreCandidate:nameToMatch matchedRanges:&rangesArray secondPassRanges: &secondPassArray];
-        }
-        MULTI_TIMER_STOP(Matching);
-
-        if (matchScore > 0) {
-            MULTI_TIMER_START(Scoring);
-            double factor = [self _priorityFactorForItem:item];
-            double score = normalization * [method scoreItem: item
-                                                searchString: query
-                                                 matchedName: nameToMatch
-                                                  matchScore: matchScore
-                                               matchedRanges: rangesArray
-                                              priorityFactor: factor];
-            MULTI_TIMER_STOP(Scoring);
-            MULTI_TIMER_START(Writing);
-            if (score > 0) {
-                if (nameOffset) {
-                    NSMutableArray * realRanges = [NSMutableArray array];
-                    for (NSValue * v in rangesArray) {
-                        NSRange r = v.rangeValue;
-                        r.location += nameOffset;
-                        [realRanges addObject: [NSValue valueWithRange: r]];
-                    }
-                    rangesArray = realRanges;
+            item = array[i];
+            NSArray * rangesArray;
+            NSArray * secondPassArray;
+            double matchScore;
+            
+            NSInteger nameOffset = [item.name rangeOfCharacterFromSet: identStartSet].location;
+            if (nameOffset == NSNotFound) {
+                nameOffset = 0;
+            }
+            NSString * nameToMatch = !nameOffset ? item.name : [item.name substringFromIndex: nameOffset];
+            
+            MULTI_TIMER_START(Matching);
+            if (query.length == 1) {
+                NSRange range = [nameToMatch rangeOfString: query options: NSCaseInsensitiveSearch];
+                if (range.location != NSNotFound) {
+                    rangesArray = @[ [NSValue valueWithRange:range] ];
+                    matchScore = MAX(0.001, [pattern scoreCandidate:nameToMatch matchedRanges:&rangesArray]);
+                } else {
+                    matchScore = 0;
                 }
-                [filteredList addObject:item];
-                filteredRanges[item.name] = rangesArray ?: @[];
-                filteredSecond[item.name] = secondPassArray ?: @[];
-                filteredScores[item.name] = @(score);
+            } else {
+                matchScore = [pattern scoreCandidate:nameToMatch matchedRanges:&rangesArray secondPassRanges: &secondPassArray];
             }
-            if (score > highScore) {
-                bestMatch = item;
-                highScore = score;
+            MULTI_TIMER_STOP(Matching);
+            
+            if (matchScore > 0) {
+                MULTI_TIMER_START(Scoring);
+                double factor = [self _priorityFactorForItem:item];
+                double score = normalization * [method scoreItem: item
+                                                    searchString: query
+                                                     matchedName: nameToMatch
+                                                      matchScore: matchScore
+                                                   matchedRanges: rangesArray
+                                                  priorityFactor: factor];
+                MULTI_TIMER_STOP(Scoring);
+                MULTI_TIMER_START(Writing);
+                if (score > 0) {
+                    if (nameOffset) {
+                        NSMutableArray * realRanges = [NSMutableArray array];
+                        for (NSValue * v in rangesArray) {
+                            NSRange r = v.rangeValue;
+                            r.location += nameOffset;
+                            [realRanges addObject: [NSValue valueWithRange: r]];
+                        }
+                        rangesArray = realRanges;
+                    }
+                    [filteredList addObject:item];
+                    filteredRanges[item.name] = rangesArray ?: @[];
+                    filteredSecond[item.name] = secondPassArray ?: @[];
+                    filteredScores[item.name] = @(score);
+                }
+                if (score > highScore) {
+                    bestMatch = item;
+                    highScore = score;
+                }
+                MULTI_TIMER_STOP(Writing);
             }
-            MULTI_TIMER_STOP(Writing);
         }
-    }
+        
+        DLog(@"Matching %f | Scoring %f | Writing %f", MULTI_TIMER_GET(Matching), MULTI_TIMER_GET(Scoring), MULTI_TIMER_GET(Writing));
 
-    DLog(@"Matching %f | Scoring %f | Writing %f", MULTI_TIMER_GET(Matching), MULTI_TIMER_GET(Scoring), MULTI_TIMER_GET(Writing));
-
-    if (filtered) {
-        *filtered = filteredList;
+    } @catch (NSException *exception) {
+        RLog(@"Caught an Exception when filtering: %@", exception);
+    } @finally {
+        if (filtered) {
+            *filtered = filteredList;
+        }
+        if (ranges) {
+            *ranges = filteredRanges;
+        }
+        if (second) {
+            *second = filteredSecond;
+        }
+        if (scores) {
+            *scores = filteredScores;
+        }
+        return bestMatch;
     }
-    if (ranges) {
-        *ranges = filteredRanges;
-    }
-    if (second) {
-        *second = filteredSecond;
-    }
-    if (scores) {
-        *scores = filteredScores;
-    }
-    return bestMatch;
 }
 
 - (NSMutableArray *) _fa_filterResults: (NSMutableArray *) filteredList
